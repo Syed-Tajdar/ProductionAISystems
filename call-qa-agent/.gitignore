@@ -1,0 +1,5 @@
+*.egg-info/
+.pytest_cache/
+# WAVs are large and only needed locally for Deepgram runs; the MP3s and timings are committed.
+samples/audio/*.wav
+samples/audio/.tts-cache/

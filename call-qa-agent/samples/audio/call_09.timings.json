@@ -1,0 +1,153 @@
+{
+  "call_id": "call_09",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "atlas",
+      "gender": "male"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "cora",
+      "gender": "female"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 0.3,
+      "end": 0.94,
+      "text": "Support."
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 1.39,
+      "end": 7.46,
+      "text": "Hi, I've been charged twice this month for my subscription. I'm really annoyed, that's sixty dollars gone from my account."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 7.91,
+      "end": 10.35,
+      "text": "Okay. What's the phone number on the account?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 10.8,
+      "end": 14.64,
+      "text": "It's five five five, zero one four two."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 15.09,
+      "end": 26.21,
+      "text": "Right, I see it. Account for eighteen Cedar Lane, card ending three three one zero, payment of twenty-nine ninety-nine on the third, and another one on the fourth."
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 26.66,
+      "end": 29.5,
+      "text": "Yes, exactly, that's the problem. Can you fix it?"
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 29.95,
+      "end": 33.59,
+      "text": "That happens sometimes. So you got charged twice."
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 34.04,
+      "end": 40.06,
+      "text": "Yes. I need the second charge refunded. I already called about this last week and nothing happened."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 40.51,
+      "end": 44.43,
+      "text": "I don't have any notes from last week. And I can't see why it went through twice."
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 44.88,
+      "end": 46.81,
+      "text": "So what do I do? Can you send it to someone?"
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 47.26,
+      "end": 50.18,
+      "text": "Billing isn't in right now. You'll have to call back later."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 50.63,
+      "end": 53.93,
+      "text": "When is later? Is there a ticket number or something I can reference?"
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 54.38,
+      "end": 56.82,
+      "text": "Just call back tomorrow and ask for billing."
+    },
+    {
+      "index": 13,
+      "role": "CUSTOMER",
+      "voice": "cora",
+      "gender": "female",
+      "start": 57.27,
+      "end": 59.35,
+      "text": "This is ridiculous. I've done that already."
+    },
+    {
+      "index": 14,
+      "role": "AGENT",
+      "voice": "atlas",
+      "gender": "male",
+      "start": 59.8,
+      "end": 60.72,
+      "text": "Okay. Bye."
+    }
+  ]
+}

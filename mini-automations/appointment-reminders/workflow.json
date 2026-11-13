@@ -1,0 +1,627 @@
+{
+  "id": "mnApptReminders01",
+  "name": "Appointment reminders",
+  "nodes": [
+    {
+      "id": "fee745b0-4f8c-533c-9f2c-c547741f1118",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -320
+      ],
+      "parameters": {
+        "content": "## Appointment reminders\nEvery 30 minutes: read booked appointments in the next 24 hours from Supabase -> send a WhatsApp template reminder the day before and 2 hours before, in English or Arabic -> mark each reminder as sent so it never goes out twice. Day-before reminders wait out quiet hours.\n\nDry run: POST sample appointments and a fixed `now` to `/webhook/appointment-reminders?dry_run=1`.",
+        "width": 480,
+        "height": 240
+      }
+    },
+    {
+      "id": "15a782c9-9921-5b18-b534-cf746533fd21",
+      "name": "Every 30 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -60
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ac27fbaa-28ad-5b61-9428-b05f4a1c1526",
+      "name": "Run webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        140
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "appointment-reminders",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "webhookId": "7e395588-1e56-57f3-86b5-142bdc41b705",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWebhookToken002",
+          "name": "Reminders webhook token"
+        }
+      }
+    },
+    {
+      "id": "6379904a-9255-543e-8bd1-177369dbe0b5",
+      "name": "Prepare run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        40
+      ],
+      "parameters": {
+        "jsCode": "// Settings: edit these before going live.\nconst settings = {\n  clinic_name: 'Al Noor Family Clinic',\n  supabase_url: 'https://YOUR-PROJECT.supabase.co',\n  whatsapp_phone_number_id: 'YOUR_PHONE_NUMBER_ID',\n  graph_api_version: 'v23.0',\n  template_name: 'appointment_reminder',   // approved WhatsApp template, see README\n  template_languages: { en: 'en', ar: 'ar' },\n  timezone: 'Asia/Dubai',\n  quiet_hours: { start: 22, end: 8 },        // no day-before reminders in this window\n};\n\nconst j = $input.first().json;\nconst fromWebhook = 'webhookUrl' in j;\nconst q = fromWebhook ? (j.query || {}) : {};\nconst body = fromWebhook ? (j.body || {}) : {};\nconst dryRun = ['1', 'true', 'yes'].includes(String(q.dry_run ?? body.dry_run ?? '').toLowerCase());\n\n// A fixed clock and sample rows are only accepted in dry runs.\nconst now = dryRun && body.now ? DateTime.fromISO(body.now, { setZone: true }) : DateTime.now();\nif (!now.isValid) throw new Error(`invalid \"now\": ${body.now}`);\n\nreturn [{ json: {\n  settings, dry_run: dryRun, source: fromWebhook ? 'webhook' : 'schedule',\n  now: now.toISO(), window_end: now.plus({ hours: 24 }).toISO(),\n  sample_appointments: dryRun ? (body.appointments || []) : [],\n} }];\n"
+      }
+    },
+    {
+      "id": "ebcd4668-b232-56c6-a821-c40f9daf05e0",
+      "name": "Dry run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "848d0e6e-b857-59a4-a3e2-01574cc57a65",
+              "leftValue": "={{ $json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "e3ff71e7-bc5f-5761-aae9-1a172556e541",
+      "name": "Fetch appointments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        140
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Prepare run').first().json.settings.supabase_url }}/rest/v1/appointments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "id,patient_name,phone,language,starts_at,doctor,location,status,reminder_24h_sent_at,reminder_2h_sent_at"
+            },
+            {
+              "name": "status",
+              "value": "eq.booked"
+            },
+            {
+              "name": "and",
+              "value": "=(starts_at.gt.{{ $('Prepare run').first().json.now }},starts_at.lte.{{ $('Prepare run').first().json.window_end }})"
+            },
+            {
+              "name": "order",
+              "value": "starts_at.asc"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "mnSupabaseKeys001",
+          "name": "Supabase"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "alwaysOutputData": true
+    },
+    {
+      "id": "04932fa6-5581-5f84-8c4d-0ecaf2fa8919",
+      "name": "Pick reminders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        40
+      ],
+      "parameters": {
+        "jsCode": "const run = $('Prepare run').first().json;\nconst s = run.settings;\nlet rows;\nlet fetch_error = null;\nif (run.dry_run) {\n  rows = run.sample_appointments;\n} else {\n  const items = $input.all().map((i) => i.json);\n  fetch_error = items.find((r) => r.error)?.error?.message || null;\n  rows = items.filter((r) => r.id);\n}\n\nconst now = DateTime.fromISO(run.now, { setZone: true });\nconst localHour = now.setZone(s.timezone).hour;\nconst { start, end } = s.quiet_hours;\nconst quiet = start > end ? localHour >= start || localHour < end : localHour >= start && localHour < end;\n\nconst TEXT = {\n  en: (p) => `Hi ${p[0]}, a reminder of your appointment with ${p[1]} on ${p[2]} at ${p[3]} at ${p[4]}. To reschedule, call us or reply to this message.`,\n  ar: (p) => `مرحباً ${p[0]}، نذكرك بموعدك مع ${p[1]} يوم ${p[2]} الساعة ${p[3]} في ${p[4]}. لإعادة الجدولة، اتصل بنا أو رد على هذه الرسالة.`,\n};\n\nconst reminders = [];\nconst skipped = [];\nfor (const a of rows) {\n  const startsAt = DateTime.fromISO(a.starts_at, { setZone: true });\n  const hours = startsAt.diff(now, 'hours').hours;\n  let type = null;\n  let reason = '';\n  if (a.status !== 'booked') reason = `status ${a.status}`;\n  else if (hours <= 0) reason = 'already started';\n  else if (hours <= 2) type = a.reminder_2h_sent_at ? null : '2h';\n  else if (hours <= 24) {\n    if (a.reminder_24h_sent_at) type = null;\n    else if (quiet) reason = 'quiet hours, will send later';\n    else type = '24h';\n  } else reason = 'more than 24 hours away';\n  if (!type) {\n    skipped.push({ appointment_id: a.id, reason: reason || `${hours <= 2 ? '2h' : '24h'} reminder already sent` });\n    continue;\n  }\n\n  const lang = a.language === 'ar' ? 'ar' : 'en';\n  const local = startsAt.setZone(s.timezone).setLocale(lang === 'ar' ? 'ar' : 'en-GB');\n  const params = [a.patient_name.split(' ')[0], a.doctor, local.toFormat('cccc d LLLL'), startsAt.setZone(s.timezone).toFormat('HH:mm'), a.location || s.clinic_name];\n  reminders.push({\n    appointment_id: a.id, type, phone: a.phone, language: lang, hours_until: Math.round(hours * 10) / 10,\n    preview_text: TEXT[lang](params),\n    whatsapp_body: {\n      messaging_product: 'whatsapp', to: String(a.phone).replace(/\\D/g, ''), type: 'template',\n      template: {\n        name: s.template_name, language: { code: s.template_languages[lang] },\n        components: [{ type: 'body', parameters: params.map((text) => ({ type: 'text', text: String(text) })) }],\n      },\n    },\n  });\n}\n\nreturn [{ json: { dry_run: run.dry_run, source: run.source, now: run.now, quiet_hours: quiet, fetch_error, checked: rows.length, reminders, skipped } }];\n"
+      }
+    },
+    {
+      "id": "ca561292-0791-54f9-a64b-76ffa13bcd3c",
+      "name": "Anything to send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "07c86140-986a-5668-9872-326c0ccba899",
+              "leftValue": "={{ !$json.dry_run && $json.reminders.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a454b0c3-8cd6-593a-8e14-9a8416ef952d",
+      "name": "Split reminders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        -60
+      ],
+      "parameters": {
+        "jsCode": "return $input.first().json.reminders.map((r) => ({ json: r }));\n"
+      }
+    },
+    {
+      "id": "a8e94df8-641b-5ab3-8b97-a22a0a6d443c",
+      "name": "Send WhatsApp reminder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        -60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Prepare run').first().json.settings.graph_api_version }}/{{ $('Prepare run').first().json.settings.whatsapp_phone_number_id }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.whatsapp_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWhatsAppToken01",
+          "name": "WhatsApp Cloud API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "90aebfa0-f456-582a-9e37-32a9556f3dc5",
+      "name": "Check sends",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -60
+      ],
+      "parameters": {
+        "jsCode": "const sent = $('Split reminders').all().map((item, i) => {\n  const res = $input.all()[i]?.json || {};\n  return { ...item.json, message_id: res.messages?.[0]?.id || null, error: res.error ? (res.error.message || 'send failed') : null };\n});\nconst ok = sent.filter((r) => r.message_id);\nconst updates = ['24h', '2h']\n  .map((type) => ({ type, ids: ok.filter((r) => r.type === type).map((r) => r.appointment_id) }))\n  .filter((u) => u.ids.length);\nreturn [{ json: {\n  sent: ok.map(({ appointment_id, type, message_id }) => ({ appointment_id, type, message_id })),\n  failed: sent.filter((r) => !r.message_id).map(({ appointment_id, type, error }) => ({ appointment_id, type, error })),\n  updates,\n} }];\n"
+      }
+    },
+    {
+      "id": "2cf49712-5146-5c05-9dc6-a121cc3d2d03",
+      "name": "Any sent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        -60
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "eb94e60b-7edb-5d83-85c7-b493a1ee0322",
+              "leftValue": "={{ $json.updates.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "d1a54528-c7d1-54b2-9e0f-de28844a94b0",
+      "name": "Build updates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1720,
+        -140
+      ],
+      "parameters": {
+        "jsCode": "const now = new Date().toISOString();\nreturn $input.first().json.updates.map((u) => ({ json: {\n  filter: `in.(${u.ids.join(',')})`,\n  patch: { [u.type === '24h' ? 'reminder_24h_sent_at' : 'reminder_2h_sent_at']: now },\n} }));\n"
+      }
+    },
+    {
+      "id": "db703fdd-52e5-5a0c-9888-3f3f3aefdd62",
+      "name": "Mark as sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1940,
+        -140
+      ],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Prepare run').first().json.settings.supabase_url }}/rest/v1/appointments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json.filter }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.patch) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "mnSupabaseKeys001",
+          "name": "Supabase"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "alwaysOutputData": true
+    },
+    {
+      "id": "7cc5cab4-b15e-5a90-91bf-40de6d304151",
+      "name": "Summarize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        40
+      ],
+      "parameters": {
+        "jsCode": "const picked = $('Pick reminders').first().json;\nlet sends = { sent: [], failed: [] };\ntry { sends = $('Check sends').first().json; } catch (e) { /* nothing was sent this run */ }\nreturn [{ json: {\n  ...picked,\n  sent: sends.sent,\n  failed: sends.failed,\n  counts: { checked: picked.checked, due: picked.reminders.length, sent: sends.sent.length, failed: sends.failed.length, skipped: picked.skipped.length },\n} }];\n"
+      },
+      "executeOnce": true
+    },
+    {
+      "id": "cb078fea-bcae-59a5-8234-73eb15612941",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2380,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2f0295c2-79c0-5055-bf58-c954dbe8fabe",
+              "leftValue": "={{ $json.source === 'webhook' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "b3c822b4-f809-5e97-ad75-fa140a5c758b",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2600,
+        20
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every 30 minutes": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare run": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Pick reminders",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch appointments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch appointments": {
+      "main": [
+        [
+          {
+            "node": "Pick reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick reminders": {
+      "main": [
+        [
+          {
+            "node": "Anything to send?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anything to send?": {
+      "main": [
+        [
+          {
+            "node": "Split reminders",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split reminders": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp reminder": {
+      "main": [
+        [
+          {
+            "node": "Check sends",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check sends": {
+      "main": [
+        [
+          {
+            "node": "Any sent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any sent?": {
+      "main": [
+        [
+          {
+            "node": "Build updates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build updates": {
+      "main": [
+        [
+          {
+            "node": "Mark as sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark as sent": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

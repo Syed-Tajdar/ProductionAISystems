@@ -1,0 +1,53 @@
+# The lead workflows on a real n8n in Docker against mock APIs (tests/bench), the SQL tests on a
+# throwaway Postgres container, and the static demo page. Live LLM tests are skipped: LIVE_ANTHROPIC is not set.
+name: n8n-leads
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "n8n-leads/**"
+      - "demo-ui/**"
+      - ".github/scripts/setup_n8n.py"
+      - ".github/scripts/n8n_errors.py"
+      - ".github/scripts/check_db_cert.py"
+      - ".github/workflows/n8n-leads.yml"
+  pull_request:
+    paths:
+      - "n8n-leads/**"
+      - "demo-ui/**"
+      - ".github/scripts/setup_n8n.py"
+      - ".github/scripts/n8n_errors.py"
+      - ".github/scripts/check_db_cert.py"
+      - ".github/workflows/n8n-leads.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: n8n-leads
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.11"
+      - run: pip install jinja2==3.1.6 playwright==1.63.0  # the demo page build (landing/build.py) and its browser test
+      - run: playwright install --with-deps chromium
+      - run: python ../demo-ui/sync.py --check  # the shared demo UI copy is current
+      - name: Start the test bench (n8n with the workflows loaded)
+        run: python tests/bench/harness.py up
+      - name: Workflow and SQL tests
+        run: python -m unittest discover -s tests -v
+      - name: Stop the test bench
+        if: always()
+        run: python tests/bench/harness.py down

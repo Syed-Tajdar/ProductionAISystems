@@ -1,0 +1,5 @@
+id,name,url,our_price,currency,drop_alert_pct
+tv-55,Falcon 55-inch 4K TV,https://shop-one.example.com/p/falcon-55-4k,1249,AED,5
+kettle,Desert Steel Kettle 1.7L,https://shop-two.example.com/kettle-17,359,AED,5
+laptop-14,Orbit 14 Laptop 16GB,https://shop-one.example.com/p/orbit-14,2149,AED,5
+headset,Nova Wireless Headset,https://shop-three.example.com/item/nova-headset,99,AED,5

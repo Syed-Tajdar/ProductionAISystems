@@ -1,0 +1,646 @@
+{
+  "id": "mnDailyReport0001",
+  "name": "Daily report bot",
+  "nodes": [
+    {
+      "id": "2665e63c-ad76-52ad-8a5c-0ceee84cb221",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -320
+      ],
+      "parameters": {
+        "content": "## Daily report bot\nEvery morning: last 8 days of sales from Supabase -> yesterday vs previous day and 7-day average, per channel, unusual swings -> 3 commentary bullets from Claude (numbers checked against the facts, template otherwise) -> Telegram.\n\nDry run: POST sample rows and a `report_date` to `/webhook/daily-report?dry_run=1`.",
+        "width": 480,
+        "height": 220
+      }
+    },
+    {
+      "id": "ffe38284-6633-5502-bdb3-622c8721d468",
+      "name": "Every morning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -60
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "45 8 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3e67b126-5b19-578c-a8a7-1dff52f702dc",
+      "name": "Report webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        140
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "daily-report",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "webhookId": "65440f3a-03be-5623-a4df-fa1f3870bb61",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWebhookToken003",
+          "name": "Report webhook token"
+        }
+      }
+    },
+    {
+      "id": "86751855-fc94-5c89-af09-7d52a0231f6e",
+      "name": "Prepare run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        40
+      ],
+      "parameters": {
+        "jsCode": "// Settings: edit these before going live.\nconst settings = {\n  company_name: 'Palm Grove Trading',\n  supabase_url: 'https://YOUR-PROJECT.supabase.co',\n  telegram_chat_id: 'YOUR_MANAGEMENT_CHAT_ID',\n  // Haiku: three short bullets from numbers we already computed. Use claude-sonnet-5-5 for richer commentary.\n  anthropic_model: 'claude-haiku-5-5',\n  // Provider: anthropic | gemini. Gemini Flash-Lite is the Haiku-class option.\n  llm_provider: 'anthropic',\n  gemini_model: 'gemini-3.5-flash-lite',\n  timezone: 'Asia/Dubai',\n  anomaly_pct: 30,   // flag a channel when yesterday differs from its 7-day average by this much\n};\n\nconst j = $input.first().json;\nconst fromWebhook = 'webhookUrl' in j;\nconst q = fromWebhook ? (j.query || {}) : {};\nconst body = fromWebhook ? (j.body || {}) : {};\nconst dryRun = ['1', 'true', 'yes'].includes(String(q.dry_run ?? body.dry_run ?? '').toLowerCase());\n\nconst today = DateTime.now().setZone(settings.timezone).startOf('day');\nconst reportDay = dryRun && body.report_date ? DateTime.fromISO(body.report_date, { zone: settings.timezone }) : today.minus({ days: 1 });\nif (!reportDay.isValid) throw new Error(`invalid report_date: ${body.report_date}`);\n\nreturn [{ json: {\n  settings, dry_run: dryRun, source: fromWebhook ? 'webhook' : 'schedule',\n  report_date: reportDay.toISODate(), start_date: reportDay.minus({ days: 7 }).toISODate(),\n  sample_rows: dryRun ? (body.rows || []) : [],\n} }];\n"
+      }
+    },
+    {
+      "id": "bc7d61c4-bc4b-525c-93fb-8167beca1942",
+      "name": "Dry run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "68898b0a-2f32-5745-90e9-3d8762d13160",
+              "leftValue": "={{ $json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "f8b446e7-70f2-57a4-af44-82aad0d591a3",
+      "name": "Fetch sales",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        140
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Prepare run').first().json.settings.supabase_url }}/rest/v1/daily_sales",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "day,channel,orders,revenue_aed,new_leads"
+            },
+            {
+              "name": "and",
+              "value": "=(day.gte.{{ $('Prepare run').first().json.start_date }},day.lte.{{ $('Prepare run').first().json.report_date }})"
+            },
+            {
+              "name": "order",
+              "value": "day.asc"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "mnSupabaseKeys001",
+          "name": "Supabase"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "alwaysOutputData": true
+    },
+    {
+      "id": "02882fae-771d-5a9d-b155-78c70e5350b7",
+      "name": "Compute KPIs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        40
+      ],
+      "parameters": {
+        "jsCode": "function claudeRequest(model, body) {\n  const fallback = !/^claude-haiku/.test(model);\n  return {\n    claude_body: { model, ...body, ...(fallback ? { fallbacks: 'default' } : {}) },\n    claude_headers: { 'anthropic-version': '2026-10-21', ...(fallback ? { 'anthropic-beta': 'server-side-fallback-2026-07-01' } : {}) },\n  };\n}\n\n// Gemini's responseSchema takes the same JSON schema minus additionalProperties.\nfunction geminiSchema(schema) {\n  if (Array.isArray(schema)) return schema.map(geminiSchema);\n  if (!schema || typeof schema !== 'object') return schema;\n  return Object.fromEntries(Object.entries(schema).filter(([k]) => k !== 'additionalProperties').map(([k, v]) => [k, geminiSchema(v)]));\n}\nfunction llmRequest(s, { system, user, schema, max_tokens }) {\n  if (s.llm_provider === 'gemini') {\n    return {\n      llm_provider: 'gemini',\n      gemini_url: `https://generativelanguage.googleapis.com/v1beta/models/${s.gemini_model}:generateContent`,\n      gemini_body: {\n        systemInstruction: { parts: [{ text: system }] },\n        contents: [{ role: 'user', parts: [{ text: user }] }],\n        generationConfig: { responseMimeType: 'application/json', responseSchema: geminiSchema(schema) },\n      },\n    };\n  }\n  if (s.llm_provider !== 'anthropic') throw new Error(`llm_provider must be anthropic or gemini, not \"${s.llm_provider}\"`);\n  return {\n    llm_provider: 'anthropic',\n    ...claudeRequest(s.anthropic_model, {\n      max_tokens, output_config: { effort: 'low', format: { type: 'json_schema', schema } }, system,\n      messages: [{ role: 'user', content: user }],\n    }),\n  };\n}\n\nconst run = $('Prepare run').first().json;\nconst s = run.settings;\nlet rows = run.sample_rows;\nlet fetch_error = null;\nif (!run.dry_run) {\n  const items = $input.all().map((i) => i.json);\n  fetch_error = items.find((r) => r.error)?.error?.message || null;\n  rows = items.filter((r) => r.day);\n}\n\nconst num = (v) => Number(v) || 0;\nconst sum = (list, key) => list.reduce((a, r) => a + num(r[key]), 0);\nconst pct = (now, before) => (before ? Math.round(((now - before) / before) * 1000) / 10 : null);\nconst fmt = (n) => Math.round(n).toLocaleString('en-US');\nconst signed = (p) => (p === null ? 'n/a' : `${p > 0 ? '+' : ''}${p}%`);\n\nconst day = run.report_date;\nconst prevDay = DateTime.fromISO(day).minus({ days: 1 }).toISODate();\nconst week = rows.filter((r) => r.day >= run.start_date && r.day < day);\nconst days = new Set(week.map((r) => r.day)).size || 1;\nconst totals = (list) => ({ orders: sum(list, 'orders'), revenue: sum(list, 'revenue_aed'), leads: sum(list, 'new_leads') });\n\nconst y = totals(rows.filter((r) => r.day === day));\nconst prev = totals(rows.filter((r) => r.day === prevDay));\nconst avg = Object.fromEntries(Object.entries(totals(week)).map(([k, v]) => [k, v / days]));\nconst missing_data = !rows.some((r) => r.day === day);\n\nconst channels = [...new Set(rows.map((r) => r.channel))].sort().map((channel) => {\n  const yc = totals(rows.filter((r) => r.day === day && r.channel === channel));\n  const wc = totals(week.filter((r) => r.channel === channel));\n  const avgRevenue = wc.revenue / days;\n  return { channel, orders: yc.orders, revenue: yc.revenue, vs_avg_pct: pct(yc.revenue, avgRevenue) };\n});\nconst anomalies = channels.filter((c) => c.vs_avg_pct !== null && Math.abs(c.vs_avg_pct) >= s.anomaly_pct);\nconst top = [...channels].sort((a, b) => b.revenue - a.revenue)[0];\n\nconst kpis = {\n  revenue: y.revenue, orders: y.orders, new_leads: y.leads,\n  avg_order_value: y.orders ? Math.round((y.revenue / y.orders) * 100) / 100 : 0,\n  revenue_vs_prev_pct: pct(y.revenue, prev.revenue), revenue_vs_avg_pct: pct(y.revenue, avg.revenue),\n  orders_vs_avg_pct: pct(y.orders, avg.orders), leads_vs_avg_pct: pct(y.leads, avg.leads),\n};\n\n// Every number Claude may use, written exactly as it may appear.\nconst facts = [\n  `Revenue AED ${fmt(kpis.revenue)} (${signed(kpis.revenue_vs_prev_pct)} vs previous day, ${signed(kpis.revenue_vs_avg_pct)} vs 7-day average)`,\n  `Orders ${fmt(kpis.orders)} (${signed(kpis.orders_vs_avg_pct)} vs 7-day average), average order AED ${kpis.avg_order_value.toFixed(2)}`,\n  `New leads ${fmt(kpis.new_leads)} (${signed(kpis.leads_vs_avg_pct)} vs 7-day average)`,\n  ...channels.map((c) => `Channel ${c.channel}: revenue AED ${fmt(c.revenue)}, ${fmt(c.orders)} orders, ${signed(c.vs_avg_pct)} vs its 7-day average`),\n];\n\nconst template = missing_data ? [`No sales rows for ${day}. Check that yesterday's data was loaded.`] : [\n  `Revenue was AED ${fmt(kpis.revenue)}, ${signed(kpis.revenue_vs_avg_pct)} vs the 7-day average.`,\n  top ? `Top channel: ${top.channel} with AED ${fmt(top.revenue)}.` : 'No channel data.',\n  anomalies.length\n    ? `Unusual: ${anomalies.map((a) => `${a.channel} ${signed(a.vs_avg_pct)}`).join(', ')} vs the 7-day average.`\n    : 'No channel moved more than ' + s.anomaly_pct + '% from its 7-day average.',\n];\n\nconst schema = { type: 'object', additionalProperties: false, required: ['bullets'],\n  properties: { bullets: { type: 'array', items: { type: 'string' }, description: 'Exactly 3 short bullet points' } } };\nconst request = llmRequest(s, {\n  max_tokens: 2048,\n  schema,\n  system:\n    `You write the daily sales note for the managers of ${s.company_name}. Write exactly 3 bullets of at most 20 words each: ` +\n    'what changed, what stands out, what to check today. Use only the facts given and copy numbers exactly as written; ' +\n    'do not compute new numbers, round, or guess causes.',\n  user: `Report date: ${day}\\nFacts:\\n- ${facts.join('\\n- ')}`,\n});\n\nreturn [{ json: {\n  dry_run: run.dry_run, source: run.source, report_date: day, missing_data, fetch_error,\n  kpis, channels, anomalies: anomalies.map((a) => a.channel), facts,\n  bullets: template, commentary_source: 'template', ...request,\n} }];\n"
+      }
+    },
+    {
+      "id": "587a9601-9b87-5c8e-b286-f366f21afc2c",
+      "name": "Write commentary?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a3e42450-9edf-59a3-af1d-d646979470ed",
+              "leftValue": "={{ !$json.dry_run && !$json.missing_data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a1352494-6a01-5752-9974-b0c8e270631a",
+      "name": "Use Gemini?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        -60
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "55b9d964-c66a-5659-99c8-cf46101b418e",
+              "leftValue": "={{ $json.llm_provider === 'gemini' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "36a84d13-ffc5-5369-a4d2-15d43dd1ac44",
+      "name": "Claude: commentary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        -140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($json.claude_headers) }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.claude_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnAnthropicKey001",
+          "name": "Anthropic API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "3345214f-ae22-5eea-97f6-60a5c1181a64",
+      "name": "Gemini: commentary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.gemini_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.gemini_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnGeminiKey00001",
+          "name": "Gemini API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "a6d3e658-a075-5333-bda4-9ec3e9103fef",
+      "name": "Check commentary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -60
+      ],
+      "parameters": {
+        "jsCode": "const BLOCKED = ['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII', 'RECITATION'];\nfunction readLLM(res) {\n  if (!res || res.error) {\n    const msg = res?.error?.message || JSON.stringify(res?.error);\n    // n8n replaces the API message on 429, so check the whole error (status code, description, cause).\n    const limited = /429|rate.?limit|RESOURCE_EXHAUSTED|quota|spacing your requests/i.test(JSON.stringify(res?.error));\n    throw new Error(`${limited ? 'rate limited (429) after retries' : 'request failed'}: ${msg}`);\n  }\n  if (res.candidates || res.promptFeedback) {  // Gemini generateContent\n    const c = res.candidates?.[0];\n    if (res.promptFeedback?.blockReason || BLOCKED.includes(c?.finishReason)) throw new Error('model declined the request');\n    const text = (c?.content?.parts || []).filter((p) => p.text && !p.thought).map((p) => p.text).join('');\n    if (!text) throw new Error('no text in response');\n    return JSON.parse(text);\n  }\n  if (res.stop_reason === 'refusal') throw new Error('model declined the request');  // Claude Messages\n  const text = [...(res.content || [])].reverse().find((b) => b.type === 'text')?.text;\n  if (!text) throw new Error('no text block in response');\n  return JSON.parse(text);\n}\nconst PROVIDER_NAME = { anthropic: 'Claude', gemini: 'Gemini' };\nconst SOURCE = { anthropic: 'claude', gemini: 'gemini' };\n\n// Guard: every number in the model's bullets must appear in the facts, otherwise keep the template.\nconst base = $('Compute KPIs').first().json;\nconst numbers = (text) => (text.match(/\\d[\\d,]*(?:\\.\\d+)?/g) || []).map((n) => n.replace(/,/g, ''));\nconst allowed = new Set([...numbers(base.facts.join(' ')), '7', '3']);\ntry {\n  const bullets = readLLM($input.first().json).bullets.slice(0, 3).map((b) => String(b).trim()).filter(Boolean);\n  if (!bullets.length) throw new Error('no bullets');\n  const invented = bullets.flatMap(numbers).filter((n) => !allowed.has(n));\n  if (invented.length) throw new Error(`numbers not in the facts: ${[...new Set(invented)].join(', ')}`);\n  return [{ json: { ...base, bullets, commentary_source: SOURCE[base.llm_provider] } }];\n} catch (e) {\n  return [{ json: { ...base, commentary_note: `${PROVIDER_NAME[base.llm_provider]} commentary not used: ${e.message}` } }];\n}\n"
+      }
+    },
+    {
+      "id": "b43e6493-ee60-5f5f-8cd5-2e56230c24be",
+      "name": "Build message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        40
+      ],
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst fmt = (n) => Math.round(n).toLocaleString('en-US');\nconst signed = (p) => (p === null ? 'n/a' : `${p > 0 ? '+' : ''}${p}%`);\nconst title = DateTime.fromISO(d.report_date).toFormat('cccc d LLLL yyyy');\nconst k = d.kpis;\nconst lines = d.missing_data\n  ? [`Daily report, ${title}`, '', ...d.bullets.map((b) => `- ${b}`)]\n  : [\n      `Daily report, ${title}`,\n      '',\n      `Revenue: AED ${fmt(k.revenue)} (${signed(k.revenue_vs_avg_pct)} vs 7-day avg)`,\n      `Orders: ${fmt(k.orders)} | Avg order: AED ${k.avg_order_value.toFixed(2)} | New leads: ${fmt(k.new_leads)}`,\n      '',\n      ...d.channels.map((c) => `${c.channel}: AED ${fmt(c.revenue)}, ${fmt(c.orders)} orders (${signed(c.vs_avg_pct)})`),\n      '',\n      ...d.bullets.map((b) => `- ${b}`),\n    ];\nif (d.fetch_error) lines.push('', `Data fetch error: ${d.fetch_error}`);\nconst { claude_body, claude_headers, ...rest } = d;\nreturn [{ json: { ...rest, message: lines.join('\\n') } }];\n"
+      }
+    },
+    {
+      "id": "291f814b-ec60-582c-a8b4-3f9010075f85",
+      "name": "Send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5250c68a-03f5-5439-bf06-5b26a35a0bf4",
+              "leftValue": "={{ !$json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "566630cf-16b4-5bc6-9c0a-b98f27fd4dda",
+      "name": "Post to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1720,
+        -40
+      ],
+      "parameters": {
+        "chatId": "={{ $('Prepare run').first().json.settings.telegram_chat_id }}",
+        "text": "={{ $('Build message').first().json.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "mnTelegramBot0001",
+          "name": "Telegram Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "5409239a-61a5-52db-8eca-0774d7bba9d1",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1940,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b6a6bc72-8565-5e2f-b8be-9aaf32eaca51",
+              "leftValue": "={{ $('Build message').first().json.source === 'webhook' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "80d56a1b-2fd3-5f30-8f9e-c9705c93b761",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        20
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Build message').first().json }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Use Gemini?": {
+      "main": [
+        [
+          {
+            "node": "Gemini: commentary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude: commentary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every morning": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare run": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Compute KPIs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch sales": {
+      "main": [
+        [
+          {
+            "node": "Compute KPIs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute KPIs": {
+      "main": [
+        [
+          {
+            "node": "Write commentary?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write commentary?": {
+      "main": [
+        [
+          {
+            "node": "Use Gemini?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: commentary": {
+      "main": [
+        [
+          {
+            "node": "Check commentary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: commentary": {
+      "main": [
+        [
+          {
+            "node": "Check commentary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check commentary": {
+      "main": [
+        [
+          {
+            "node": "Build message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build message": {
+      "main": [
+        [
+          {
+            "node": "Send?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send?": {
+      "main": [
+        [
+          {
+            "node": "Post to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Telegram": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

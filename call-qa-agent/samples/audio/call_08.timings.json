@@ -1,0 +1,135 @@
+{
+  "call_id": "call_08",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "asteria",
+      "gender": "female"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "hermes",
+      "gender": "male"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 0.3,
+      "end": 3.73,
+      "text": "Thank you for calling Brightwave Internet, this is Sara. How can I help you today?"
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 4.18,
+      "end": 10.22,
+      "text": "Hi. My internet has been down for two days and I work from home. I'm losing work over this."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 10.67,
+      "end": 21.25,
+      "text": "I'm really sorry. Two days without internet when you work from home is a big disruption, so let's get this sorted. Before I look at the account, can you confirm your full name and the last four digits of your account number?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 21.7,
+      "end": 26.3,
+      "text": "Ahmed Rahman, and the last four are two two nine one."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 26.75,
+      "end": 34.21,
+      "text": "Thank you, Mr. Rahman, you're verified. So the connection dropped on Monday, and restarting the router hasn't helped, is that right?"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 34.66,
+      "end": 37.5,
+      "text": "Yes. The light on the router is red the whole time."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 37.95,
+      "end": 47.51,
+      "text": "Thanks. I've run a line test, and it shows a fault outside your home, so this needs a technician. The earliest slot is Thursday between nine and twelve. Shall I book it?"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 47.96,
+      "end": 52.24,
+      "text": "Yes, please. Can I get some money back for the days I've lost?"
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 52.69,
+      "end": 61.37,
+      "text": "I can't apply a credit myself, but I've sent a request to our billing team with the outage dates. They'll review it and email you within forty-eight hours."
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 61.82,
+      "end": 63.5,
+      "text": "Okay, that's fair."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 63.95,
+      "end": 76.86,
+      "text": "Your technician visit is booked for Thursday, nine to twelve, under ticket number B W four eight two one three. You'll get a text the evening before. Is there anything else I can help you with?"
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "hermes",
+      "gender": "male",
+      "start": 77.31,
+      "end": 80.43,
+      "text": "No, that's everything. Thanks, Sara."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "asteria",
+      "gender": "female",
+      "start": 80.88,
+      "end": 84.76,
+      "text": "You're welcome. I hope you're back online soon. Have a good day."
+    }
+  ]
+}

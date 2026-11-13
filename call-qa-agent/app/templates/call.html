@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% set refresh = in_progress %}
+{% block title %}{{ title }}{% endblock %}
+{% block head %}{% if audio_url %}<script src="{{ url_for('static', path='call.js') }}" defer></script>{% endif %}{% endblock %}
+{% macro item_card(it) %}
+  {% set tag = "a" if it.anchor else "div" %}
+  <{{ tag }} class="item {{ it.verdict }}"{% if it.critical %} data-critical{% endif %} {% if it.anchor %}href="#{{ it.anchor }}"{% endif %}>
+    <span class="head">
+      <span class="title">{{ it.title }}{% if it.critical %}<span class="crit">critical</span>{% endif %}</span>
+      <span class="badge {{ 'review' if it.verdict == 'needs_review' else it.verdict }}">{{ it.verdict | replace("_", " ") }}</span>
+    </span>
+    {% if it.evidence_quote %}<span class="quote">{% if it.time %}<span class="mono">{{ it.time }}</span> {% endif %}"{{ it.evidence_quote }}"</span>{% endif %}
+    {% if it.verdict == "needs_review" %}<span class="why">{{ it.review_reason | capitalize }}{% if it.model_verdict %} (model said {{ it.model_verdict }}){% endif %}</span>{% endif %}
+    {% if it.reasoning %}<span class="reason">{{ it.reasoning }}</span>{% endif %}
+  </{{ tag }}>
+{% endmacro %}
+{% block content %}
+<div class="call-page">
+<p class="crumbs"><a href="/dashboard">&larr; All calls</a><a href="/calls/{{ call.id }}" class="json-link" target="_blank" rel="noopener">View as JSON<span class="du-sr"> (opens in a new tab)</span></a></p>
+
+{#- Top to bottom: title, score, verdict and its reason. #}
+<section class="call-head{{ ' has-ring' if ring }}" aria-label="Result">
+  <h1>{{ title }}</h1>
+  {% if ring %}
+  <div class="ring {{ outcome.css }}" role="img" aria-label="Score {{ '%.0f' | format(score.overall_score) }} out of 100">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <circle class="ring-track" cx="32" cy="32" r="26"/>
+      <circle class="ring-value" cx="32" cy="32" r="26" stroke-dasharray="{{ ring.length }}" stroke-dashoffset="{{ ring.offset }}"/>
+    </svg>
+    <span class="ring-score">{{ "%.0f" | format(score.overall_score) }}</span>
+  </div>
+  {% endif %}
+  <p class="verdict"><span class="badge {{ outcome.css }}">{{ outcome.label }}</span>{% if reason %} <span class="verdict-reason">{{ reason }}</span>{% endif %}</p>
+</section>
+
+{% if review %}<div class="banner review" role="status">{{ review }} item{{ "s" if review > 1 }} need{{ "" if review > 1 else "s" }} review: the evidence could not be confirmed in the transcript.</div>{% endif %}
+{% if call.status == "failed" %}<div class="banner fail" role="alert">Failed: {{ call.error }}</div>{% endif %}
+{% if in_progress %}<div class="banner" role="status">This call is <span data-call-status="{{ call.id }}" data-status="{{ call.status }}">{{ call.status }}</span>. This page checks again every 10 seconds.</div>{% endif %}
+
+{#- Three sections in order; dashboard.js turns them into tabs. Without script all three show, one after another. #}
+<div class="tabs" role="tablist" aria-label="Call details" data-tabs hidden>
+  <button type="button" role="tab" id="tab-summary" aria-controls="summary" aria-selected="true">Summary</button>
+  <button type="button" role="tab" id="tab-transcript" aria-controls="transcript" aria-selected="false" tabindex="-1">Transcript</button>
+  <button type="button" role="tab" id="tab-checks" aria-controls="checks" aria-selected="false" tabindex="-1">Checks</button>
+</div>
+
+<section class="panel" id="summary" data-tab-panel aria-labelledby="summary-title">
+  <h2 id="summary-title">Summary</h2>
+  {% if summary %}<p class="call-summary">{{ summary }}</p>{% endif %}
+  <p class="tags">
+    {% if rubric %}<span class="tag">{{ rubric.name }} v{{ rubric.version }}</span>{% endif %}
+    {% if language %}<span class="tag">{{ language }}</span>{% endif %}
+    {% if duration %}<span class="tag mono">{{ duration }}</span>{% endif %}
+    <span class="tag mono"><time datetime="{{ call.created_at }}">{{ call.created_at[:16] | replace("T", " ") }}</time></span>
+    {% if call.status != "done" %}<span class="tag status {{ call.status }}" data-call-status="{{ call.id }}" data-status="{{ call.status }}">{{ call.status }}</span>{% endif %}
+  </p>
+  {% if call.filename %}<p class="filename mono">{{ call.filename }}</p>{% endif %}
+  {% if chips %}
+  <details class="tech">
+    <summary>Technical details</summary>
+    <ul class="chips" aria-label="Scoring run">
+      {% for chip in chips %}<li class="chip mono">{{ chip }}</li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+
+<section class="panel transcript-panel" id="transcript" data-tab-panel aria-labelledby="transcript-title">
+  <h2 id="transcript-title">Transcript</h2>
+  {% if audio_url %}
+  <div class="player" role="group" aria-label="Call audio">
+    <audio controls preload="metadata" src="{{ audio_url }}" data-src="{{ audio_url }}" data-call-audio>
+      <a href="{{ audio_url }}">Download the audio</a>
+    </audio>
+    <p class="player-note muted">{% if call.is_demo %}Synthetic voices read from the call script. {% endif %}Tap a quote or a timestamp to play from there.</p>
+  </div>
+  {% endif %}
+  {% if lines %}
+  <div class="transcript">
+    {% for line in lines %}
+    <div class="line{{ ' cited' if line.cited }}" id="u-{{ line.index }}" data-start="{{ line.start }}">
+      <a class="seek" href="#u-{{ line.index }}"{% if audio_url %} aria-label="Play from {{ line.time }}"{% endif %}><time>{{ line.time }}</time></a>
+      <span class="who{{ ' ' ~ line.role if line.role }}">{{ line.speaker }}</span>
+      <span class="text" dir="auto">{% for seg in line.segments %}{% if seg.css %}<mark class="{{ seg.css }}" title="{{ seg['items'] | join(', ') }}">{{ seg.text }}</mark>{% else %}{{ seg.text }}{% endif %}{% endfor %}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <a class="to-rubric" href="#rubric">&uarr; Checks</a>
+  {% else %}
+  <p class="muted">No transcript yet.</p>
+  {% endif %}
+</section>
+
+<section class="panel" id="checks" data-tab-panel aria-labelledby="checks-title">
+  <h2 id="checks-title">Checks</h2>
+  <div class="rubric" id="rubric">
+    {% if items %}
+      {% for it in groups.attention %}{{ item_card(it) }}{% endfor %}
+      {% if not groups.attention %}<p class="all-clear">No failed items.</p>{% endif %}
+      {% if groups.passed %}
+      <details class="group">
+        <summary>Passed ({{ groups.passed | length }})</summary>
+        {% for it in groups.passed %}{{ item_card(it) }}{% endfor %}
+      </details>
+      {% endif %}
+      {% if groups.na %}
+      <details class="group">
+        <summary>Not applicable ({{ groups.na | length }})</summary>
+        {% for it in groups.na %}{{ item_card(it) }}{% endfor %}
+      </details>
+      {% endif %}
+    {% else %}
+      <p class="muted">Not scored yet.</p>
+    {% endif %}
+  </div>
+
+  {% if rules %}
+  <details class="how" id="how-scoring">
+    <summary>How scoring works</summary>
+    <div class="how-body">
+      <ul class="how-rules">
+        <li>Each check is judged pass, fail or not applicable, and pass and fail must quote the transcript. A quote that is not in the transcript sends the check to review.</li>
+        <li>Score = weight of the passed checks &divide; weight of the applicable checks &times; 100. A check in review counts as applicable, not passed.</li>
+        <li>The call passes with a score of at least {{ rules.threshold if rules.threshold else "the pass mark" }} and no failed critical check. A critical check in review leaves it undecided.</li>
+      </ul>
+      <table class="how-table">
+        <caption class="du-sr">{{ rubric.name }} v{{ rubric.version }}: checks, weights and this call's verdicts</caption>
+        <thead><tr><th scope="col">Check</th><th scope="col" class="num">Weight</th><th scope="col">This call</th></tr></thead>
+        <tbody>
+          {% for c in rules.checks %}
+          <tr>
+            <th scope="row"><span class="how-title">{{ c.title }}{% if c.critical %}<span class="crit">critical</span>{% endif %}</span>
+              {% if c.pass_if %}<span class="how-criteria">{{ c.pass_if }}</span>{% endif %}</th>
+            <td class="num">{{ c.weight }}</td>
+            <td>{% if c.verdict %}<span class="badge {{ 'review' if c.verdict == 'needs_review' else c.verdict }}">{{ "n/a" if c.verdict == "na" else c.verdict | replace("_", " ") }}</span>{% else %}&ndash;{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if rules.scored and rules.applicable %}
+      <p class="how-sum mono">{{ rules.got }} of {{ rules.applicable }} applicable weight passed = {{ "%.1f" | format(100 * rules.got / rules.applicable) }}{% if rules.threshold %} &middot; pass mark {{ rules.threshold }}{% endif %}</p>
+      {% endif %}
+    </div>
+  </details>
+  {% endif %}
+</section>
+</div>
+{% endblock %}

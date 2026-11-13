@@ -1,0 +1,126 @@
+{
+  "call_id": "call_06",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "gemini",
+      "voice": "Aoede",
+      "gender": "female"
+    },
+    "CUSTOMER": {
+      "engine": "gemini",
+      "voice": "Puck",
+      "gender": "male"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 0.3,
+      "end": 4.22,
+      "text": "السلام عليكم، أبي أستفسر عن المشروع الجديد في الخليج التجاري."
+    },
+    {
+      "index": 1,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 4.67,
+      "end": 9.38,
+      "text": "Hello, yes, Palm Crest. You're asking about the new tower in Business Bay?"
+    },
+    {
+      "index": 2,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 9.83,
+      "end": 15.19,
+      "text": "نعم. ممكن تكلمني عربي؟ My English is okay, but Arabic is easier for me."
+    },
+    {
+      "index": 3,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 15.64,
+      "end": 26.08,
+      "text": "English is fine, I'll speak slowly. This tower is the best investment in the city right now. You get a guaranteed ten percent rental yield every year, and prices will double by handover."
+    },
+    {
+      "index": 4,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 26.53,
+      "end": 29.1,
+      "text": "مضمون؟ Guaranteed, really?"
+    },
+    {
+      "index": 5,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 29.55,
+      "end": 34.16,
+      "text": "One hundred percent guaranteed. Everybody is buying here, the developer is very strong."
+    },
+    {
+      "index": 6,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 34.61,
+      "end": 36.24,
+      "text": "كم سعر الشقة غرفة وحدة؟"
+    },
+    {
+      "index": 7,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 36.69,
+      "end": 42.93,
+      "text": "One bedroom starts from one point two million. You should book today, there are only two units left on the high floors."
+    },
+    {
+      "index": 8,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 43.38,
+      "end": 44.88,
+      "text": "طيب، وش خطة الدفع؟"
+    },
+    {
+      "index": 9,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 45.33,
+      "end": 52.36,
+      "text": "Twenty percent down payment, then the rest during construction. Very easy. I can send you the booking form now and you transfer the deposit."
+    },
+    {
+      "index": 10,
+      "role": "CUSTOMER",
+      "voice": "Puck",
+      "gender": "male",
+      "start": 52.81,
+      "end": 57.15,
+      "text": "لا، لحظة. I need to discuss it with my wife first. لازم أشاور أهلي."
+    },
+    {
+      "index": 11,
+      "role": "AGENT",
+      "voice": "Aoede",
+      "gender": "female",
+      "start": 57.6,
+      "end": 60.48,
+      "text": "Okay, no problem. Call us when you're ready. Bye."
+    }
+  ]
+}

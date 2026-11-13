@@ -1,0 +1,135 @@
+{
+  "call_id": "call_04",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "andromeda",
+      "gender": "female"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "zeus",
+      "gender": "male"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 0.3,
+      "end": 8.5,
+      "text": "Hello, this is Priya Shah, a licensed agent with Harborline Insurance. Just so you know, this call is recorded for quality and compliance."
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 8.95,
+      "end": 9.32,
+      "text": "Okay."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 9.77,
+      "end": 15.56,
+      "text": "You asked for information on Medicare supplement plans. Is it alright if I ask a few questions to see which plans fit you?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 16.01,
+      "end": 16.56,
+      "text": "I guess so."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 17.01,
+      "end": 20.69,
+      "text": "Thank you. Are you currently enrolled in both Medicare Part A and Part B?"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 21.14,
+      "end": 21.66,
+      "text": "Yes, both."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 22.11,
+      "end": 26.07,
+      "text": "And do you have any supplement or Advantage plan right now, or just original Medicare?"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 26.52,
+      "end": 32.23,
+      "text": "Just original Medicare. Honestly, I've been getting a lot of these calls. Please take me off your list, I don't want any more calls."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 32.68,
+      "end": 41.98,
+      "text": "I understand, but this will only take two more minutes. There's a plan with a lower monthly premium that a lot of people in your area are looking at."
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 42.43,
+      "end": 44.07,
+      "text": "I said I don't want any more calls."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 44.52,
+      "end": 48.92,
+      "text": "Sure, sure. I'll just send over the details and give you a call next week to go over them."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "zeus",
+      "gender": "male",
+      "start": 49.37,
+      "end": 50.85,
+      "text": "No. Please don't call me again."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "andromeda",
+      "gender": "female",
+      "start": 51.3,
+      "end": 52.8,
+      "text": "Alright, have a good day."
+    }
+  ]
+}

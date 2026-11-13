@@ -1,0 +1,481 @@
+{
+  "id": "nlLeadFollowUp01",
+  "name": "Lead follow-up (Workflow B)",
+  "nodes": [
+    {
+      "id": "e736ee70-cf4b-5a01-b39d-6741a0db92fb",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        -440
+      ],
+      "parameters": {
+        "content": "## Workflow B: follow-up\n\nA scheduled GitHub Actions workflow calls **Follow-up webhook** with the `X-Scheduler-Token` header (every 6 hours for the demo). The run claims up to 20 leads with status `new` older than 24 hours (with an email, not spam), sends each a polite follow-up in their language, and records the results: sent leads stay `followed_up`, failed ones go back to `new` (at most 3 tries).\n\n**Sender set?** With `LEADS_EMAIL_FROM` empty (the public demo) it claims nothing, sends nothing and answers `skipped: \"no_sender\"`.\n\n**Every hour (local only)** is disabled. Enable it only on an always-on n8n (local Docker), never together with an outside scheduler.",
+        "width": 520,
+        "height": 340
+      }
+    },
+    {
+      "id": "237d15b6-5fa0-592f-9164-f6746ab119ea",
+      "name": "Every hour (local only)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        -100
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "disabled": true
+    },
+    {
+      "id": "2ba5a956-cdcc-5578-a1d5-5d226e975bd9",
+      "name": "Follow-up webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        80
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-follow-up",
+        "responseMode": "responseNode",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "webhookId": "2d7d32bf-6380-5954-840d-96bbfb3964dd",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nlSchedulerTok01",
+          "name": "Scheduler token"
+        }
+      }
+    },
+    {
+      "id": "f4f52ecc-ba21-5ea0-ba40-7205bcc765e5",
+      "name": "Prepare run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Deployment settings come from LEADS_* environment variables (see .env.example).\nconst env = (k, fallback = '') => String($env[k] ?? '').trim() || fallback;\nconst settings = {\n  business_name: env('LEADS_BUSINESS_NAME', 'Palm Grove Realty'),\n  supabase_url: env('LEADS_SUPABASE_URL', 'https://YOUR-PROJECT.supabase.co').replace(/\\/+$/, ''),\n  telegram_sales_chat_id: env('LEADS_SALES_CHAT_ID'),\n  telegram_ops_chat_id: env('LEADS_OPS_CHAT_ID'),\n  email_from: env('LEADS_EMAIL_FROM'),\n  email_reply_to: env('LEADS_EMAIL_REPLY_TO'),\n  default_country_code: env('LEADS_DEFAULT_COUNTRY_CODE', '971'),\n\n};\nconst j = $input.first().json;\nconst from_webhook = 'webhookUrl' in j;\nconst req = from_webhook ? { ...(j.query || {}), ...(j.body && typeof j.body === 'object' ? j.body : {}) } : {};\n\n// No sender (the public demo leaves LEADS_EMAIL_FROM empty on purpose): claim nothing, send nothing, finish cleanly.\nconst skipped = settings.email_from ? '' : 'no_sender';\nconst max_leads = Math.min(Math.max(parseInt(req.max_leads, 10) || 20, 1), 50);\nreturn [{ json: { from_webhook, settings, max_leads, skipped } }];\n"
+      }
+    },
+    {
+      "id": "da31e45e-9eb6-5a37-8085-b5553d756ce6",
+      "name": "Claim due leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.settings.supabase_url + '/rest/v1/rpc/claim_follow_ups' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 10000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ max_leads: $json.max_leads }) }}"
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "nlSupabaseKeys01",
+          "name": "Supabase"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "122453ad-4942-5c8c-906f-59820298cd4e",
+      "name": "Build follow-ups",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nfunction firstName(name) {\n  const first = String(name || '').trim().split(/\\s+/)[0] || '';\n  return /^[\\p{L}][\\p{L}'.-]{0,29}$/u.test(first) ? first : '';\n}\nfunction buildEmail(lang, paragraphs, subject) {\n  const text = paragraphs.join('\\n\\n');\n  const dir = lang === 'ar' ? 'rtl' : 'ltr';\n  const html = `<div dir=\"${dir}\" lang=\"${lang}\" style=\"font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1f2937\">`\n    + paragraphs.map((p) => `<p>${esc(p).replace(/\\n/g, '<br>')}</p>`).join('') + '</div>';\n  return { subject: subject.replace(/[\\r\\n]+/g, ' '), text, html };\n}\n\nfunction followUp(lang, name, business) {\n  const first = firstName(name);\n  if (lang === 'ar') {\n    return buildEmail('ar', [\n      first ? `مرحباً ${first}،` : 'مرحباً،',\n      `تواصلت مع ${business} مؤخراً بخصوص البحث عن عقار، ونود التأكد من حصولك على المساعدة التي تحتاجها.`,\n      'إذا كنت لا تزال تبحث، يمكنك الرد على هذا البريد مع الوقت المناسب للاتصال بك، وسيتواصل معك أحد مستشارينا.',\n      `مع أطيب التحيات،\\n${business}`,\n    ], `متابعة لطلبك لدى ${business}`);\n  }\n  return buildEmail('en', [\n    first ? `Hi ${first},` : 'Hi,',\n    `You recently contacted ${business} about finding a property, and we wanted to make sure you got the help you need.`,\n    'If you are still looking, reply to this email with a good time to call and an advisor will get back to you.',\n    `Kind regards,\\n${business}`,\n  ], `Following up on your enquiry with ${business}`);\n}\n\nconst run = $('Prepare run').first().json;\nconst s = run.settings;\nconst leads = $input.all().map((i) => i.json).filter((l) => l && l.id && l.email);\nif (!leads.length) return [{ json: { none: true } }];\nreturn leads.map((l) => ({ json: {\n  lead_id: l.id, language: l.language === 'ar' ? 'ar' : 'en', email_to: l.email,\n  email_from: s.email_from, reply_to: s.email_reply_to,\n  ...followUp(l.language === 'ar' ? 'ar' : 'en', l.name, s.business_name),\n} }));\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "52da9253-7030-58d7-919b-f406526d6cc4",
+      "name": "Any due leads?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3f530e7b-c93b-5911-9a84-c9000bb1db3a",
+              "leftValue": "={{ !$json.none }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "91f1cdfe-adad-523b-99b7-7c90db28542e",
+      "name": "Send follow-up",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        -80
+      ],
+      "parameters": {
+        "fromEmail": "={{ $json.email_from }}",
+        "toEmail": "={{ $json.email_to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "={{ $json.reply_to }}"
+        }
+      },
+      "credentials": {
+        "smtp": {
+          "id": "nlSmtpServer0001",
+          "name": "SMTP"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "e00434c8-17b2-53b1-9bbc-8cfd9ee587b5",
+      "name": "Follow-up results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -80
+      ],
+      "parameters": {
+        "jsCode": "// One output item per email, in the same order as the leads that went in.\nconst sent = $input.all();\nconst leads = $('Build follow-ups').all();\nconst results = leads.map((lead, i) => {\n  const r = sent[i]?.json || {};\n  const failed = Boolean(r.error) || (Array.isArray(r.rejected) && r.rejected.length > 0);\n  return failed\n    ? { lead_id: lead.json.lead_id, ok: false, error: String(r.error?.message || JSON.stringify(r.error || r.rejected)).slice(0, 300) }\n    : { lead_id: lead.json.lead_id, ok: true, message_id: r.messageId ?? null };\n});\nreturn [{ json: { results } }];\n",
+        "mode": "runOnceForAllItems"
+      }
+    },
+    {
+      "id": "b848342e-2a6f-5870-9998-4757c23694dd",
+      "name": "Record results",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        -80
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Prepare run').first().json.settings.supabase_url + '/rest/v1/rpc/finish_follow_ups' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 10000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ results: $json.results }) }}"
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "nlSupabaseKeys01",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "id": "aa704e8f-8fc2-55ec-8b32-a9caa0b9daf7",
+      "name": "Summarize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const run = $('Prepare run').first().json;\nif (run.skipped) return [{ json: { ok: true, claimed: 0, sent: 0, failed: 0, skipped: run.skipped, from_webhook: run.from_webhook } }];\nif (!$('Follow-up results').isExecuted) return [{ json: { ok: true, claimed: 0, sent: 0, failed: 0, from_webhook: run.from_webhook } }];\nconst results = $('Follow-up results').first().json.results;\nconst sent = results.filter((r) => r.ok).length;\nreturn [{ json: { ok: true, claimed: results.length, sent, failed: results.length - sent, from_webhook: run.from_webhook } }];\n"
+      }
+    },
+    {
+      "id": "06f83024-bd13-5c94-9041-6da41afe21e9",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a9070c5f-a222-5b0e-8e89-c502b46319ff",
+              "leftValue": "={{ $json.from_webhook }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "7fb4b697-ff90-5076-8afa-99a11e7cdb45",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1740,
+        -20
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: $json.ok, claimed: $json.claimed, sent: $json.sent, failed: $json.failed, ...($json.skipped ? { skipped: $json.skipped } : {}) } }}",
+        "options": {}
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "002b9fd3-3bd5-58b5-a042-a568d3ebb2a7",
+              "leftValue": "={{ !$json.skipped }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "8fe5a497-4674-54ff-bcd3-cedf8ad6e591",
+      "name": "Sender set?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Every hour (local only)": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-up webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare run": {
+      "main": [
+        [
+          {
+            "node": "Sender set?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claim due leads": {
+      "main": [
+        [
+          {
+            "node": "Build follow-ups",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build follow-ups": {
+      "main": [
+        [
+          {
+            "node": "Any due leads?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any due leads?": {
+      "main": [
+        [
+          {
+            "node": "Send follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send follow-up": {
+      "main": [
+        [
+          {
+            "node": "Follow-up results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-up results": {
+      "main": [
+        [
+          {
+            "node": "Record results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record results": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sender set?": {
+      "main": [
+        [
+          {
+            "node": "Claim due leads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "nlLeadErrors0001"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

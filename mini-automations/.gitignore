@@ -1,0 +1,5 @@
+_n8n/.tmp/
+out/
+__pycache__/
+.pytest_cache/
+state/

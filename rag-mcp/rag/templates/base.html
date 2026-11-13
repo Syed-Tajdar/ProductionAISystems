@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{% block title %}{% endblock %}Docs Q&amp;A</title>
+  <link rel="icon" href="{{ url_for('static', path='icon.svg') }}" type="image/svg+xml">
+  <script src="{{ url_for('static', path='theme.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='demo-base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='app.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='demo-ui.css') }}">
+  <script src="{{ url_for('static', path='app.js') }}" defer></script>
+  {# Vercel Web Analytics: cookie-free page views, served from this site's own origin once enabled for the project. #}
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top"><div class="wrap">
+    <a class="brand" href="/">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" class="mark-bg"/><path d="M9 21.5 14 10.5h1.6l5 11M11 17.5h7.6" class="mark-a"/><circle cx="23.5" cy="21.5" r="1.8" class="mark-dot"/></svg>
+      <span>Docs Q&amp;A</span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="/documents"{% if active == "documents" %} aria-current="page"{% endif %}>Documents</a>
+      <a href="/docs" class="muted hide-sm">API</a>
+      <a href="{{ portfolio_url }}" class="back">&larr; <span class="hide-xs">Back to </span>portfolio</a>
+      {{ ui.theme_toggle() }}
+    </nav>
+  </div></header>
+  <div class="demo-bar"><div class="wrap demo-row">
+    <span class="demo-note"><span class="dot" aria-hidden="true"></span>Demo with synthetic documents of a fictional company.</span>
+    <span class="limits">
+      <span class="meter" role="meter" aria-label="Questions left today" aria-valuemin="0" aria-valuemax="{{ daily_cap }}" aria-valuenow="{{ left_today }}"
+            aria-valuetext="{{ left_today }} of {{ daily_cap }} questions left today">
+        <span class="meter-fill {{ left_today | width_class(daily_cap) }}{{ ' low' if daily_cap and left_today * 10 < daily_cap }}"></span>
+      </span>
+      <span class="limits-text"><strong>{{ left_today }}</strong>/{{ daily_cap }} left today <span class="muted">&middot; {{ per_client }} per {{ window_minutes }} min each</span></span>
+    </span>
+  </div></div>
+
+  <main id="main" class="wrap narrow">
+    {% block content %}{% endblock %}
+  </main>
+  {{ ui.footer(profile, portfolio_url) }}
+</body>
+</html>

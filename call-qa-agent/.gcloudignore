@@ -1,0 +1,4 @@
+# gcloud run deploy --source uploads only what the Docker build uses.
+#!include:.dockerignore
+!Dockerfile
+!.dockerignore

@@ -1,0 +1,63 @@
+# Tests with fake embeddings and LLM; the database tests use a pgvector service container.
+name: rag-mcp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "rag-mcp/**"
+      - "demo-ui/**"
+      - ".github/workflows/rag-mcp.yml"
+  pull_request:
+    paths:
+      - "rag-mcp/**"
+      - "demo-ui/**"
+      - ".github/workflows/rag-mcp.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]  # 3.12 is what Vercel runs
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      # An empty database; tests/conftest.py applies the migrations to it.
+      TEST_DATABASE_URL: postgresql://postgres:test@localhost:5432/postgres
+    defaults:
+      run:
+        working-directory: rag-mcp
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: rag-mcp/requirements.lock
+      - run: python ../demo-ui/sync.py --check  # the shared demo UI copy is current
+      # The exact versions in requirements.lock, checked against their hashes; then this project itself.
+      - run: pip install --require-hashes -r requirements.lock && pip install --no-deps -e .
+      - run: playwright install --with-deps chromium  # for tests/test_smoke_browser.py
+      - run: pytest -q

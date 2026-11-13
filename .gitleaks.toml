@@ -1,0 +1,12 @@
+# gitleaks configuration: the default rules, minus three known placeholders.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders in docs, a variable name in a Blueprint, and a 27-character fake token in a unit test"
+regexTarget = "line"
+regexes = [
+  '''ANTHROPIC_API_KEY=<key>''',
+  '''- key: N8N_[A-Z_]+\s*$''',
+  '''key="eyJhbGciOiJIUzI1NiJ9\.[a-z]+"''',
+]

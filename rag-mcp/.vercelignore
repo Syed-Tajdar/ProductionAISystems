@@ -1,0 +1,18 @@
+# Only the rag package and the project file are needed at runtime. Documents are ingested from the
+# command line (see DEPLOY.md), not by the function.
+documents/
+sources/
+evals/
+tests/
+scripts/
+supabase/
+Dockerfile
+.dockerignore
+.gcloudignore
+*.md
+.env
+.env.*
+.venv/
+**/__pycache__/
+*.egg-info/
+.pytest_cache/

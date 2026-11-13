@@ -1,0 +1,53 @@
+id: gulf_real_estate
+name: Gulf real estate inquiry
+version: 1
+languages: [ar, en]
+description: >
+  Inbound inquiry to a real estate agency in the Gulf. Callers often mix Arabic
+  and English. Focus on capturing requirements, matching the caller's language
+  and never promising investment returns.
+pass_threshold: 75
+
+items:
+  - id: greeting_identification
+    title: Greeting and identification
+    weight: 10
+    critical: false
+    pass_if: Agent greets the caller and gives their own name and the agency name.
+    fail_if: Agent gives no name or no agency name.
+
+  - id: language_match
+    title: Language match
+    weight: 20
+    critical: false
+    pass_if: Agent replies in the language the caller uses, and switches when the caller switches or asks.
+    fail_if: Caller speaks Arabic or asks for Arabic and the agent stays in English (or the reverse).
+
+  - id: requirements_capture
+    title: Requirements captured
+    weight: 20
+    critical: false
+    pass_if: Agent asks for at least three of buy or rent, area, bedrooms, budget, move-in or purchase timeline.
+    fail_if: Agent asks for fewer than three of these and moves to pitching.
+
+  - id: no_guaranteed_returns
+    title: No guaranteed returns
+    weight: 25
+    critical: true
+    pass_if: When investment comes up, agent states that returns, rental yields and price growth are not guaranteed.
+    fail_if: Agent promises a rental yield, capital growth or a "guaranteed" return.
+    na_if: Investment returns are not discussed (for example a plain rental inquiry).
+
+  - id: viewing_or_callback
+    title: Viewing or callback booked
+    weight: 15
+    critical: false
+    pass_if: Agent books a viewing or a callback with a specific day and time.
+    fail_if: Call ends with no booked viewing or callback, or only "call us when you are ready".
+
+  - id: contact_confirmation
+    title: Contact details confirmed
+    weight: 10
+    critical: false
+    pass_if: Agent confirms the caller's phone, WhatsApp or email for sending details.
+    fail_if: Agent does not confirm any contact channel.

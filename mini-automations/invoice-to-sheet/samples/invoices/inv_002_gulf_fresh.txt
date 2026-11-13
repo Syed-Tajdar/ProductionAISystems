@@ -1,0 +1,14 @@
+Gulf Fresh Catering
+TRN: 100987654300003
+
+TAX INVOICE
+Invoice Number: GFC-7781
+Date: 28/10/2026
+Due Date: 27/11/2026
+Bill To: Palm Grove Realty
+
+Office lunch, 40 people        3,200.00
+
+Subtotal: AED 3,200.00
+VAT (5%): AED 160.00
+Total Due: AED 3,410.00

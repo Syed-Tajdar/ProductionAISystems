@@ -1,0 +1,101 @@
+{
+  "id": "nlLeadErrors0001",
+  "name": "Lead workflow errors (Workflow C)",
+  "nodes": [
+    {
+      "id": "c28afb41-e92c-5855-8a67-d8a534521b0b",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -360
+      ],
+      "parameters": {
+        "content": "## Workflow C: errors\n\nWorkflows A and B name this as their error workflow (**Settings > Error workflow**). When one of their runs fails, n8n starts this one, which posts the workflow name, the failed node and the error message to the ops chat (`LEADS_OPS_CHAT_ID`).",
+        "width": 460,
+        "height": 220
+      }
+    },
+    {
+      "id": "0e83a289-dd28-5a1c-a3e7-d640cef3a066",
+      "name": "On workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "00bee7f6-d6c7-5394-acd1-fa50db59f1f9",
+      "name": "Build ops message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst env = (k) => String($env[k] ?? '').trim();\nconst e = $input.first().json;\nconst ex = e.execution || {};\nconst err = ex.error || e.trigger?.error || {};\nconst node = err.node?.name || ex.lastNodeExecuted || 'unknown';\nconst text = [\n  `<b>Workflow failed: ${esc(e.workflow?.name || 'unknown')}</b>`,\n  `Node: ${esc(node)}`,\n  `Error: ${esc(String(err.message || 'no message').slice(0, 500))}`,\n  err.description ? `Details: ${esc(String(err.description).slice(0, 300))}` : '',\n  ex.url ? `Execution: ${esc(ex.url)}` : '',\n  ex.mode ? `Mode: ${esc(ex.mode)}` : '',\n].filter(Boolean).join('\\n');\nreturn [{ json: { chat_id: env('LEADS_OPS_CHAT_ID'), text } }];\n"
+      }
+    },
+    {
+      "id": "022ed097-afff-5cf7-b27c-95a3bcd8763f",
+      "name": "Alert ops",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        0
+      ],
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "nlTelegramBot001",
+          "name": "Telegram Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "On workflow error": {
+      "main": [
+        [
+          {
+            "node": "Build ops message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build ops message": {
+      "main": [
+        [
+          {
+            "node": "Alert ops",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Upload a call{% endblock %}
+{% block content %}
+<div class="upload">
+  <h1>Upload a call</h1>
+  <p class="muted">The file goes straight from your browser to private storage (up to {{ max_mb }} MB), then it is transcribed and scored.
+    {% if inline %}This takes about as long as the transcription and scoring, often under a minute; keep the page open.{% endif %}
+    Bigger files: send a link with the API (<code>url</code> on POST /calls).</p>
+  <form id="upload-form">
+    <label for="file">Audio file</label>
+    <input id="file" name="file" type="file" accept="audio/*" required>
+    <label for="rubric">Rubric</label>
+    <select id="rubric" name="rubric">
+      {% for slug in rubrics %}<option value="{{ slug }}">{{ slug }}</option>{% endfor %}
+    </select>
+    <label for="language">Language</label>
+    <select id="language" name="language">
+      <option value="en">English</option>
+      <option value="ar">Arabic</option>
+      <option value="multi">Mixed</option>
+    </select>
+    <label for="keyterms">Brand and product names (optional, comma-separated)</label>
+    <input id="keyterms" name="keyterms" type="text" maxlength="500">
+    <button type="submit">Upload and score</button>
+  </form>
+  <progress id="progress" max="100" value="0" hidden></progress>
+  <div id="status" class="banner" role="status" hidden></div>
+</div>
+<script src="{{ url_for('static', path='upload.js') }}" defer></script>
+{% endblock %}

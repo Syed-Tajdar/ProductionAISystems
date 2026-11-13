@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <h1>Calls</h1>
+  <p class="muted">Every call scored against its rubric, with the quote behind each verdict.</p>
+</div>
+{{ ui.demo_card("call-qa", "What this demo shows", demo_points, url_for('static', path='demo-ui.js')) }}
+
+{% if total %}
+<form class="filters" method="get" action="/dashboard" aria-label="Filter calls">
+  <label><span>Result</span>
+    <select name="result">
+      <option value="">All results</option>
+      {% for key, label in filters.results.items() %}<option value="{{ key }}"{{ ' selected' if filters.active.result == key }}>{{ label }}</option>{% endfor %}
+    </select>
+  </label>
+  <label><span>Rubric</span>
+    <select name="rubric">
+      <option value="">All rubrics</option>
+      {% for slug, name in filters.rubrics.items() %}<option value="{{ slug }}"{{ ' selected' if filters.active.rubric == slug }}>{{ name }}</option>{% endfor %}
+    </select>
+  </label>
+  <label><span>Language</span>
+    <select name="language">
+      <option value="">All languages</option>
+      {% for code, name in filters.languages.items() %}<option value="{{ code }}"{{ ' selected' if filters.active.language == code }}>{{ name }}</option>{% endfor %}
+    </select>
+  </label>
+  <div class="filter-actions">
+    <button type="submit" data-apply>Apply</button>
+    {% if filters.on %}<a href="{{ clear }}">Clear</a>{% endif %}
+  </div>
+</form>
+{% endif %}
+
+{% if overview %}
+{% set o = overview %}
+<section class="overview" aria-labelledby="overview-title">
+  <h2 id="overview-title" class="sr-only">Overview{{ " of the filtered calls" if filters.on }}</h2>
+  <dl class="kpis">
+    <div class="kpi"><dt>Calls scored</dt><dd>{{ o.scored }}<span class="kpi-sub">of {{ o.calls }}</span></dd></div>
+    <div class="kpi"><dt>Pass rate</dt><dd>{% if o.pass_rate is not none %}{{ o.pass_rate }}%<span class="kpi-sub">{{ o.passed }} of {{ o.decided }} decided</span>{% else %}&ndash;{% endif %}</dd></div>
+    <div class="kpi"><dt>Average score</dt><dd>{{ o.avg_score if o.avg_score is not none else "–" }}{% if o.avg_score is not none %}<span class="kpi-sub">of 100</span>{% endif %}</dd></div>
+    <div class="kpi"><dt>Critical failures</dt><dd{{ ' class="fail"' if o.critical_calls }}>{{ o.critical_calls }}<span class="kpi-sub">call{{ "s" if o.critical_calls != 1 }}</span></dd></div>
+    <div class="kpi"><dt>Avg cost per call</dt><dd>{% if o.avg_cost is not none %}${{ "%.4f" | format(o.avg_cost) }}<span class="kpi-sub">LLM, {{ o.costed }} call{{ "s" if o.costed != 1 }}</span>{% else %}&ndash;<span class="kpi-sub">not recorded</span>{% endif %}</dd></div>
+    <div class="kpi"><dt>Avg scoring time</dt><dd>{% if o.avg_latency_s is not none %}{{ o.avg_latency_s }} s{% else %}&ndash;{% endif %}</dd></div>
+  </dl>
+  <div class="top-fails">
+    <h3>Top failing checks</h3>
+    {% if o.top_failing %}
+    <ol class="bars">
+      {% for f in o.top_failing %}
+      <li title="{{ f.title }} ({{ f.rubric }}): failed on {{ f.fails }} of {{ f.applied }} calls it applied to">
+        <span class="bar-label">{{ f.title }}{% if f.critical %} <span class="crit">critical</span>{% endif %}</span>
+        <span class="bar-value">{{ f.fails }} of {{ f.applied }}</span>
+        <span class="bar-track" aria-hidden="true"><span class="bar {{ f.width }}"></span></span>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="bars-note muted">Failures out of the scored calls each check applied to.</p>
+    {% else %}
+    <p class="muted bars-none">No check failed in these calls.</p>
+    {% endif %}
+  </div>
+</section>
+{% if capped %}<p class="muted note">Overview and filters cover the latest {{ total }} calls.</p>{% endif %}
+{% endif %}
+
+{% if rows %}
+<ul class="call-list">
+  {% for r in rows %}
+  <li>
+    <a class="call-card" href="/dashboard/calls/{{ r.call.id }}">
+      <span class="call-main">
+        <span class="call-title">{{ r.title }}</span>
+        {% if r.fail_reason %}<span class="fail-reason">{{ r.fail_reason }}</span>{% endif %}
+        <span class="call-meta mono"><time datetime="{{ r.call.created_at }}">{{ r.call.created_at[:16] | replace("T", " ") }}</time></span>
+        <span class="tags">
+          {% if r.rubric %}<span class="tag">{{ r.rubric.name }}</span>{% endif %}
+          {% if r.language %}<span class="tag">{{ r.language }}</span>{% endif %}
+          {% if r.duration %}<span class="tag mono">{{ r.duration }}</span>{% endif %}
+          {% if r.call.status != "done" %}<span class="tag status {{ r.call.status }}" data-call-status="{{ r.call.id }}" data-status="{{ r.call.status }}">{{ r.call.status }}</span>{% endif %}
+        </span>
+      </span>
+      <span class="call-side">
+        {% if r.score %}<span class="score-badge {{ r.outcome.css }}" aria-label="score">{{ "%.0f" | format(r.score.overall_score) }}</span>{% endif %}
+        <span class="badge {{ r.outcome.css }}">{{ r.outcome.label }}</span>
+        {% if r.review %}<span class="badge review">{{ r.review }} to review</span>{% endif %}
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% elif total and filters.on %}
+{{ ui.state("empty", "No calls match these filters", "Try another result, rubric or language.", clear, "Clear filters") }}
+{% elif total %}
+{{ ui.state("empty", "Nothing on this page", "", clear, "Back to the first page") }}
+{% else %}
+{{ ui.state("empty", "No calls yet", "Upload a recording on the Upload page or with POST /calls; it shows up here once it is scored.") }}
+{% endif %}
+<nav class="pager" aria-label="Pages">
+  <span>{% if page > 1 and rows %}<a href="{{ newer }}">&larr; Newer</a>{% endif %}</span>
+  <span>{% if has_next %}<a href="{{ older }}">Older &rarr;</a>{% endif %}</span>
+</nav>
+{% endblock %}

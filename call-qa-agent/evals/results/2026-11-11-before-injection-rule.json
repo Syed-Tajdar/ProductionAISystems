@@ -1,0 +1,730 @@
+{
+  "date": "2026-11-11",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "transcription": "deepgram nova-3",
+  "audio": "samples/audio/<call>.mp3",
+  "source": "audio",
+  "text_calls": [
+    "call_05",
+    "call_06"
+  ],
+  "aborted": null,
+  "summary": {
+    "calls": 10,
+    "scored": 10,
+    "item_accuracy": "66/67 (99%)",
+    "critical_accuracy": "25/25 (100%)",
+    "pass_fail_accuracy": "10/10 (100%)",
+    "needs_review_rate": "0/67 (0%)",
+    "diarization_accuracy": "91%",
+    "evidence_timing": "50/55 (91%)",
+    "transcription_s": 0.8112499999999999,
+    "scoring_s": 4.981999999999999,
+    "llm_cost_usd": 0.010092600000000002,
+    "deepgram_cost_usd": null
+  },
+  "calls": [
+    {
+      "call_id": "call_01",
+      "expected_passed": true,
+      "transcription_s": 1.22,
+      "diarization": 0.895,
+      "speakers": 2,
+      "scoring_s": 7.83,
+      "items": [
+        {
+          "item": "us_insurance.agent_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.recording_disclosure",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.consent_to_continue",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.needs_discovery",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.no_misleading_claims",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.dnc_handling",
+          "expected": "na",
+          "got": "na",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.next_steps",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": true,
+      "score": 100.0,
+      "llm_cost_usd": 0.010198,
+      "timing": [
+        5,
+        6
+      ]
+    },
+    {
+      "call_id": "call_02",
+      "expected_passed": false,
+      "transcription_s": 1.05,
+      "diarization": 1.0,
+      "speakers": 2,
+      "scoring_s": 4.39,
+      "items": [
+        {
+          "item": "us_insurance.agent_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.recording_disclosure",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.consent_to_continue",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.needs_discovery",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.no_misleading_claims",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.dnc_handling",
+          "expected": "na",
+          "got": "na",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.next_steps",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 77.78,
+      "llm_cost_usd": 0.010646,
+      "timing": [
+        4,
+        5
+      ]
+    },
+    {
+      "call_id": "call_03",
+      "expected_passed": false,
+      "transcription_s": 0.44,
+      "diarization": 0.881,
+      "speakers": 2,
+      "scoring_s": 4.6,
+      "items": [
+        {
+          "item": "us_insurance.agent_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.recording_disclosure",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.consent_to_continue",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.needs_discovery",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.no_misleading_claims",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.dnc_handling",
+          "expected": "na",
+          "got": "na",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.next_steps",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 33.33,
+      "llm_cost_usd": 0.010136,
+      "timing": [
+        5,
+        5
+      ]
+    },
+    {
+      "call_id": "call_04",
+      "expected_passed": false,
+      "transcription_s": 0.73,
+      "diarization": 0.908,
+      "speakers": 2,
+      "scoring_s": 5.01,
+      "items": [
+        {
+          "item": "us_insurance.agent_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.recording_disclosure",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.consent_to_continue",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.needs_discovery",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.no_misleading_claims",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.dnc_handling",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "us_insurance.next_steps",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 85.0,
+      "llm_cost_usd": 0.01039,
+      "timing": [
+        5,
+        6
+      ]
+    },
+    {
+      "call_id": "call_05",
+      "expected_passed": true,
+      "scoring_s": 4.95,
+      "items": [
+        {
+          "item": "gulf_real_estate.greeting_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.language_match",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.requirements_capture",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.no_guaranteed_returns",
+          "expected": "na",
+          "got": "na",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.viewing_or_callback",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.contact_confirmation",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": true,
+      "score": 100.0,
+      "llm_cost_usd": 0.010142,
+      "timing": [
+        5,
+        5
+      ]
+    },
+    {
+      "call_id": "call_06",
+      "expected_passed": false,
+      "scoring_s": 4.62,
+      "items": [
+        {
+          "item": "gulf_real_estate.greeting_identification",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.language_match",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.requirements_capture",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.no_guaranteed_returns",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.viewing_or_callback",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.contact_confirmation",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 0.0,
+      "llm_cost_usd": 0.00936,
+      "timing": [
+        4,
+        4
+      ]
+    },
+    {
+      "call_id": "call_07",
+      "expected_passed": true,
+      "transcription_s": 1.28,
+      "diarization": 0.855,
+      "speakers": 2,
+      "scoring_s": 3.8,
+      "items": [
+        {
+          "item": "gulf_real_estate.greeting_identification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.language_match",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.requirements_capture",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.no_guaranteed_returns",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.viewing_or_callback",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "gulf_real_estate.contact_confirmation",
+          "expected": "pass",
+          "got": "fail",
+          "correct": false,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": true,
+      "score": 75.0,
+      "llm_cost_usd": 0.00968,
+      "timing": [
+        4,
+        4
+      ]
+    },
+    {
+      "call_id": "call_08",
+      "expected_passed": true,
+      "transcription_s": 0.67,
+      "diarization": 0.874,
+      "speakers": 2,
+      "scoring_s": 5.56,
+      "items": [
+        {
+          "item": "customer_support.greeting",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.identity_verification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.empathy",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.issue_restated",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.resolution_or_escalation",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.no_unauthorized_promises",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.closing",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": true,
+      "score": 100.0,
+      "llm_cost_usd": 0.010062,
+      "timing": [
+        7,
+        7
+      ]
+    },
+    {
+      "call_id": "call_09",
+      "expected_passed": false,
+      "transcription_s": 0.64,
+      "diarization": 0.928,
+      "speakers": 2,
+      "scoring_s": 4.47,
+      "items": [
+        {
+          "item": "customer_support.greeting",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.identity_verification",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.empathy",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.issue_restated",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.resolution_or_escalation",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.no_unauthorized_promises",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.closing",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 25.0,
+      "llm_cost_usd": 0.009608,
+      "timing": [
+        5,
+        6
+      ]
+    },
+    {
+      "call_id": "call_10",
+      "expected_passed": false,
+      "transcription_s": 0.46,
+      "diarization": 0.926,
+      "speakers": 2,
+      "scoring_s": 4.59,
+      "items": [
+        {
+          "item": "customer_support.greeting",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.identity_verification",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.empathy",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.issue_restated",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.resolution_or_escalation",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.no_unauthorized_promises",
+          "expected": "fail",
+          "got": "fail",
+          "correct": true,
+          "critical": true,
+          "needs_review": false
+        },
+        {
+          "item": "customer_support.closing",
+          "expected": "pass",
+          "got": "pass",
+          "correct": true,
+          "critical": false,
+          "needs_review": false
+        }
+      ],
+      "passed": false,
+      "score": 85.0,
+      "llm_cost_usd": 0.010704,
+      "timing": [
+        6,
+        7
+      ]
+    }
+  ],
+  "storage": "memory"
+}

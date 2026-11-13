@@ -1,0 +1,23 @@
+title: Customer Success Specialist, Dubai
+shortlist_score: 70
+requirements:
+  - id: experience
+    type: must
+    text: At least 3 years in customer support or customer success
+    min_years: 3
+  - id: arabic_english
+    type: must
+    text: Fluent Arabic and English, spoken and written
+    keywords: [arabic, العربية]
+  - id: crm
+    type: must
+    text: Daily use of a CRM such as HubSpot, Salesforce or Zoho
+    keywords: [hubspot, salesforce, zoho, crm]
+  - id: saas
+    type: nice
+    text: Experience at a SaaS or software company
+    keywords: [saas, software]
+  - id: driving_licence
+    type: nice
+    text: Valid UAE driving licence
+    keywords: [driving licence, driving license, رخصة قيادة]

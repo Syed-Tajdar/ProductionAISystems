@@ -1,0 +1,58 @@
+# The n8n mini automations on a real n8n in Docker against a mock of every external API (_n8n/).
+name: mini-automations-n8n
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mini-automations/_n8n/**"
+      - "mini-automations/whatsapp-lead-qualifier/**"
+      - "mini-automations/bilingual-email-triage/**"
+      - "mini-automations/appointment-reminders/**"
+      - "mini-automations/daily-report-bot/**"
+      - "mini-automations/sheet-to-crm-sync/**"
+      - ".github/workflows/mini-automations-n8n.yml"
+  pull_request:
+    paths:
+      - "mini-automations/_n8n/**"
+      - "mini-automations/whatsapp-lead-qualifier/**"
+      - "mini-automations/bilingual-email-triage/**"
+      - "mini-automations/appointment-reminders/**"
+      - "mini-automations/daily-report-bot/**"
+      - "mini-automations/sheet-to-crm-sync/**"
+      - ".github/workflows/mini-automations-n8n.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: mini-automations
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.11"
+      - name: Start the test bench (n8n and the mock, every workflow loaded)
+        run: python _n8n/harness.py up
+      - name: Workflow tests
+        run: |
+          status=0
+          for project in whatsapp-lead-qualifier bilingual-email-triage appointment-reminders daily-report-bot sheet-to-crm-sync; do
+            echo "::group::$project"
+            python -m unittest discover -s "$project/tests" -v || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+      - name: Stop the test bench
+        if: always()
+        run: python _n8n/harness.py down

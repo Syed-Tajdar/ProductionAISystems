@@ -1,0 +1,6 @@
+# Allowlist: only what the image needs. Keeps .env, .venv, documents, evals and tests out of the build.
+*
+!pyproject.toml
+!rag/
+**/__pycache__
+**/*.pyc

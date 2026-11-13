@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}{% if question %}{{ question[:60] }} | {% endif %}{% endblock %}
+{% block content %}
+  <section class="intro">
+    <h1>Ask the company documents</h1>
+    <p class="muted">Policies and guides of Palm Grove Realty, a fictional Dubai property company, in English and Arabic. Every statement in an answer cites the passage it comes from.</p>
+    <ul class="doc-chips" aria-label="Documents">
+      {% for title, langs in documents %}<li class="doc-chip"><span>{{ title }}</span><span class="langs">{{ langs }}</span></li>{% endfor %}
+    </ul>
+  </section>
+
+  {{ ui.demo_card("rag", "What this demo shows", demo_points, url_for('static', path='demo-ui.js'), collapsible=True, open=not question) }}
+
+  {#- The thread: one question and answer pair as served. With script, app.js adds each new pair below it
+      without leaving the page (kept in this page only), giving each pair's ids a prefix of its own. #}
+  <div class="thread" id="thread">
+  {% if question and (result or error_kind) %}
+  <article class="turn" aria-label="Question and answer">
+    <p class="ask-bubble" dir="auto"><span class="sr-only">Question: </span>{{ question }}</p>
+  {% if error_kind == "limit" %}{{ ui.state("limit", "Question limit reached", error) }}
+  {% elif error_kind == "error" %}{{ ui.state("error", "The answer service is not available", error) }}{% endif %}
+
+  {% if result %}
+  <section class="answer" aria-label="Answer">
+    <div class="answer-head"><h2>Answer</h2><button type="button" class="copy-answer" data-copy-answer hidden>Copy</button></div>
+    {% if result.answerable %}
+    <div class="answer-text" dir="{{ result.direction }}" lang="{{ result.language }}">
+      {% for st in result.statements %}{% set words = st.text.strip().rsplit(" ", 1) %}<span class="statement">{% if words | length > 1 %}{{ words[0] }} {% endif %}<span class="tail">{{ words[-1] }}{% for c in st.citations %}<a class="cite" href="#src-{{ c.n }}" aria-label="source {{ c.n }}">[{{ c.n }}]</a>{% endfor %}</span></span> {% endfor %}
+    </div>
+    {% else %}
+    <div class="banner review" dir="{{ result.direction }}" lang="{{ result.language }}">{{ result.text }}</div>
+    {% endif %}
+    {% if result.not_covered %}<p class="not-covered" dir="{{ result.direction }}" lang="{{ result.language }}"><span class="nc-label">{{ "خارج نطاق المستندات:" if result.language == "ar" else "Not covered:" }}</span> {{ result.not_covered }}</p>{% endif %}
+
+    {% if sources %}
+    <h2>Sources</h2>
+    <div class="sources">
+      {% for s in sources %}
+      <details class="source" id="src-{{ s.n }}">
+        <summary><span class="n">{{ s.n }}</span>
+          <span class="card-text">
+            <span class="where" dir="auto"><strong>{{ s.title }}</strong>, {{ s.heading_path or s.section }}{% if s.page %}, page {{ s.page }}{% endif %}</span>
+            <span class="snippet" dir="auto">{{ s.snippet }}</span>
+          </span></summary>
+        <div class="passage" dir="{{ 'rtl' if s.language == 'ar' else 'ltr' }}" lang="{{ s.language }}">{% for text, marked in s.parts %}{% if marked %}<mark>{{ text }}</mark>{% else %}{{ text }}{% endif %}{% endfor %}</div>
+        <p class="doc mono">{{ s.document }}</p>
+      </details>
+      {% endfor %}
+    </div>
+
+    <dialog class="sheet" id="passage-sheet" aria-labelledby="sheet-title">
+      <div class="sheet-head">
+        <p class="sheet-title" id="sheet-title"></p>
+        <form method="dialog"><button type="submit" class="sheet-close" aria-label="Close">&times;</button></form>
+      </div>
+      <div class="sheet-body"></div>
+    </dialog>
+    {% endif %}
+    {% if trace %}{% set t = trace %}
+    <details class="trace" id="trace">
+      <summary>How this answer was built</summary>
+      <div class="trace-body">
+        {% if from_cache %}<p class="trace-note">Answered from the cache: this is how the answer was built the first time it was asked.</p>{% endif %}
+
+        <h3>1. The question as searched</h3>
+        <dl class="trace-query">
+          <div><dt>Searched for</dt><dd dir="auto">{{ t.query.normalized }}</dd></div>
+          <div><dt>Language</dt><dd>{{ "Arabic" if t.query.language == "ar" else "English" }}</dd></div>
+          <div><dt>Keyword terms</dt><dd class="terms" dir="auto">{% for w in t.query.keyword_terms %}<span>{{ w }}</span>{% else %}<em>none</em>{% endfor %}</dd></div>
+          {% if t.query.translated %}
+          <div><dt>Also searched as</dt><dd dir="auto">{{ t.query.translated }}</dd></div>
+          <div><dt>Its terms</dt><dd class="terms" dir="auto">{% for w in t.query.translated_terms %}<span>{{ w }}</span>{% endfor %}</dd></div>
+          {% endif %}
+        </dl>
+
+        <h3>2. Candidates</h3>
+        <p class="trace-help">Each list keeps its best {{ t.settings.candidates }}; together they gave {{ t.candidates.pool }} passages.</p>
+        <div class="cand-grid">
+          {% for key, label in [("vector", "By meaning"), ("keyword", "By keywords"), ("translated_keyword", "By translated keywords")] %}
+          {% set rows = t.candidates[key] %}
+          {% if rows or key != "translated_keyword" %}
+          <div class="cand">
+            <h4>{{ label }} <span class="count">{{ rows | length }}</span></h4>
+            <ol>{% for r in rows[:5] %}<li><span class="rank">{{ r.rank }}</span><span class="where" dir="auto">{{ r.title }} &middot; {{ r.section }}</span>{% if r.similarity is defined %}<span class="num">{{ "%.2f" | format(r.similarity) }}</span>{% endif %}</li>{% else %}<li class="none">No matches</li>{% endfor %}</ol>
+            {% if rows | length > 5 %}<p class="more">and {{ rows | length - 5 }} more</p>{% endif %}
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+
+        <h3>3. Passages given to the model</h3>
+        <p class="trace-help">Fused score = sum of 1 / ({{ t.settings.rrf_k }} + rank) over the lists a passage is in; the top {{ t.settings.top_k }} go to the model{% if t.settings.max_per_document %}, at most {{ t.settings.max_per_document }} per document{% endif %}.</p>
+        <ol class="chosen">
+          {% for c in t.chosen %}
+          <li class="{{ 'cited' if c.cited_as }}">
+            <span class="where" dir="auto">{% if c.cited_as %}<span class="cited-as">[{{ c.cited_as }}]</span> {% endif %}{{ c.title }} &middot; {{ c.section }}</span>
+            <span class="ranks mono">meaning {{ c.vector_rank or "–" }} &middot; keywords {{ c.keyword_rank or "–" }}{% if t.query.translated %} &middot; translated {{ c.translated_keyword_rank or "–" }}{% endif %}</span>
+            <span class="score mono">{{ "%.4f" | format(c.score) }}</span>
+          </li>
+          {% endfor %}
+        </ol>
+
+        <h3>4. Quote check</h3>
+        {% if t.checks %}
+        <p class="trace-help"><strong>{{ t.checks_ok }} of {{ t.checks | length }}</strong> quote{{ "s" if t.checks | length != 1 }} {{ "were" if t.checks | length != 1 else "was" }} found word for word in the passage {{ "they cite" if t.checks | length != 1 else "it cites" }}{% if t.citations != t.checks | length %} ({{ t.citations }} citations){% endif %}{% if result.dropped %}; {{ result.dropped | length }} statement{{ "s" if result.dropped | length > 1 }} without a valid quote {{ "were" if result.dropped | length > 1 else "was" }} dropped{% endif %}.</p>
+        <ul class="checks">
+          {% for c in t.checks %}
+          <li class="{{ 'ok' if c.ok else 'bad' }}"><span class="mark" aria-hidden="true">{{ "✓" if c.ok else "✕" }}</span><span class="sr-only">{{ "Found" if c.ok else "Not found" }}:</span>
+            <span class="quote" dir="auto">&ldquo;{{ c.quote }}&rdquo;</span>
+            <span class="in">{% if c.passage %}<span dir="auto">{{ c.passage.title }} &middot; {{ c.passage.section }}</span>{% else %}source {{ c.source }}{% endif %}{% if not c.ok %} &middot; {{ c.reason }}{% endif %}{% if c.used_by > 1 %} &middot; <span class="used-by">used by {{ c.used_by }} statements</span>{% endif %}</span></li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="trace-help">{{ "No passages were found, so the model was not asked." if t.answer and t.answer.skipped else "The model cited no passages." }}</p>
+        {% endif %}
+
+        <h3>5. Time per step</h3>
+        <ul class="timings">
+          {% for s in t.steps %}<li><span class="label">{{ s.label }}{% if s.parallel %} <span class="parallel">in parallel</span>{% endif %}</span><span class="bar-track" aria-hidden="true"><span class="bar {{ s.offset }} {{ s.width }}"></span></span><span class="num">{{ s.ms | round | int }} ms</span></li>{% endfor %}
+        </ul>
+        {% if t.total_ms %}<p class="trace-help">Total {{ t.total_ms }} ms{% if t.timings_ms.embed_and_translate is defined %}; embedding and translating the question together took {{ t.timings_ms.embed_and_translate }} ms{% endif %}{% if t.timings_ms.trace %}; recording this trace {{ t.timings_ms.trace }} ms{% endif %}.</p>{% endif %}
+      </div>
+    </details>
+    {% endif %}
+    {% if result.model %}<p class="meta mono">{{ result.model }} · {{ result.latency_ms }} ms</p>{% endif %}
+  </section>
+  {% endif %}
+  </article>
+  {% elif error %}<div class="banner fail" role="alert">{{ error }}</div>{% endif %}
+  </div>
+  <p class="sr-only" id="thread-status" role="status" aria-live="polite"></p>
+
+  {#- What app.js puts in a new pair while it waits, and when the request does not get through. #}
+  <template id="turn-loading">
+    <div class="loading" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Searching the documents and writing a cited answer...</span>
+      <span class="skeleton" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+  </template>
+  <template id="turn-offline">{{ ui.state("error", "The question did not get through", "Check the connection and ask again.") }}</template>
+
+  {#- The examples are for an empty thread; app.js hides them after the first question too. #}
+  <form method="post" action="/" class="examples" data-loading{% if question and (result or error_kind) %} hidden{% endif %}>
+    <span class="muted try">Try</span>
+    <div class="example-row">
+      {% for ex in examples %}<button type="submit" name="q" value="{{ ex }}" dir="auto">{{ ex }}</button>{% endfor %}
+    </div>
+  </form>
+
+  <div class="composer">
+    <form method="post" action="/" class="ask" data-loading>
+      <label for="q" class="sr-only">Question</label>
+      <input id="q" name="q" type="text" dir="auto" maxlength="1000" required autocomplete="off"
+             placeholder="Ask in English or Arabic"{% if not result %} value="{{ question }}"{% endif %}>
+      <button type="submit">Ask</button>
+    </form>
+    {#- One line on phones when the script runs (the composer is pinned there); the full sentence otherwise. #}
+    <p class="privacy muted"><span class="privacy-long">Questions are processed by third-party AI services (Anthropic and Google). Don't enter personal information.</span><span class="privacy-short">Answered by Anthropic and Google. No personal information.</span></p>
+  </div>
+
+  {% if mcp %}
+  <details class="mcp" id="mcp">
+    <summary>Use with MCP</summary>
+    <div class="mcp-body">
+      <p class="muted">The same documents as a read-only MCP server over streamable HTTP, for any MCP client. No sign-in; it shares this page's limits and answer cache.</p>
+      <p class="mcp-endpoint"><span class="label">Endpoint</span> <code>{{ mcp.url }}</code></p>
+      <div class="snippet">
+        <div class="snippet-head"><span>Client config</span><button type="button" class="copy" data-copy="mcp-config" hidden>Copy</button></div>
+        <pre id="mcp-config"><code>{{ mcp.config }}</code></pre>
+      </div>
+      <h3>Tools</h3>
+      <ul class="tools">
+        {% for tool in mcp.tools %}
+        <li><code>{{ tool.name }}</code><span class="tool-title">{{ tool.title }}</span>
+          <span class="tool-summary">{{ tool.summary }}</span>
+          {% if tool.params %}<span class="tool-params">{% for p in tool.params %}<code title="{{ p.description }}">{{ p.name }}{{ "" if p.required else "?" }}</code>{% endfor %}</span>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </details>
+  {% endif %}
+{% endblock %}

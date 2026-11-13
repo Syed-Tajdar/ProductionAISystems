@@ -1,0 +1,6 @@
+{
+  "tv-55": {"last": {"price": 1299.0, "currency": "AED", "in_stock": true, "source": "json-ld", "missing": false, "checked_at": "2026-11-04T06:00:00+00:00"}, "history": [{"price": 1299.0, "at": "2026-11-04T06:00:00+00:00"}]},
+  "kettle": {"last": {"price": 349.0, "currency": "AED", "in_stock": true, "source": "meta", "missing": false, "checked_at": "2026-11-04T06:00:00+00:00"}, "history": [{"price": 349.0, "at": "2026-11-04T06:00:00+00:00"}]},
+  "laptop-14": {"last": {"price": 2199.0, "currency": "AED", "in_stock": true, "source": "json-ld", "missing": false, "checked_at": "2026-11-04T06:00:00+00:00"}, "history": [{"price": 2199.0, "at": "2026-11-04T06:00:00+00:00"}]},
+  "headset": {"last": {"price": 95.0, "currency": "AED", "in_stock": true, "source": "claude", "missing": false, "checked_at": "2026-11-04T06:00:00+00:00"}, "history": [{"price": 95.0, "at": "2026-11-04T06:00:00+00:00"}]}
+}

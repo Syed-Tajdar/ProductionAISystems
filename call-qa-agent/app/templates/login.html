@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="login">
+  <h1>Log in</h1>
+  {% if not configured %}
+  <div class="banner fail" role="alert">No passcode is configured. Set APP_PASSCODE on the server.</div>
+  {% endif %}
+  {% if limited %}{{ ui.state("limit", "Too many failed attempts.", "Logging in is paused for this connection. Please try again " ~ ui.wait(limited) ~ ".") }}{% endif %}
+  {% if error %}<div class="banner fail" role="alert">{{ error }}</div>{% endif %}
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="passcode">Passcode</label>
+    <input id="passcode" name="passcode" type="password" autocomplete="current-password" required autofocus>
+    <button type="submit">Log in</button>
+  </form>
+  {% if demo %}<p class="muted">Or <a href="/dashboard">browse the demo calls</a> without logging in.</p>{% endif %}
+</div>
+{% endblock %}

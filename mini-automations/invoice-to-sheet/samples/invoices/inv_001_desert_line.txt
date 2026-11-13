@@ -1,0 +1,17 @@
+Desert Line Office Supplies LLC
+Supplier TRN: 100234567800003
+Address: Office 12, Al Quoz 3, Dubai, UAE
+
+TAX INVOICE
+Invoice No: DL-2026-0412
+Invoice Date: 02/11/2026
+Due Date: 02/12/2026
+Bill To: Palm Grove Realty
+
+Item                          Qty   Unit price   Amount
+A4 paper, 80 gsm (box)         10       45.00    450.00
+Toner cartridge, black          4      150.00    600.00
+
+Subtotal: AED 1,050.00
+VAT 5%: AED 52.50
+Total: AED 1,102.50

@@ -1,0 +1,779 @@
+{
+  "id": "mnEmailTriage0001",
+  "name": "Bilingual email triage",
+  "nodes": [
+    {
+      "id": "02e571cb-9c5b-5b24-b41d-cad7097087d9",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -300
+      ],
+      "parameters": {
+        "content": "## Bilingual email triage\nGmail (or the webhook) -> classify category and priority, summarise in English, draft a reply in the sender's language (Claude, or keyword rules in dry run) -> label the email and save the draft in Gmail -> Telegram alert for urgent emails.\n\nDry run: POST a sample to `/webhook/email-triage?dry_run=1`. Nothing is sent and no API keys are needed.",
+        "width": 460,
+        "height": 240
+      }
+    },
+    {
+      "id": "92b2ac76-03c4-51e0-8494-ad0c4123e498",
+      "name": "New Gmail email",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -80
+      ],
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mnGmailOAuth00001",
+          "name": "Gmail"
+        }
+      }
+    },
+    {
+      "id": "aa08bbd3-9346-54ae-9892-4b38ec30b6b6",
+      "name": "Email webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        120
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "email-triage",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "webhookId": "eb863798-afa9-576b-be14-4f30909912b8",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWebhookToken001",
+          "name": "Triage webhook token"
+        }
+      }
+    },
+    {
+      "id": "9c90e7c4-389c-50d4-b5a8-276df614387c",
+      "name": "Normalize email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        20
+      ],
+      "parameters": {
+        "jsCode": "// Settings: edit these before going live.\nconst settings = {\n  company_name: 'Palm Grove Realty',\n  telegram_urgent_chat_id: 'YOUR_OPS_CHAT_ID',\n  // Haiku: one short classification per email, high volume. Use claude-sonnet-5-5 if triage quality is not enough.\n  anthropic_model: 'claude-haiku-5-5',\n  // Provider: anthropic | gemini. Gemini Flash-Lite is the Haiku-class option.\n  llm_provider: 'anthropic',\n  gemini_model: 'gemini-3.5-flash-lite',\n  // Gmail label IDs (Gmail node > Labels > Get many, or the label dropdown). Empty = no label.\n  label_ids: { sales: '', support: '', billing: '', complaint: '', newsletter: '', spam: '', other: '', urgent: '' },\n};\n\nconst j = $input.first().json;\n// Webhook items always carry webhookUrl; Gmail trigger items never do. Never trust the payload for this.\nconst fromGmail = !('webhookUrl' in j);\nconst q = j.query || {};\nconst body = fromGmail ? {} : (j.body || {});\nconst dryRun = !fromGmail && ['1', 'true', 'yes'].includes(String(q.dry_run ?? body.dry_run ?? '').toLowerCase());\n\nfunction parseFrom(v) {\n  const m = String(v || '').match(/^\\s*\"?([^\"<]*?)\"?\\s*<([^>]+)>\\s*$/);\n  return m ? { name: m[1].trim(), email: m[2].trim().toLowerCase() } : { name: '', email: String(v || '').trim().toLowerCase() };\n}\n\nconst from = fromGmail\n  ? { name: j.from?.value?.[0]?.name || '', email: (j.from?.value?.[0]?.address || '').toLowerCase() }\n  : parseFrom(body.from);\nconst text = String(fromGmail ? (j.text || j.snippet || '') : (body.body || '')).replace(/\\s+\\n/g, '\\n').trim().slice(0, 4000);\n\nreturn [{ json: {\n  settings, dry_run: dryRun, source: fromGmail ? 'gmail' : 'webhook',\n  gmail_id: fromGmail ? j.id : null, thread_id: fromGmail ? j.threadId : null,\n  from_name: from.name, from_email: from.email, subject: String((fromGmail ? j.subject : body.subject) || '').trim(), body: text,\n} }];\n"
+      }
+    },
+    {
+      "id": "353c9d9e-8666-57ba-a679-4bd2a41bb9b5",
+      "name": "Classify with rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        20
+      ],
+      "parameters": {
+        "jsCode": "function claudeRequest(model, body) {\n  const fallback = !/^claude-haiku/.test(model);\n  return {\n    claude_body: { model, ...body, ...(fallback ? { fallbacks: 'default' } : {}) },\n    claude_headers: { 'anthropic-version': '2026-10-21', ...(fallback ? { 'anthropic-beta': 'server-side-fallback-2026-07-01' } : {}) },\n  };\n}\n\n// Gemini's responseSchema takes the same JSON schema minus additionalProperties.\nfunction geminiSchema(schema) {\n  if (Array.isArray(schema)) return schema.map(geminiSchema);\n  if (!schema || typeof schema !== 'object') return schema;\n  return Object.fromEntries(Object.entries(schema).filter(([k]) => k !== 'additionalProperties').map(([k, v]) => [k, geminiSchema(v)]));\n}\nfunction llmRequest(s, { system, user, schema, max_tokens }) {\n  if (s.llm_provider === 'gemini') {\n    return {\n      llm_provider: 'gemini',\n      gemini_url: `https://generativelanguage.googleapis.com/v1beta/models/${s.gemini_model}:generateContent`,\n      gemini_body: {\n        systemInstruction: { parts: [{ text: system }] },\n        contents: [{ role: 'user', parts: [{ text: user }] }],\n        generationConfig: { responseMimeType: 'application/json', responseSchema: geminiSchema(schema) },\n      },\n    };\n  }\n  if (s.llm_provider !== 'anthropic') throw new Error(`llm_provider must be anthropic or gemini, not \"${s.llm_provider}\"`);\n  return {\n    llm_provider: 'anthropic',\n    ...claudeRequest(s.anthropic_model, {\n      max_tokens, output_config: { effort: 'low', format: { type: 'json_schema', schema } }, system,\n      messages: [{ role: 'user', content: user }],\n    }),\n  };\n}\n\n// Keyword rules: used for dry runs and as the fallback when Claude fails.\nconst d = $input.first().json;\nconst raw = `${d.subject}\\n${d.body}`;\nconst t = raw.toLowerCase();\nconst arabic = (raw.match(/[؀-ۿ]/g) || []).length;\nconst letters = (raw.match(/[A-Za-z؀-ۿ]/g) || []).length || 1;\nconst language = arabic / letters > 0.3 ? 'ar' : 'en';\n\nconst CATEGORIES = [\n  ['spam', /lottery|winner|crypto|bitcoin|claim your prize|ربحت|جائزة/],\n  ['newsletter', /unsubscribe|newsletter|weekly digest|webinar|إلغاء الاشتراك|النشرة/],\n  ['complaint', /complain|disappointed|unacceptable|terrible|worst|شكوى|سيء|غير مقبول|زعلان/],\n  ['billing', /invoice|payment|refund|charged|receipt|فاتورة|دفع|الدفع|استرداد|مبلغ/],\n  ['support', /not working|error|broken|issue|problem|help|can't log|cannot log|لا يعمل|مشكلة|عطل|مساعدة|لا أستطيع/],\n  ['sales', /price|quote|quotation|interested|buy|book|availability|عرض سعر|سعر|مهتم|حجز|متوفر/],\n];\nconst category = CATEGORIES.find(([, re]) => re.test(t))?.[0] || 'other';\nconst urgentWords = /urgent|asap|immediately|today|عاجل|ضروري|فورا|فوراً|اليوم/.test(t);\nconst priority = ['newsletter', 'spam'].includes(category) ? 'low' : category === 'complaint' || urgentWords ? 'urgent' : 'normal';\n\nconst first = d.from_name ? d.from_name.split(' ')[0] : '';\nconst DRAFTS = {\n  en: `Dear ${first || 'Customer'},\\n\\nThank you for your email about \"${d.subject}\". We have received it and the right team will reply within one business day.\\n\\nKind regards,\\n${d.settings.company_name}`,\n  ar: `${first ? `عزيزي ${first}` : 'عزيزي العميل'}،\\n\\nشكراً لرسالتك بخصوص \"${d.subject}\". لقد استلمناها وسيرد عليك الفريق المختص خلال يوم عمل واحد.\\n\\nمع التحية،\\n${d.settings.company_name}`,\n};\nconst summary_en = `${category} email from ${d.from_name || d.from_email}: ${d.subject}`.slice(0, 200);\nconst triage = { category, priority, language, summary_en, draft_reply: DRAFTS[language] };\n\nconst schema = {\n  type: 'object', additionalProperties: false,\n  required: ['category', 'priority', 'language', 'summary_en', 'draft_reply'],\n  properties: {\n    category: { type: 'string', enum: ['sales', 'support', 'billing', 'complaint', 'newsletter', 'spam', 'other'] },\n    priority: { type: 'string', enum: ['urgent', 'normal', 'low'] },\n    language: { type: 'string', enum: ['en', 'ar'] },\n    summary_en: { type: 'string', description: 'One sentence in English' },\n    draft_reply: { type: 'string', description: 'Short reply in the language of the email' },\n  },\n};\nconst request = llmRequest(d.settings, {\n  max_tokens: 4096,\n  schema,\n  system:\n    `You triage the shared inbox of ${d.settings.company_name}, a company in the UAE. Emails arrive in Arabic, English or both. ` +\n    'Priority is urgent for complaints, outages, legal or payment failures, or explicit deadlines today. ' +\n    'Write the draft reply in the language of the email: acknowledge the request, say the team will follow up within one business day, ' +\n    'and never promise refunds, prices, discounts or dates.',\n  user: `From: ${d.from_name} <${d.from_email}>\\nSubject: ${d.subject}\\n\\n${d.body}`,\n});\n\nreturn [{ json: { ...d, triage, triage_source: 'rules', ...request } }];\n"
+      }
+    },
+    {
+      "id": "fa8b1b93-ad95-50c8-9bfd-683fb7891380",
+      "name": "Dry run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        20
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4febe9a5-a3ea-5430-b5e1-82a24371877d",
+              "leftValue": "={{ $json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "5e421bd5-1d6e-554b-a140-49dc604d5895",
+      "name": "Use Gemini?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        120
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e69b3256-820b-53e8-b43b-c83461534186",
+              "leftValue": "={{ $json.llm_provider === 'gemini' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "2909b12f-797f-53b8-84f1-d8cb13e2d07b",
+      "name": "Claude: triage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        60
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($json.claude_headers) }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.claude_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnAnthropicKey001",
+          "name": "Anthropic API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "2a158940-13a1-51bd-a091-5b01837422e3",
+      "name": "Gemini: triage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.gemini_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.gemini_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnGeminiKey00001",
+          "name": "Gemini API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "198966dc-b1c1-531f-841c-f8041d4b7eb0",
+      "name": "Use LLM result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        120
+      ],
+      "parameters": {
+        "jsCode": "const BLOCKED = ['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII', 'RECITATION'];\nfunction readLLM(res) {\n  if (!res || res.error) {\n    const msg = res?.error?.message || JSON.stringify(res?.error);\n    // n8n replaces the API message on 429, so check the whole error (status code, description, cause).\n    const limited = /429|rate.?limit|RESOURCE_EXHAUSTED|quota|spacing your requests/i.test(JSON.stringify(res?.error));\n    throw new Error(`${limited ? 'rate limited (429) after retries' : 'request failed'}: ${msg}`);\n  }\n  if (res.candidates || res.promptFeedback) {  // Gemini generateContent\n    const c = res.candidates?.[0];\n    if (res.promptFeedback?.blockReason || BLOCKED.includes(c?.finishReason)) throw new Error('model declined the request');\n    const text = (c?.content?.parts || []).filter((p) => p.text && !p.thought).map((p) => p.text).join('');\n    if (!text) throw new Error('no text in response');\n    return JSON.parse(text);\n  }\n  if (res.stop_reason === 'refusal') throw new Error('model declined the request');  // Claude Messages\n  const text = [...(res.content || [])].reverse().find((b) => b.type === 'text')?.text;\n  if (!text) throw new Error('no text block in response');\n  return JSON.parse(text);\n}\nconst PROVIDER_NAME = { anthropic: 'Claude', gemini: 'Gemini' };\nconst SOURCE = { anthropic: 'claude', gemini: 'gemini' };\n\nconst base = $('Classify with rules').first().json;\ntry {\n  return [{ json: { ...base, triage: readLLM($input.first().json), triage_source: SOURCE[base.llm_provider] } }];\n} catch (e) {\n  return [{ json: { ...base, triage_note: `${PROVIDER_NAME[base.llm_provider]} failed, used rules: ${e.message}` } }];\n}\n"
+      }
+    },
+    {
+      "id": "13630b94-19b8-508c-8b8a-ce99529cae53",
+      "name": "Decide actions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        20
+      ],
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst t = d.triage;\nconst ids = d.settings.label_ids;\nconst label_ids = [ids[t.category], t.priority === 'urgent' ? ids.urgent : ''].filter(Boolean);\nconst wants_draft = ['sales', 'support', 'billing', 'complaint'].includes(t.category);\nconst alert = t.priority === 'urgent';\nconst alert_text = [\n  `Urgent ${t.category} email (${t.language.toUpperCase()})`,\n  `From: ${d.from_name} <${d.from_email}>`,\n  `Subject: ${d.subject}`,\n  `Summary: ${t.summary_en}`,\n].join('\\n');\nreturn [{ json: {\n  dry_run: d.dry_run, source: d.source, gmail_id: d.gmail_id, thread_id: d.thread_id,\n  from_email: d.from_email, subject: d.subject, ...t,\n  label_ids, draft_reply: wants_draft ? t.draft_reply : null, alert, alert_text,\n  triage_source: d.triage_source, triage_note: d.triage_note || '',\n} }];\n"
+      }
+    },
+    {
+      "id": "f3aca91b-6f13-5aa1-b625-015cb37f47c2",
+      "name": "Gmail actions?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        20
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4aea7bcb-a871-5f5b-b562-29119ad67bf4",
+              "leftValue": "={{ !$json.dry_run && !!$json.gmail_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "5198568b-c713-5ebd-a8f8-77973ab90a88",
+      "name": "Has labels?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1170,
+        -80
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e06ebc96-dc79-5bbc-9691-43124978bba0",
+              "leftValue": "={{ $('Decide actions').first().json.label_ids.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "e939972b-2020-5b97-b21e-1cd3c3d0ff85",
+      "name": "Add labels",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1300,
+        -160
+      ],
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Decide actions').first().json.gmail_id }}",
+        "labelIds": "={{ $('Decide actions').first().json.label_ids }}"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mnGmailOAuth00001",
+          "name": "Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "00d3d11d-9f66-59a8-9cbc-3e5804eb76e1",
+      "name": "Draft wanted?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        -80
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "05f18417-39a8-52fc-9f8a-a624c54c1977",
+              "leftValue": "={{ !!$('Decide actions').first().json.draft_reply }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "1a29c5c0-408f-5b85-8091-d75ff35933b6",
+      "name": "Save draft reply",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1720,
+        -140
+      ],
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "=Re: {{ $('Decide actions').first().json.subject }}",
+        "emailType": "text",
+        "message": "={{ $('Decide actions').first().json.draft_reply }}",
+        "options": {
+          "threadId": "={{ $('Decide actions').first().json.thread_id }}",
+          "sendTo": "={{ $('Decide actions').first().json.from_email }}"
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mnGmailOAuth00001",
+          "name": "Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "1ec2f596-4bf6-5280-af00-792485ab9096",
+      "name": "Urgent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1940,
+        20
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8734808-7e94-5f62-b5af-1f9ffacda68a",
+              "leftValue": "={{ !$('Decide actions').first().json.dry_run && $('Decide actions').first().json.alert }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "2c0cfdc8-4020-58c2-8493-1fcb74a110a7",
+      "name": "Alert on Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2160,
+        -40
+      ],
+      "parameters": {
+        "chatId": "={{ $('Normalize email').first().json.settings.telegram_urgent_chat_id }}",
+        "text": "={{ $('Decide actions').first().json.alert_text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "mnTelegramBot0001",
+          "name": "Telegram Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "78c39010-7b0f-5436-a87c-b027c31821c7",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2380,
+        20
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc924fac-ff89-518a-9e11-fba3596a3617",
+              "leftValue": "={{ $('Decide actions').first().json.source === 'webhook' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "ac029d48-4873-5f9d-b9e6-c25f1f87ecf5",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2600,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Decide actions').first().json }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Use Gemini?": {
+      "main": [
+        [
+          {
+            "node": "Gemini: triage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude: triage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Gmail email": {
+      "main": [
+        [
+          {
+            "node": "Normalize email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize email": {
+      "main": [
+        [
+          {
+            "node": "Classify with rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify with rules": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Decide actions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Use Gemini?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: triage": {
+      "main": [
+        [
+          {
+            "node": "Use LLM result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: triage": {
+      "main": [
+        [
+          {
+            "node": "Use LLM result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use LLM result": {
+      "main": [
+        [
+          {
+            "node": "Decide actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide actions": {
+      "main": [
+        [
+          {
+            "node": "Gmail actions?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail actions?": {
+      "main": [
+        [
+          {
+            "node": "Has labels?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Urgent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has labels?": {
+      "main": [
+        [
+          {
+            "node": "Add labels",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Draft wanted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add labels": {
+      "main": [
+        [
+          {
+            "node": "Draft wanted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft wanted?": {
+      "main": [
+        [
+          {
+            "node": "Save draft reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Urgent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save draft reply": {
+      "main": [
+        [
+          {
+            "node": "Urgent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Urgent?": {
+      "main": [
+        [
+          {
+            "node": "Alert on Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert on Telegram": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

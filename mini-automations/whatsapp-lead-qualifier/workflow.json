@@ -1,0 +1,848 @@
+{
+  "id": "mnWhatsAppLead001",
+  "name": "WhatsApp lead qualifier",
+  "nodes": [
+    {
+      "id": "1e66b71f-6c1c-592a-8ab1-de3518da92c4",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -260
+      ],
+      "parameters": {
+        "content": "## WhatsApp lead qualifier\nWhatsApp Cloud API webhook -> extract details (Claude, or keyword rules in dry run) -> ask the next missing question in the lead's language -> alert sales on Telegram when the lead is hot.\n\nDry run: add `?dry_run=1` to the webhook URL and send the `X-Dry-Run-Token` header (WHATSAPP_DRY_RUN_TOKEN). No messages are sent, nothing is stored and no API keys are needed.",
+        "width": 460,
+        "height": 220
+      }
+    },
+    {
+      "id": "de104e5b-da07-530a-9b6b-91016658f57c",
+      "name": "Verify webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        280
+      ],
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "whatsapp-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "15597bb8-2c85-5b4c-8a4e-01d7b20ef97f"
+    },
+    {
+      "id": "4e3430fb-af9d-5d4a-b75a-ce3d4e386bd7",
+      "name": "Check verify token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        280
+      ],
+      "parameters": {
+        "jsCode": "// Meta calls this once when you register the webhook URL.\nconst VERIFY_TOKEN = 'change-me-to-a-random-string';\nconst q = $input.first().json.query || {};\nconst ok = q['hub.mode'] === 'subscribe' && q['hub.verify_token'] === VERIFY_TOKEN;\nreturn [{ json: { status: ok ? 200 : 403, body: ok ? String(q['hub.challenge']) : 'Forbidden' } }];\n"
+      }
+    },
+    {
+      "id": "173ce669-dc01-5c41-a2fe-5ed2babe8d44",
+      "name": "Respond to Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        280
+      ],
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.status }}"
+        }
+      }
+    },
+    {
+      "id": "0dedb295-5d12-5c2e-a2b0-50f885475355",
+      "name": "WhatsApp message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-lead",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "webhookId": "7e8d1d28-88e6-59fa-bc2f-352232d21b13"
+    },
+    {
+      "id": "7ca79c1a-b4a9-5d1c-b952-97eed38e8b01",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Meta signs every webhook: X-Hub-Signature-256 = HMAC SHA-256 of the raw body with the app secret.\n// n8n server needs WHATSAPP_APP_SECRET, N8N_BLOCK_ENV_ACCESS_IN_NODE=false and NODE_FUNCTION_ALLOW_BUILTIN=crypto.\nconst crypto = require('crypto');\nconst item = $input.first();\nconst q = item.json.query || {};\nconst dryRun = ['1', 'true', 'yes'].includes(String(q.dry_run ?? item.json.body?.dry_run ?? '').toLowerCase());\n\n// A dry run sends nothing and stores nothing, but it still runs the workflow, so it needs its own token:\n// the X-Dry-Run-Token header must equal WHATSAPP_DRY_RUN_TOKEN. Without that variable dry runs are off.\nif (dryRun) {\n  let token = '';\n  try { token = $env.WHATSAPP_DRY_RUN_TOKEN || ''; } catch (e) { /* env access blocked */ }\n  if (!token) return [{ json: { valid: false, reason: 'dry runs are off: WHATSAPP_DRY_RUN_TOKEN is not set' } }];\n  const sent = Buffer.from(String(item.json.headers?.['x-dry-run-token'] || ''));\n  const wanted = Buffer.from(token);\n  const ok = sent.length === wanted.length && crypto.timingSafeEqual(sent, wanted);\n  return [{ json: ok ? { ...item.json, signature: 'not checked (dry run with token)', valid: true }\n                     : { valid: false, reason: 'dry run token missing or wrong' } }];\n}\n\nlet secret = '';\ntry { secret = $env.WHATSAPP_APP_SECRET || ''; } catch (e) { /* env access blocked */ }\nif (!secret) return [{ json: { valid: false, reason: 'WHATSAPP_APP_SECRET is not available to n8n' } }];\n\nconst header = String(item.json.headers?.['x-hub-signature-256'] || '');\nif (!header.startsWith('sha256=')) return [{ json: { valid: false, reason: 'missing signature' } }];\n\nconst raw = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst expected = Buffer.from('sha256=' + crypto.createHmac('sha256', secret).update(raw).digest('hex'));\nconst given = Buffer.from(header);\nconst valid = given.length === expected.length && crypto.timingSafeEqual(given, expected);\nreturn [{ json: valid ? { ...item.json, signature: 'valid', valid } : { valid: false, reason: 'signature mismatch' } }];\n"
+      }
+    },
+    {
+      "id": "8318f519-908f-59d6-8f04-eae068504e6f",
+      "name": "Signature valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f5221421-415f-5685-ab09-d6bd8f9b6f7f",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "dcfa2deb-38dd-51d7-a3a8-3aad53d24346",
+      "name": "Respond: unauthorized",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        180
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.reason } }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "8fc28544-effe-5e0b-95e0-fda2804216f8",
+      "name": "Parse message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Settings: edit these before going live.\nconst settings = {\n  business_name: 'Palm Grove Realty',\n  whatsapp_phone_number_id: 'YOUR_PHONE_NUMBER_ID',\n  graph_api_version: 'v23.0',\n  telegram_sales_chat_id: 'YOUR_SALES_CHAT_ID',\n  // Haiku: short chat messages, five fields, high volume. Use claude-sonnet-5-5 if extraction misses too often.\n  anthropic_model: 'claude-haiku-5-5',\n  // Provider: anthropic | gemini. Gemini Flash-Lite is the Haiku-class option.\n  llm_provider: 'anthropic',\n  gemini_model: 'gemini-3.5-flash-lite',\n};\n\nconst req = $input.first().json;\nconst q = req.query || {};\nconst body = req.body || {};\nconst dryRun = ['1', 'true', 'yes'].includes(String(q.dry_run ?? body.dry_run ?? '').toLowerCase());\n\nconst value = body.entry?.[0]?.changes?.[0]?.value || {};\nconst msg = value.messages?.[0];\nif (!msg || msg.type !== 'text') {\n  const reason = msg ? `unsupported message type: ${msg.type}` : 'no message (status update)';\n  return [{ json: { skip: true, reason, dry_run: dryRun, settings } }];\n}\n\nconst phone = '+' + String(msg.from).replace(/\\D/g, '');\nconst name = value.contacts?.[0]?.profile?.name || '';\n// Live messages continue the stored profile. A dry run reads and stores nothing: to continue a conversation,\n// send the previous answer's \"profile\" back in the body.\nconst FIELDS = ['intent', 'area', 'bedrooms', 'budget_aed', 'timeline', 'language', 'messages', 'alerted'];\nconst given = dryRun && body.profile && typeof body.profile === 'object' ? body.profile : {};\nconst carried = Object.fromEntries(FIELDS.filter((k) => k in given).map((k) => [k, given[k]]));\nconst stored = dryRun ? null : ($getWorkflowStaticData('global').live ??= {})[phone];\nconst profile = stored || { phone, name, messages: 0, alerted: false, ...carried };\n\nreturn [{ json: { skip: false, dry_run: dryRun, settings, phone, name: name || profile.name, text: msg.text.body, profile } }];\n"
+      }
+    },
+    {
+      "id": "36bfcd75-3824-5b9e-899f-21e3055c4055",
+      "name": "Text message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "91fa8c9c-cea7-5869-b0e1-1bdbfbcbe95a",
+              "leftValue": "={{ !$json.skip }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "766aa113-5e86-5f8f-8a7b-9e4316cfbe6b",
+      "name": "Respond: ignored",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        180
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, ignored: $json.reason } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "0a47a29e-2bf3-5d06-9633-b1bc09beb9e1",
+      "name": "Extract with rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        -40
+      ],
+      "parameters": {
+        "jsCode": "function claudeRequest(model, body) {\n  const fallback = !/^claude-haiku/.test(model);\n  return {\n    claude_body: { model, ...body, ...(fallback ? { fallbacks: 'default' } : {}) },\n    claude_headers: { 'anthropic-version': '2026-10-21', ...(fallback ? { 'anthropic-beta': 'server-side-fallback-2026-07-01' } : {}) },\n  };\n}\n\n// Gemini's responseSchema takes the same JSON schema minus additionalProperties.\nfunction geminiSchema(schema) {\n  if (Array.isArray(schema)) return schema.map(geminiSchema);\n  if (!schema || typeof schema !== 'object') return schema;\n  return Object.fromEntries(Object.entries(schema).filter(([k]) => k !== 'additionalProperties').map(([k, v]) => [k, geminiSchema(v)]));\n}\nfunction llmRequest(s, { system, user, schema, max_tokens }) {\n  if (s.llm_provider === 'gemini') {\n    return {\n      llm_provider: 'gemini',\n      gemini_url: `https://generativelanguage.googleapis.com/v1beta/models/${s.gemini_model}:generateContent`,\n      gemini_body: {\n        systemInstruction: { parts: [{ text: system }] },\n        contents: [{ role: 'user', parts: [{ text: user }] }],\n        generationConfig: { responseMimeType: 'application/json', responseSchema: geminiSchema(schema) },\n      },\n    };\n  }\n  if (s.llm_provider !== 'anthropic') throw new Error(`llm_provider must be anthropic or gemini, not \"${s.llm_provider}\"`);\n  return {\n    llm_provider: 'anthropic',\n    ...claudeRequest(s.anthropic_model, {\n      max_tokens, output_config: { effort: 'low', format: { type: 'json_schema', schema } }, system,\n      messages: [{ role: 'user', content: user }],\n    }),\n  };\n}\n\n// Keyword rules: used for dry runs and as the fallback when Claude fails.\nconst AREAS = {\n  'dubai marina': 'Dubai Marina', 'دبي مارينا': 'Dubai Marina', 'marina': 'Dubai Marina',\n  'jumeirah village circle': 'JVC', 'jvc': 'JVC', 'downtown': 'Downtown Dubai', 'داون تاون': 'Downtown Dubai',\n  'business bay': 'Business Bay', 'الخليج التجاري': 'Business Bay', 'palm jumeirah': 'Palm Jumeirah',\n  'نخلة جميرا': 'Palm Jumeirah', 'al reem': 'Al Reem Island', 'جزيرة الريم': 'Al Reem Island',\n  'yas island': 'Yas Island', 'جزيرة ياس': 'Yas Island',\n};\n\nfunction rules(raw) {\n  const t = raw\n    .replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))\n    .replace(/٫/g, '.')\n    .replace(/(\\d),(\\d{3})/g, '$1$2')\n    .toLowerCase();\n  const arabic = (raw.match(/[؀-ۿ]/g) || []).length;\n  const letters = (raw.match(/[A-Za-z؀-ۿ]/g) || []).length || 1;\n\n  let intent = 'unknown';\n  if (/(https?:\\/\\/|www\\.)/.test(t) && /(crypto|loan|seo|followers|promotion)/.test(t)) intent = 'spam';\n  else if (/\\b(buy|buying|purchase|own)\\b|شراء|اشتري|أشتري|تملك/.test(t)) intent = 'buy';\n  else if (/\\b(rent|renting|lease)\\b|ايجار|إيجار|استئجار/.test(t)) intent = 'rent';\n  else if (/\\?|؟|price|how much|كم|سعر/.test(t)) intent = 'info';\n\n  let bedrooms = -1;\n  const b = t.match(/(\\d+)\\s*-?\\s*(?:bed|br\\b|bhk)/);\n  if (b) bedrooms = Number(b[1]);\n  else if (/studio|استوديو/.test(t)) bedrooms = 0;\n  else if (/غرفتين/.test(t)) bedrooms = 2;\n  else if (/ثلاث غرف|3 غرف/.test(t)) bedrooms = 3;\n  else if (/غرفة (?:وحدة|واحدة)/.test(t)) bedrooms = 1;\n\n  let budget = 0;\n  for (const m of t.matchAll(/(\\d+(?:\\.\\d+)?)\\s*(k|m|mn|million|ألف|الف|مليون)?(?![\\d])/g)) {\n    const unit = m[2] || '';\n    let n = Number(m[1]);\n    if (['k', 'ألف', 'الف'].includes(unit)) n *= 1e3;\n    if (['m', 'mn', 'million', 'مليون'].includes(unit)) n *= 1e6;\n    if (n >= 10000 && n <= 100e6) budget = Math.max(budget, Math.round(n));\n  }\n\n  const area = Object.entries(AREAS).find(([k]) => t.includes(k))?.[1] || '';\n\n  let timeline = 'unknown';\n  if (/(asap|urgent|this week|this month|immediately|right away|اليوم|هالاسبوع|هذا الأسبوع|هذا الشهر|بأسرع|ضروري)/.test(t)) timeline = 'this_month';\n  else if (/(next month|in (?:1|2|3|one|two|three) months?|within (?:1|2|3) months|الشهر الجاي|الشهر القادم|بعد شهرين)/.test(t)) timeline = '1_3_months';\n  else if (/(next year|6 months|later|just looking|browsing|السنة الجاية|مو مستعجل)/.test(t)) timeline = 'later';\n\n  return { intent, area, bedrooms, budget_aed: budget, timeline, language: arabic / letters > 0.3 ? 'ar' : 'en' };\n}\n\nconst d = $input.first().json;\nconst known = (({ intent, area, bedrooms, budget_aed, timeline }) => ({ intent, area, bedrooms, budget_aed, timeline }))(d.profile);\nconst schema = {\n  type: 'object',\n  additionalProperties: false,\n  required: ['intent', 'area', 'bedrooms', 'budget_aed', 'timeline', 'language'],\n  properties: {\n    intent: { type: 'string', enum: ['buy', 'rent', 'info', 'spam', 'unknown'] },\n    area: { type: 'string', description: 'Area or community in English, empty string if not stated' },\n    bedrooms: { type: 'integer', description: '0 for studio, -1 if not stated' },\n    budget_aed: { type: 'integer', description: 'Budget in AED (yearly rent or purchase price), 0 if not stated' },\n    timeline: { type: 'string', enum: ['this_month', '1_3_months', 'later', 'unknown'] },\n    language: { type: 'string', enum: ['en', 'ar'], description: 'Main language of the new message' },\n  },\n};\nconst request = llmRequest(d.settings, {\n  max_tokens: 2048,\n  schema,\n  system:\n    'You read WhatsApp messages sent to a real estate agency in the UAE. Messages may be in English, Arabic or both. ' +\n    'Extract only what the customer states in the new message; use \"unknown\", \"\", -1 or 0 for anything not stated. ' +\n    'Convert amounts to AED (120k = 120000, 1.2M = 1200000, مية وعشرين ألف = 120000). ' +\n    'Messages offering loans, crypto, SEO or followers are spam.',\n  user: `Known details so far: ${JSON.stringify(known)}\\n\\nNew message:\\n${d.text}`,\n});\n\nreturn [{ json: { ...d, extracted: rules(d.text), extraction_source: 'rules', ...request } }];\n"
+      }
+    },
+    {
+      "id": "cfa07760-8b1a-535c-80a3-d93d425f71a6",
+      "name": "Dry run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "90b95f50-f296-5544-a13e-dc4af7a3efcf",
+              "leftValue": "={{ $json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "543e21f5-bb50-56de-be20-a4fe49e97133",
+      "name": "Use Gemini?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        60
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "38898ca2-fb8c-52b3-960b-3c1b696e4f2c",
+              "leftValue": "={{ $json.llm_provider === 'gemini' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "4765b205-16e1-5e02-9188-11809108e1f7",
+      "name": "Claude: extract details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        840,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($json.claude_headers) }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.claude_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnAnthropicKey001",
+          "name": "Anthropic API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "e9a40006-3945-5f65-b0a4-a2388c0ca6e8",
+      "name": "Gemini: extract details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        840,
+        160
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.gemini_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.gemini_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnGeminiKey00001",
+          "name": "Gemini API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "5ee4d1b7-49d0-500b-b891-881832cc37cc",
+      "name": "Use LLM result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        60
+      ],
+      "parameters": {
+        "jsCode": "const BLOCKED = ['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII', 'RECITATION'];\nfunction readLLM(res) {\n  if (!res || res.error) {\n    const msg = res?.error?.message || JSON.stringify(res?.error);\n    // n8n replaces the API message on 429, so check the whole error (status code, description, cause).\n    const limited = /429|rate.?limit|RESOURCE_EXHAUSTED|quota|spacing your requests/i.test(JSON.stringify(res?.error));\n    throw new Error(`${limited ? 'rate limited (429) after retries' : 'request failed'}: ${msg}`);\n  }\n  if (res.candidates || res.promptFeedback) {  // Gemini generateContent\n    const c = res.candidates?.[0];\n    if (res.promptFeedback?.blockReason || BLOCKED.includes(c?.finishReason)) throw new Error('model declined the request');\n    const text = (c?.content?.parts || []).filter((p) => p.text && !p.thought).map((p) => p.text).join('');\n    if (!text) throw new Error('no text in response');\n    return JSON.parse(text);\n  }\n  if (res.stop_reason === 'refusal') throw new Error('model declined the request');  // Claude Messages\n  const text = [...(res.content || [])].reverse().find((b) => b.type === 'text')?.text;\n  if (!text) throw new Error('no text block in response');\n  return JSON.parse(text);\n}\nconst PROVIDER_NAME = { anthropic: 'Claude', gemini: 'Gemini' };\nconst SOURCE = { anthropic: 'claude', gemini: 'gemini' };\n\nconst base = $('Extract with rules').first().json;\ntry {\n  const extracted = readLLM($input.first().json);\n  return [{ json: { ...base, extracted, extraction_source: SOURCE[base.llm_provider] } }];\n} catch (e) {\n  return [{ json: { ...base, extraction_note: `${PROVIDER_NAME[base.llm_provider]} failed, used rules: ${e.message}` } }];\n}\n"
+      }
+    },
+    {
+      "id": "c07f5014-7c4c-5373-b189-00ae70506af7",
+      "name": "Score and reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        -40
+      ],
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst s = d.settings;\nconst e = d.extracted;\nconst p = { ...d.profile };\n\n// Merge what this message added into the lead profile.\nif (['buy', 'rent', 'spam'].includes(e.intent) || (e.intent === 'info' && !p.intent)) p.intent = e.intent;\nif (e.area) p.area = e.area;\nif (e.bedrooms >= 0) p.bedrooms = e.bedrooms;\nif (e.budget_aed > 0) p.budget_aed = e.budget_aed;\nif (e.timeline && e.timeline !== 'unknown') p.timeline = e.timeline;\np.language = e.language || p.language || 'en';\n\nconst isLead = ['buy', 'rent'].includes(p.intent);\nconst have = {\n  area: !!p.area,\n  bedrooms: p.bedrooms >= 0,\n  budget: p.budget_aed > 0,\n  timeline: !!p.timeline && p.timeline !== 'unknown',\n};\nlet score = 'cold';\nif (p.intent === 'spam') score = 'spam';\nelse if (isLead && have.budget && ['this_month', '1_3_months'].includes(p.timeline) && (have.area || have.bedrooms)) score = 'hot';\nelse if (isLead && Object.values(have).filter(Boolean).length >= 2) score = 'warm';\nconst missing = isLead ? ['area', 'bedrooms', 'budget', 'timeline'].filter((k) => !have[k]) : ['intent'];\n\nconst n = d.name ? ` ${d.name}` : '';\nconst T = {\n  en: {\n    greet: `Hi${n}, thanks for contacting ${s.business_name}. `,\n    intent: 'Are you looking to buy or rent?',\n    area: 'Which area or community do you prefer?',\n    bedrooms: 'How many bedrooms do you need?',\n    budget: p.intent === 'rent' ? 'What is your yearly budget in AED?' : 'What is your budget in AED?',\n    timeline: p.intent === 'rent' ? 'When are you planning to move in?' : 'When are you planning to buy?',\n    hot: `Thank you${n}. An advisor will call you within 15 minutes.`,\n    done: `Thank you${n}. An advisor will contact you today with options.`,\n  },\n  ar: {\n    greet: `أهلاً${n}، شكراً لتواصلك مع ${s.business_name}. `,\n    intent: 'هل تبحث عن شراء أو إيجار؟',\n    area: 'أي منطقة أو مجمع تفضل؟',\n    bedrooms: 'كم عدد الغرف التي تحتاجها؟',\n    budget: p.intent === 'rent' ? 'كم ميزانيتك السنوية بالدرهم؟' : 'كم ميزانيتك بالدرهم؟',\n    timeline: p.intent === 'rent' ? 'متى تخطط للانتقال؟' : 'متى تخطط للشراء؟',\n    hot: `شكراً لك${n}. سيتصل بك أحد مستشارينا خلال 15 دقيقة.`,\n    done: `شكراً لك${n}. سيتواصل معك أحد مستشارينا اليوم بالخيارات المناسبة.`,\n  },\n}[p.language === 'ar' ? 'ar' : 'en'];\n\nlet reply = null;\nif (score !== 'spam') {\n  const next = score === 'hot' ? T.hot : missing.length ? T[missing[0]] : T.done;\n  reply = (p.messages === 0 ? T.greet : '') + next;\n}\n\nconst alert = score === 'hot' && !p.alerted;\nif (alert) p.alerted = true;\np.messages += 1;\np.last_message = d.text;\np.updated_at = new Date().toISOString();\n\n// Only live messages are stored.\nif (!d.dry_run) {\n  const store = $getWorkflowStaticData('global');\n  (store.live ??= {})[d.phone] = p;\n  delete store.dry;  // profiles kept by earlier versions of the dry run\n}\n\nconst digits = d.phone.replace(/\\D/g, '');\nconst alert_text = [\n  `Hot lead: ${d.name || d.phone}`,\n  `${p.intent} | ${p.area || 'area ?'} | ${p.bedrooms >= 0 ? p.bedrooms + ' BR' : 'BR ?'} | AED ${p.budget_aed || '?'} | ${p.timeline || '?'}`,\n  `Last message: \"${d.text}\"`,\n  `Chat: https://wa.me/${digits}`,\n].join('\\n');\n\nreturn [{ json: {\n  dry_run: d.dry_run, phone: d.phone, name: d.name, score, missing, profile: p,\n  reply_text: reply, alert, alert_text,\n  extraction_source: d.extraction_source, extraction_note: d.extraction_note || '',\n  whatsapp_body: reply ? { messaging_product: 'whatsapp', recipient_type: 'individual', to: digits, type: 'text', text: { preview_url: false, body: reply } } : null,\n} }];\n"
+      }
+    },
+    {
+      "id": "1214f686-3abf-5238-af32-378d055c95da",
+      "name": "Send messages?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        -40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a34f15b7-cb12-5c6d-b8b0-775d602ea091",
+              "leftValue": "={{ !$json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "0e7a5a14-8f69-57ce-a2f3-94f6ef3e0f71",
+      "name": "Respond: dry run",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1500,
+        -200
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Score and reply').first().json }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "b7146fea-33c6-5b28-9340-6b2a31aa64bc",
+      "name": "Has reply?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1500,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "548026f4-dc72-5d77-b60d-c7d968b1943c",
+              "leftValue": "={{ !!$json.reply_text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "400f7597-1c47-5f34-abf5-bb2d121e147b",
+      "name": "Send WhatsApp reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1720,
+        -20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Parse message').first().json.settings.graph_api_version }}/{{ $('Parse message').first().json.settings.whatsapp_phone_number_id }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Score and reply').first().json.whatsapp_body) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWhatsAppToken01",
+          "name": "WhatsApp Cloud API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "8830d407-d2da-5c1f-b4af-0e93b4701e9a",
+      "name": "Hot lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1940,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4553ce99-8e1d-56dc-897c-f9a03122cf27",
+              "leftValue": "={{ $('Score and reply').first().json.alert }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "8d8954c5-dbeb-5079-a757-4c342e6f339f",
+      "name": "Alert sales",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2160,
+        -20
+      ],
+      "parameters": {
+        "chatId": "={{ $('Parse message').first().json.settings.telegram_sales_chat_id }}",
+        "text": "={{ $('Score and reply').first().json.alert_text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "mnTelegramBot0001",
+          "name": "Telegram Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "820cc947-befd-5c68-b68e-3a0d3b7c8ce6",
+      "name": "Respond: done",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2380,
+        60
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Score and reply').first().json }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Use Gemini?": {
+      "main": [
+        [
+          {
+            "node": "Gemini: extract details",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude: extract details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify webhook": {
+      "main": [
+        [
+          {
+            "node": "Check verify token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check verify token": {
+      "main": [
+        [
+          {
+            "node": "Respond to Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp message": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Signature valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature valid?": {
+      "main": [
+        [
+          {
+            "node": "Parse message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: unauthorized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse message": {
+      "main": [
+        [
+          {
+            "node": "Text message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text message?": {
+      "main": [
+        [
+          {
+            "node": "Extract with rules",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: ignored",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract with rules": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Score and reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Use Gemini?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude: extract details": {
+      "main": [
+        [
+          {
+            "node": "Use LLM result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: extract details": {
+      "main": [
+        [
+          {
+            "node": "Use LLM result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use LLM result": {
+      "main": [
+        [
+          {
+            "node": "Score and reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score and reply": {
+      "main": [
+        [
+          {
+            "node": "Send messages?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send messages?": {
+      "main": [
+        [
+          {
+            "node": "Has reply?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: dry run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has reply?": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Hot lead?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp reply": {
+      "main": [
+        [
+          {
+            "node": "Hot lead?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hot lead?": {
+      "main": [
+        [
+          {
+            "node": "Alert sales",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert sales": {
+      "main": [
+        [
+          {
+            "node": "Respond: done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

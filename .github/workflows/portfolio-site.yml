@@ -1,0 +1,58 @@
+# Build, typecheck and link check of the static site, once per region profile.
+name: portfolio-site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "portfolio-site/**"
+      - "demo-ui/profile.json"
+      - "n8n-leads/landing/public/**"
+      - ".github/workflows/portfolio-site.yml"
+  pull_request:
+    paths:
+      - "portfolio-site/**"
+      - "demo-ui/profile.json"
+      - "n8n-leads/landing/public/**"
+      - ".github/workflows/portfolio-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (${{ matrix.region }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [gulf, global]
+    defaults:
+      run:
+        working-directory: portfolio-site
+    env:
+      SITE_REGION: ${{ matrix.region }}
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: portfolio-site/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm audit --omit=dev  # the packages that ship; lint tooling is not part of the site
+      - run: npm run build
+      - run: npm run check-links
+      - run: npm run check-og
+      - run: npm run check-plain  # plain-language blocks use no unexplained technical terms
+      - run: npm run check-csp  # every page's policy covers exactly its inline scripts
+      - run: npm run check-profile  # the demos' footer data matches the site

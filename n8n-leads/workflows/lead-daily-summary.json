@@ -1,0 +1,281 @@
+{
+  "id": "nlLeadSummary001",
+  "name": "Lead daily summary (Workflow B)",
+  "nodes": [
+    {
+      "id": "806d6b9f-f74f-5cb6-9038-ff31ad265039",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        -420
+      ],
+      "parameters": {
+        "content": "## Workflow B: daily summary\n\nCloud Scheduler calls **Summary webhook** at 9:00 Asia/Dubai with the `X-Scheduler-Token` header. Reads `lead_daily_summary` (last 24 hours) and posts new leads, hot leads, conversions and follow-ups to the sales chat. A failure fails the run, so Cloud Scheduler records it and Workflow C tells ops.\n\n**Every day 9:00 (local only)** is disabled; enable it only on an always-on local n8n.",
+        "width": 520,
+        "height": 280
+      }
+    },
+    {
+      "id": "71eba5cd-22de-5ec3-8fad-0a01b6f07a99",
+      "name": "Every day 9:00 (local only)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        -100
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "disabled": true
+    },
+    {
+      "id": "1b4d99e1-6818-5354-a829-2f6ddbe4c5fd",
+      "name": "Summary webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        80
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-daily-summary",
+        "responseMode": "responseNode",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "webhookId": "af48210f-f2b2-5e58-9b57-7e5d471d2c32",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nlSchedulerTok01",
+          "name": "Scheduler token"
+        }
+      }
+    },
+    {
+      "id": "95826455-1241-5224-a463-3ee4f92e23ce",
+      "name": "Prepare run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Deployment settings come from LEADS_* environment variables (see .env.example).\nconst env = (k, fallback = '') => String($env[k] ?? '').trim() || fallback;\nconst settings = {\n  business_name: env('LEADS_BUSINESS_NAME', 'Palm Grove Realty'),\n  supabase_url: env('LEADS_SUPABASE_URL', 'https://YOUR-PROJECT.supabase.co').replace(/\\/+$/, ''),\n  telegram_sales_chat_id: env('LEADS_SALES_CHAT_ID'),\n  telegram_ops_chat_id: env('LEADS_OPS_CHAT_ID'),\n  email_from: env('LEADS_EMAIL_FROM'),\n  email_reply_to: env('LEADS_EMAIL_REPLY_TO'),\n  default_country_code: env('LEADS_DEFAULT_COUNTRY_CODE', '971'),\n\n};\nconst j = $input.first().json;\nconst from_webhook = 'webhookUrl' in j;\nconst req = from_webhook ? { ...(j.query || {}), ...(j.body && typeof j.body === 'object' ? j.body : {}) } : {};\n\nif (!settings.telegram_sales_chat_id) throw new Error('LEADS_SALES_CHAT_ID is not set');\nreturn [{ json: { from_webhook, settings } }];\n"
+      }
+    },
+    {
+      "id": "8f8b06fe-6521-5927-94e9-41a6f8600c23",
+      "name": "Read summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.settings.supabase_url + '/rest/v1/lead_daily_summary?select=*' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "nlSupabaseKeys01",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "id": "3a42e8c5-277c-5e36-be42-5b379830eebe",
+      "name": "Build message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const run = $('Prepare run').first().json;\nconst n = $input.first().json;\nconst num = (v) => Number(v ?? 0);\nconst day = new Date().toLocaleDateString('en-GB', { timeZone: 'Asia/Dubai', day: 'numeric', month: 'short', year: 'numeric' });\nconst text = [\n  `<b>Daily lead summary, ${day}</b>`,\n  'Last 24 hours:',\n  `New leads: ${num(n.new_leads)}`,\n  `Hot leads: ${num(n.hot_leads)}`,\n  `Conversions (won): ${num(n.won)}`,\n  `Follow-ups sent: ${num(n.followed_up)}`,\n  `Waiting for follow-up: ${num(n.awaiting_follow_up)}`,\n].join('\\n');\nreturn [{ json: { from_webhook: run.from_webhook, chat_id: run.settings.telegram_sales_chat_id, text,\n  numbers: { new_leads: num(n.new_leads), hot_leads: num(n.hot_leads), won: num(n.won),\n             followed_up: num(n.followed_up), awaiting_follow_up: num(n.awaiting_follow_up) } } }];\n"
+      }
+    },
+    {
+      "id": "80196272-d09a-54c7-b8ff-9f01c1559cf6",
+      "name": "Post summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        0
+      ],
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "nlTelegramBot001",
+          "name": "Telegram Bot"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "0775d3b0-86dd-5afd-99b0-2f0326b18900",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4cf37b73-80d9-5a1a-b036-011406085fd3",
+              "leftValue": "={{ $('Build message').first().json.from_webhook }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "adb818dd-7f02-5f14-8080-ba9b165a85d9",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -20
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, ...$('Build message').first().json.numbers } }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every day 9:00 (local only)": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare run": {
+      "main": [
+        [
+          {
+            "node": "Read summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read summary": {
+      "main": [
+        [
+          {
+            "node": "Build message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build message": {
+      "main": [
+        [
+          {
+            "node": "Post summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post summary": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "nlLeadErrors0001"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

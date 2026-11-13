@@ -1,0 +1,3820 @@
+{
+  "results": [
+    {
+      "id": "en-01",
+      "category": "english",
+      "question": "What is the fee for a returned cheque?",
+      "facts": [
+        "AED 500",
+        "must be replaced within 7 days"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "A returned cheque costs AED 500. [1] The returned cheque must be replaced within 7 days by a bank transfer or a certified cheque. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#3.3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "A returned cheque costs AED 500.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "A returned cheque costs AED 500 and must be replaced within 7 days by a bank transfer or a certified cheque."
+            }
+          ]
+        },
+        {
+          "text": "The returned cheque must be replaced within 7 days by a bank transfer or a certified cheque.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "must be replaced within 7 days by a bank transfer or a certified cheque"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "3.3 Late and returned payments",
+          "heading_path": "3. Rent and payments > 3.3 Late and returned payments",
+          "page": 2,
+          "label": "Tenant Handbook, 3. Rent and payments > 3.3 Late and returned payments, page 2",
+          "chunk_id": 97,
+          "quotes": [
+            "A returned cheque costs AED 500 and must be replaced within 7 days by a bank transfer or a certified cheque.",
+            "must be replaced within 7 days by a bank transfer or a certified cheque"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.4,
+      "cost_usd": 0.0056985,
+      "translation_cost_usd": 4.25e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.3 Late and returned payments",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.3 الدفعات المتأخرة والشيكات المرتجعة",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.1 Payment plans",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.5 Can I pay rent by credit card?",
+          "score": 0.03149801587301587
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.5 هل يمكنني دفع الإيجار ببطاقة الائتمان؟",
+          "score": 0.03125763125763126
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states a returned cheque costs AED 500."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states it must be replaced within 7 days by bank transfer or certified cheque."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "AED 500",
+            "covered": true
+          },
+          {
+            "fact": "must be replaced within 7 days",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1054,
+        "output_tokens": 143,
+        "cost_usd": 0.007076
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 3. Rent and payments > 3.3 Late and returned payments, page 2\n3.3.1 A returned cheque costs AED 500 and must be replaced within 7 days by a bank transfer or a certified cheque.\n\n3.3.2 After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment.\n\n3.3.3 Rent paid by transfer more than 10 days late incurs a late payment fee of AED 300."
+      }
+    },
+    {
+      "id": "en-02",
+      "category": "english",
+      "question": "How many access cards does each unit get, and what does a replacement card cost?",
+      "facts": [
+        "two access cards",
+        "AED 250 for a lost card"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Each unit receives two building access cards. [1] Replacing a lost access card costs AED 250. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#2.2": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Each unit receives two building access cards.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Each unit receives two sets of keys, two building access cards and one parking tag."
+            }
+          ]
+        },
+        {
+          "text": "Replacing a lost access card costs AED 250.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "A lost access card is replaced for AED 250."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "2.2 Keys and access cards",
+          "heading_path": "2. Moving in > 2.2 Keys and access cards",
+          "page": 1,
+          "label": "Tenant Handbook, 2. Moving in > 2.2 Keys and access cards, page 1",
+          "chunk_id": 92,
+          "quotes": [
+            "Each unit receives two sets of keys, two building access cards and one parking tag.",
+            "A lost access card is replaced for AED 250."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.89,
+      "cost_usd": 0.0047818999999999995,
+      "translation_cost_usd": 5.7900000000000005e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "2. Moving in > 2.2 Keys and access cards",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "2. الانتقال إلى الوحدة > 2.2 المفاتيح وبطاقات الدخول",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.5 Can I pay rent by credit card?",
+          "score": 0.03149801587301587
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "4. Maintenance > 4.4 Access to the unit",
+          "score": 0.030834914611005692
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "2. Gym",
+          "score": 0.030776515151515152
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states each unit receives two building access cards."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states a lost access card is replaced for AED 250."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "two access cards",
+            "covered": true
+          },
+          {
+            "fact": "AED 250 for a lost card",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1007,
+        "output_tokens": 132,
+        "cost_usd": 0.006668
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 2. Moving in > 2.2 Keys and access cards, page 1\n2.2.1 Each unit receives two sets of keys, two building access cards and one parking tag.\n\n2.2.2 A lost access card is replaced for AED 250. A lost parking tag is replaced for AED 150. If keys are lost, the lock cylinder is changed for AED 400."
+      }
+    },
+    {
+      "id": "en-03",
+      "category": "english",
+      "question": "When are the quiet hours in the building?",
+      "facts": [
+        "22:00 to 07:00"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Quiet hours are from 22:00 to 07:00 every day. [1] Loud music, drilling and moving furniture are not allowed during these hours. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#5.1": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Quiet hours are from 22:00 to 07:00 every day.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Quiet hours are from 22:00 to 07:00 every day."
+            }
+          ]
+        },
+        {
+          "text": "Loud music, drilling and moving furniture are not allowed during these hours.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Loud music, drilling and moving furniture are not allowed during these hours."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "5.1 Quiet hours",
+          "heading_path": "5. Building rules > 5.1 Quiet hours",
+          "page": 2,
+          "label": "Tenant Handbook, 5. Building rules > 5.1 Quiet hours, page 2",
+          "chunk_id": 102,
+          "quotes": [
+            "Quiet hours are from 22:00 to 07:00 every day.",
+            "Loud music, drilling and moving furniture are not allowed during these hours."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.79,
+      "cost_usd": 0.0052574,
+      "translation_cost_usd": 4.3400000000000005e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "5. Building rules > 5.1 Quiet hours",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "5. قواعد المبنى > 5.1 ساعات الهدوء",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "6. Facility hours at a glance",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "5. Building rules > 5.5 Alterations",
+          "score": 0.02967032967032967
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "1. Opening hours and contact > 1.1 When is the office open?",
+          "score": 0.029273504273504274
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states quiet hours are 22:00 to 07:00 every day."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 lists loud music, drilling and moving furniture as not allowed during quiet hours."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "22:00 to 07:00",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 967,
+        "output_tokens": 135,
+        "cost_usd": 0.006568
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 5. Building rules > 5.1 Quiet hours, page 2\n5.1.1 Quiet hours are from 22:00 to 07:00 every day. Loud music, drilling and moving furniture are not allowed during these hours."
+      }
+    },
+    {
+      "id": "en-04",
+      "category": "english",
+      "question": "How long is the probation period, and what notice applies during it?",
+      "facts": [
+        "6 months",
+        "14 days notice"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "The probation period is 6 months. [1] During probation, either side may end employment with 14 days notice. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "leave-policy#7": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "The probation period is 6 months.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "The probation period is 6 months."
+            }
+          ]
+        },
+        {
+          "text": "During probation, either side may end employment with 14 days notice.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "During probation, either side may end employment with 14 days notice."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/leave-policy.docx",
+          "title": "Working Time and Leave Policy",
+          "section": "7. Probation and notice",
+          "heading_path": "7. Probation and notice",
+          "page": null,
+          "label": "Working Time and Leave Policy, 7. Probation and notice",
+          "chunk_id": 71,
+          "quotes": [
+            "The probation period is 6 months.",
+            "During probation, either side may end employment with 14 days notice."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.85,
+      "cost_usd": 0.0048164,
+      "translation_cost_usd": 5.0400000000000005e-05,
+      "retrieved": [
+        {
+          "document": "en/leave-policy.docx",
+          "section": "7. Probation and notice",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "7. فترة التجربة والإشعار",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "1. Purpose and scope",
+          "score": 0.031009615384615385
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "3. Remote work",
+          "score": 0.030798389007344232
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "3. العمل عن بُعد",
+          "score": 0.030330882352941176
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states the probation period is 6 months."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states either side may end employment with 14 days notice during probation."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "6 months",
+            "covered": true
+          },
+          {
+            "fact": "14 days notice",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 957,
+        "output_tokens": 127,
+        "cost_usd": 0.006368
+      },
+      "cited_text": {
+        "1": "Working Time and Leave Policy, Working Time and Leave Policy, 7. Probation and notice\n7.1 The probation period is 6 months. During probation, either side may end employment with 14 days notice.\n\n7.2 After probation the notice period is 30 days, or as stated in the employment contract."
+      }
+    },
+    {
+      "id": "en-05",
+      "category": "english",
+      "question": "Is the office open on Saturdays?",
+      "facts": [
+        "Saturday 10:00 to 14:00"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "The sales and leasing office is open on Saturdays from 10:00 to 14:00. [1] It is closed on Sundays and public holidays. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "service-faq#1.1": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "The sales and leasing office is open on Saturdays from 10:00 to 14:00.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "The sales and leasing office is open Monday to Friday from 09:00 to 18:00, and Saturday from 10:00 to 14:00."
+            }
+          ]
+        },
+        {
+          "text": "It is closed on Sundays and public holidays.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "It is closed on Sundays and public holidays."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/service-faq.md",
+          "title": "Customer Service FAQ",
+          "section": "1.1 When is the office open?",
+          "heading_path": "1. Opening hours and contact > 1.1 When is the office open?",
+          "page": null,
+          "label": "Customer Service FAQ, 1. Opening hours and contact > 1.1 When is the office open?",
+          "chunk_id": 75,
+          "quotes": [
+            "The sales and leasing office is open Monday to Friday from 09:00 to 18:00, and Saturday from 10:00 to 14:00.",
+            "It is closed on Sundays and public holidays."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.31,
+      "cost_usd": 0.0060604,
+      "translation_cost_usd": 4.240000000000001e-05,
+      "retrieved": [
+        {
+          "document": "en/service-faq.md",
+          "section": "1. Opening hours and contact > 1.1 When is the office open?",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "1. ساعات العمل والتواصل > 1.1 متى يفتح المكتب؟",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "2. ساعات العمل",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "2. Working hours",
+          "score": 0.031746031746031744
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "6. Facility hours at a glance",
+          "score": 0.030090497737556562
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source states Saturday hours of 10:00 to 14:00 for the sales and leasing office."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source states the office is closed on Sundays and public holidays."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "Saturday 10:00 to 14:00",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1003,
+        "output_tokens": 132,
+        "cost_usd": 0.006652
+      },
+      "cited_text": {
+        "1": "Customer Service FAQ, Customer Service FAQ, 1. Opening hours and contact > 1.1 When is the office open?\nThe sales and leasing office is open Monday to Friday from 09:00 to 18:00, and Saturday from 10:00 to 14:00. It is closed on Sundays and public holidays. The maintenance hotline, 800 7256, works 24 hours a day."
+      }
+    },
+    {
+      "id": "ar-01",
+      "category": "arabic",
+      "question": "كم يبلغ مبلغ التأمين للوحدة المفروشة؟",
+      "facts": [
+        "10% of the annual rent"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "مبلغ التأمين للوحدات المفروشة هو 10% من الإيجار السنوي. [1] يُدفع مبلغ التأمين عند التوقيع ولا يُستخدم لسداد الإيجار. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#3.2": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "مبلغ التأمين للوحدات المفروشة هو 10% من الإيجار السنوي.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "مبلغ التأمين 5% من الإيجار السنوي للوحدات غير المفروشة و10% للوحدات المفروشة"
+            }
+          ]
+        },
+        {
+          "text": "يُدفع مبلغ التأمين عند التوقيع ولا يُستخدم لسداد الإيجار.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "ويُدفع عند التوقيع ولا يُستخدم لسداد الإيجار."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/tenant-handbook.md",
+          "title": "دليل المستأجر",
+          "section": "3.2 مبلغ التأمين",
+          "heading_path": "3. الإيجار والدفعات > 3.2 مبلغ التأمين",
+          "page": null,
+          "label": "دليل المستأجر, 3. الإيجار والدفعات > 3.2 مبلغ التأمين",
+          "chunk_id": 33,
+          "quotes": [
+            "مبلغ التأمين 5% من الإيجار السنوي للوحدات غير المفروشة و10% للوحدات المفروشة",
+            "ويُدفع عند التوقيع ولا يُستخدم لسداد الإيجار."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.71,
+      "cost_usd": 0.0060687,
+      "translation_cost_usd": 4.27e-05,
+      "retrieved": [
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.2 مبلغ التأمين",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.2 Security deposit",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين",
+          "score": 0.03225806451612903
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "6. Renewal and moving out > 6.4 Move-out inspection and deposit refund",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "2. الانتقال إلى الوحدة > 2.1 فحص الاستلام",
+          "score": 0.031009615384615385
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "The source states the deposit is 10% of the annual rent for furnished units."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "The source states the deposit is paid at signing and is not used to pay rent."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "10% of the annual rent",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1050,
+        "output_tokens": 122,
+        "cost_usd": 0.00664
+      },
+      "cited_text": {
+        "1": "دليل المستأجر, دليل المستأجر, 3. الإيجار والدفعات > 3.2 مبلغ التأمين\n3.2.1 مبلغ التأمين 5% من الإيجار السنوي للوحدات غير المفروشة و10% للوحدات المفروشة، ويُدفع عند التوقيع ولا يُستخدم لسداد الإيجار."
+      }
+    },
+    {
+      "id": "ar-02",
+      "category": "arabic",
+      "question": "كم يوماً من الإجازة السنوية يستحق الموظف؟",
+      "facts": [
+        "25 working days per year"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "يستحق الموظف 25 يوم عمل من الإجازة السنوية في السنة. [1] تُستحق هذه الإجازة شهرياً وبأجر كامل. [1] تبدأ الإجازة السنوية بالاستحقاق من أول يوم عمل، لكن لا يمكن أخذها إلا بعد فترة التجربة، إلا في الحالات الطارئة التي توافق عليها الموارد البشرية. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "leave-policy#4": 1
+        },
+        "top1": true
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "يستحق الموظف 25 يوم عمل من الإجازة السنوية في السنة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "نوع الإجازة: الإجازة السنوية; الاستحقاق: 25 يوم عمل في السنة، تُستحق شهرياً; الأجر: أجر كامل"
+            }
+          ]
+        },
+        {
+          "text": "تُستحق هذه الإجازة شهرياً وبأجر كامل.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "الاستحقاق: 25 يوم عمل في السنة، تُستحق شهرياً; الأجر: أجر كامل"
+            }
+          ]
+        },
+        {
+          "text": "تبدأ الإجازة السنوية بالاستحقاق من أول يوم عمل، لكن لا يمكن أخذها إلا بعد فترة التجربة، إلا في الحالات الطارئة التي توافق عليها الموارد البشرية.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "تُستحق الإجازة السنوية من أول يوم عمل، لكن لا يمكن أخذها إلا بعد فترة التجربة"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/leave-policy.docx",
+          "title": "سياسة ساعات العمل والإجازات",
+          "section": "4. استحقاقات الإجازات",
+          "heading_path": "4. استحقاقات الإجازات",
+          "page": null,
+          "label": "سياسة ساعات العمل والإجازات, 4. استحقاقات الإجازات",
+          "chunk_id": 5,
+          "quotes": [
+            "نوع الإجازة: الإجازة السنوية; الاستحقاق: 25 يوم عمل في السنة، تُستحق شهرياً; الأجر: أجر كامل",
+            "الاستحقاق: 25 يوم عمل في السنة، تُستحق شهرياً; الأجر: أجر كامل",
+            "تُستحق الإجازة السنوية من أول يوم عمل، لكن لا يمكن أخذها إلا بعد فترة التجربة"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 4.2,
+      "cost_usd": 0.0096785,
+      "translation_cost_usd": 4.25e-05,
+      "retrieved": [
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "4. استحقاقات الإجازات",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "4. Leave entitlements",
+          "score": 0.03201844262295082
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "5. طلب الإجازة",
+          "score": 0.03200204813108039
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "6. ترحيل الإجازة وصرف بدلها",
+          "score": 0.0315136476426799
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "6. Carry-over and encashment",
+          "score": 0.03057889822595705
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states annual leave is 25 working days per year."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 says it accrues monthly with full pay."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Section 4.2 states exactly this."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "25 working days per year",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1685,
+        "output_tokens": 144,
+        "cost_usd": 0.00962
+      },
+      "cited_text": {
+        "1": "سياسة ساعات العمل والإجازات, سياسة ساعات العمل والإجازات, 4. استحقاقات الإجازات\n4.1 يستحق الموظفون الإجازات التالية:\n\nنوع الإجازة: الإجازة السنوية; الاستحقاق: 25 يوم عمل في السنة، تُستحق شهرياً; الأجر: أجر كامل\nنوع الإجازة: الإجازة المرضية; الاستحقاق: أول 15 يوماً في السنة; الأجر: أجر كامل\nنوع الإجازة: الإجازة المرضية; الاستحقاق: الثلاثون يوماً التالية; الأجر: نصف أجر\nنوع الإجازة: إجازة الأمومة; الاستحقاق: 60 يوماً تقويمياً; الأجر: 45 يوماً بأجر كامل و15 يوماً بنصف أجر\nنوع الإجازة: إجازة الوالدين; الاستحقاق: 5 أيام عمل خلال 6 أشهر من الولادة; الأجر: أجر كامل\nنوع الإجازة: إجازة الحداد; الاستحقاق: 5 أيام للزوج أو الزوجة، و3 أيام للوالدين أو الأبناء أو الإخوة; الأجر: أجر كامل\nنوع الإجازة: إجازة الدراسة; الاستحقاق: 10 أيام عمل في السنة للامتحانات المعتمدة; الأجر: أجر كامل\n\n4.2 تُستحق الإجازة السنوية من أول يوم عمل، لكن لا يمكن أخذها إلا بعد فترة التجربة، باستثناء الحالات الطارئة التي توافق عليها الموارد البشرية.\n\n4.3 تحتاج الإجازة المرضية التي تزيد على يوم واحد إلى شهادة طبية تُرفع على بوابة الموارد البشرية خلال يومي عمل من العودة."
+      }
+    },
+    {
+      "id": "ar-03",
+      "category": "arabic",
+      "question": "ما المستندات المطلوبة لاستئجار شقة؟",
+      "facts": [
+        "passport",
+        "residence visa",
+        "Emirates ID"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "يلزم تقديم نسخة من جواز السفر وتأشيرة الإقامة والهوية الإماراتية. [1] إذا كان عقد الإيجار باسم شركة، يلزم أيضاً الرخصة التجارية والهوية الإماراتية للمفوض بالتوقيع. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "service-faq#2.2": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "يلزم تقديم نسخة من جواز السفر وتأشيرة الإقامة والهوية الإماراتية.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "تحتاج إلى نسخة من جواز السفر وتأشيرة الإقامة والهوية الإماراتية."
+            }
+          ]
+        },
+        {
+          "text": "إذا كان عقد الإيجار باسم شركة، يلزم أيضاً الرخصة التجارية والهوية الإماراتية للمفوض بالتوقيع.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "وإذا كان عقد الإيجار باسم شركة، نحتاج أيضاً إلى الرخصة التجارية والهوية الإماراتية للمفوض بالتوقيع."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/service-faq.md",
+          "title": "الأسئلة الشائعة لخدمة العملاء",
+          "section": "2.2 ما المستندات المطلوبة للاستئجار؟",
+          "heading_path": "2. استئجار منزل > 2.2 ما المستندات المطلوبة للاستئجار؟",
+          "page": null,
+          "label": "الأسئلة الشائعة لخدمة العملاء, 2. استئجار منزل > 2.2 ما المستندات المطلوبة للاستئجار؟",
+          "chunk_id": 15,
+          "quotes": [
+            "تحتاج إلى نسخة من جواز السفر وتأشيرة الإقامة والهوية الإماراتية.",
+            "وإذا كان عقد الإيجار باسم شركة، نحتاج أيضاً إلى الرخصة التجارية والهوية الإماراتية للمفوض بالتوقيع."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 7.56,
+      "cost_usd": 0.0069702,
+      "translation_cost_usd": 4.02e-05,
+      "retrieved": [
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.2 ما المستندات المطلوبة للاستئجار؟",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.2 Which documents do I need to rent?",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.4 كم يستغرق توقيع العقد؟",
+          "score": 0.03125
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.4 How long does it take to sign a contract?",
+          "score": 0.028991596638655463
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.1 Payment plans",
+          "score": 0.028693528693528692
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "The source lists a passport copy, residence visa and Emirates ID as required documents."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "The source states that a company lease also needs the trade licence and the authorized signatory's Emirates ID."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "passport",
+            "covered": true
+          },
+          {
+            "fact": "residence visa",
+            "covered": true
+          },
+          {
+            "fact": "Emirates ID",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1134,
+        "output_tokens": 162,
+        "cost_usd": 0.007776
+      },
+      "cited_text": {
+        "1": "الأسئلة الشائعة لخدمة العملاء, الأسئلة الشائعة لخدمة العملاء, 2. استئجار منزل > 2.2 ما المستندات المطلوبة للاستئجار؟\nتحتاج إلى نسخة من جواز السفر وتأشيرة الإقامة والهوية الإماراتية. وإذا كان عقد الإيجار باسم شركة، نحتاج أيضاً إلى الرخصة التجارية والهوية الإماراتية للمفوض بالتوقيع."
+      }
+    },
+    {
+      "id": "ar-04",
+      "category": "arabic",
+      "question": "خلال كم يوماً يُرد مبلغ التأمين بعد المغادرة؟",
+      "facts": [
+        "within 30 days after keys are returned and the utility clearance is received"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "يُرد مبلغ التأمين خلال 30 يوماً بعد تسليم المفاتيح واستلام خطاب براءة الذمة النهائي للخدمات. [1] يُخصم من المبلغ أي مبالغ متفق عليها قبل رده. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#6.4": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "يُرد مبلغ التأمين خلال 30 يوماً بعد تسليم المفاتيح واستلام خطاب براءة الذمة النهائي للخدمات.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يُرد مبلغ التأمين، بعد خصم أي مبالغ متفق عليها، خلال 30 يوماً من تسليم المفاتيح واستلام خطاب براءة الذمة النهائي للخدمات."
+            }
+          ]
+        },
+        {
+          "text": "يُخصم من المبلغ أي مبالغ متفق عليها قبل رده.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "بعد خصم أي مبالغ متفق عليها"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/tenant-handbook.md",
+          "title": "دليل المستأجر",
+          "section": "6.4 فحص المغادرة واسترداد التأمين",
+          "heading_path": "6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين",
+          "page": null,
+          "label": "دليل المستأجر, 6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين",
+          "chunk_id": 47,
+          "quotes": [
+            "يُرد مبلغ التأمين، بعد خصم أي مبالغ متفق عليها، خلال 30 يوماً من تسليم المفاتيح واستلام خطاب براءة الذمة النهائي للخدمات.",
+            "بعد خصم أي مبالغ متفق عليها"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.6,
+      "cost_usd": 0.0064641,
+      "translation_cost_usd": 4.41e-05,
+      "retrieved": [
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "6. Renewal and moving out > 6.4 Move-out inspection and deposit refund",
+          "score": 0.03225806451612903
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.4 كم يستغرق توقيع العقد؟",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.2 مبلغ التأمين",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.2 Security deposit",
+          "score": 0.029206349206349208
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 6.4.2 states the deposit is returned within 30 days of key handover and receipt of the final utility clearance letter."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 6.4.2 states any agreed amounts are deducted before the deposit is returned."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "within 30 days after keys are returned and the utility clearance is received",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1150,
+        "output_tokens": 159,
+        "cost_usd": 0.00778
+      },
+      "cited_text": {
+        "1": "دليل المستأجر, دليل المستأجر, 6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين\n6.4.1 يقارن فحص المغادرة حالة الوحدة بتقرير الاستلام، ولا يُحتسب الاستهلاك الطبيعي.\n\n6.4.2 يُرد مبلغ التأمين، بعد خصم أي مبالغ متفق عليها، خلال 30 يوماً من تسليم المفاتيح واستلام خطاب براءة الذمة النهائي للخدمات."
+      }
+    },
+    {
+      "id": "ar-05",
+      "category": "arabic",
+      "question": "هل يمكنني العمل من المنزل، وكم يوماً في الأسبوع؟",
+      "facts": [
+        "up to 2 days per week",
+        "after probation, with manager approval"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "يمكن للموظفين المكتبيين العمل عن بُعد بعد اجتياز فترة التجربة. [1] الحد الأقصى هو يومان في الأسبوع. [1] يشترط الحصول على موافقة المدير. [1] لا يتاح العمل عن بُعد لموظفي الاستقبال وموظفي العقارات ومشرفي الصيانة. [1] يجب أن يكون الموظف متاحاً بالهاتف وعبر محادثة الفريق خلال الساعات الأساسية. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "leave-policy#3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 5,
+      "citations_valid": 5,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "يمكن للموظفين المكتبيين العمل عن بُعد بعد اجتياز فترة التجربة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "بعد اجتياز فترة التجربة، يمكن للموظفين المكتبيين العمل عن بُعد حتى يومين في الأسبوع بموافقة المدير."
+            }
+          ]
+        },
+        {
+          "text": "الحد الأقصى هو يومان في الأسبوع.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "العمل عن بُعد حتى يومين في الأسبوع بموافقة المدير"
+            }
+          ]
+        },
+        {
+          "text": "يشترط الحصول على موافقة المدير.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "حتى يومين في الأسبوع بموافقة المدير"
+            }
+          ]
+        },
+        {
+          "text": "لا يتاح العمل عن بُعد لموظفي الاستقبال وموظفي العقارات ومشرفي الصيانة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "لا يتاح العمل عن بُعد لموظفي الاستقبال وموظفي العقارات ومشرفي الصيانة"
+            }
+          ]
+        },
+        {
+          "text": "يجب أن يكون الموظف متاحاً بالهاتف وعبر محادثة الفريق خلال الساعات الأساسية.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يجب أن يكون الموظف الذي يعمل عن بُعد متاحاً بالهاتف وعبر محادثة الفريق خلال الساعات الأساسية."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/leave-policy.docx",
+          "title": "سياسة ساعات العمل والإجازات",
+          "section": "3. العمل عن بُعد",
+          "heading_path": "3. العمل عن بُعد",
+          "page": null,
+          "label": "سياسة ساعات العمل والإجازات, 3. العمل عن بُعد",
+          "chunk_id": 4,
+          "quotes": [
+            "بعد اجتياز فترة التجربة، يمكن للموظفين المكتبيين العمل عن بُعد حتى يومين في الأسبوع بموافقة المدير.",
+            "العمل عن بُعد حتى يومين في الأسبوع بموافقة المدير",
+            "حتى يومين في الأسبوع بموافقة المدير",
+            "لا يتاح العمل عن بُعد لموظفي الاستقبال وموظفي العقارات ومشرفي الصيانة",
+            "يجب أن يكون الموظف الذي يعمل عن بُعد متاحاً بالهاتف وعبر محادثة الفريق خلال الساعات الأساسية."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 6.62,
+      "cost_usd": 0.0113596,
+      "translation_cost_usd": 4.36e-05,
+      "retrieved": [
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "3. العمل عن بُعد",
+          "score": 0.03201844262295082
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "3. Remote work",
+          "score": 0.03200204813108039
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "4. استحقاقات الإجازات",
+          "score": 0.0317780580075662
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "2. ساعات العمل",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "2. Working hours",
+          "score": 0.03128054740957967
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 3.1 states office staff may work remotely after passing probation."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 3.1 sets the limit at up to two days per week."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 3.1 requires the manager's approval."
+          },
+          {
+            "index": 4,
+            "verdict": "supported",
+            "reason": "Source 3.2 excludes reception staff, property staff and maintenance supervisors."
+          },
+          {
+            "index": 5,
+            "verdict": "supported",
+            "reason": "Source 3.3 requires availability by phone and team chat during core hours."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "up to 2 days per week",
+            "covered": true
+          },
+          {
+            "fact": "after probation, with manager approval",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1319,
+        "output_tokens": 266,
+        "cost_usd": 0.010596
+      },
+      "cited_text": {
+        "1": "سياسة ساعات العمل والإجازات, سياسة ساعات العمل والإجازات, 3. العمل عن بُعد\n3.1 بعد اجتياز فترة التجربة، يمكن للموظفين المكتبيين العمل عن بُعد حتى يومين في الأسبوع بموافقة المدير.\n\n3.2 لا يتاح العمل عن بُعد لموظفي الاستقبال وموظفي العقارات ومشرفي الصيانة، لأن هذه الوظائف تتطلب الحضور في الموقع.\n\n3.3 يجب أن يكون الموظف الذي يعمل عن بُعد متاحاً بالهاتف وعبر محادثة الفريق خلال الساعات الأساسية."
+      }
+    },
+    {
+      "id": "x-ar-01",
+      "category": "cross_ar_to_en",
+      "question": "ما مواعيد عمل المسبح؟",
+      "facts": [
+        "06:00 to 22:00 daily",
+        "closed Monday 06:00 to 10:00"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "المسبح مفتوح كل يوم من الساعة 06:00 إلى 22:00. [1] يُغلق المسبح صباح أيام الاثنين من 06:00 إلى 10:00 بسبب التنظيف. [1] يتواجد منقذ السباحة من 08:00 إلى 20:00، وخارج هذه الساعات يسبح السكان على مسؤوليتهم الخاصة. [1] لا يتطلب استخدام المسبح حجزاً. [2]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "amenities-guide#1": 2
+        },
+        "top1": false
+      },
+      "citations_total": 4,
+      "citations_valid": 4,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "المسبح مفتوح كل يوم من الساعة 06:00 إلى 22:00.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "The pool is open every day from 06:00 to 22:00."
+            }
+          ]
+        },
+        {
+          "text": "يُغلق المسبح صباح أيام الاثنين من 06:00 إلى 10:00 بسبب التنظيف.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "It is closed on Mondays from 06:00 to 10:00 for cleaning."
+            }
+          ]
+        },
+        {
+          "text": "يتواجد منقذ السباحة من 08:00 إلى 20:00، وخارج هذه الساعات يسبح السكان على مسؤوليتهم الخاصة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "A lifeguard is on duty from 08:00 to 20:00. Outside these hours residents swim at their own risk."
+            }
+          ]
+        },
+        {
+          "text": "لا يتطلب استخدام المسبح حجزاً.",
+          "citations": [
+            {
+              "n": 2,
+              "quote": "Facility: Swimming pool; Hours: 06:00 to 22:00, closed Monday 06:00 to 10:00; Booking: Not needed"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/amenities-guide.md",
+          "title": "Residents' Amenities Guide",
+          "section": "1. Swimming pool",
+          "heading_path": "1. Swimming pool",
+          "page": null,
+          "label": "Residents' Amenities Guide, 1. Swimming pool",
+          "chunk_id": 58,
+          "quotes": [
+            "The pool is open every day from 06:00 to 22:00.",
+            "It is closed on Mondays from 06:00 to 10:00 for cleaning.",
+            "A lifeguard is on duty from 08:00 to 20:00. Outside these hours residents swim at their own risk."
+          ]
+        },
+        {
+          "n": 2,
+          "document": "en/amenities-guide.md",
+          "title": "Residents' Amenities Guide",
+          "section": "6. Facility hours at a glance",
+          "heading_path": "6. Facility hours at a glance",
+          "page": null,
+          "label": "Residents' Amenities Guide, 6. Facility hours at a glance",
+          "chunk_id": 63,
+          "quotes": [
+            "Facility: Swimming pool; Hours: 06:00 to 22:00, closed Monday 06:00 to 10:00; Booking: Not needed"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 5.59,
+      "cost_usd": 0.00889,
+      "translation_cost_usd": 3.8e-05,
+      "retrieved": [
+        {
+          "document": "en/amenities-guide.md",
+          "section": "6. Facility hours at a glance",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "1. Swimming pool",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "2. ساعات العمل",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "7. جهات الاتصال",
+          "score": 0.03055037313432836
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "1. الغرض ونطاق التطبيق",
+          "score": 0.030303030303030304
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states the pool is open every day from 06:00 to 22:00."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states the pool is closed on Mondays from 06:00 to 10:00 for cleaning."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 1 states a lifeguard is on duty from 08:00 to 20:00 and residents swim at their own risk outside these hours."
+          },
+          {
+            "index": 4,
+            "verdict": "supported",
+            "reason": "Source 2 lists booking for the swimming pool as not needed."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "06:00 to 22:00 daily",
+            "covered": true
+          },
+          {
+            "fact": "closed Monday 06:00 to 10:00",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1465,
+        "output_tokens": 272,
+        "cost_usd": 0.0113
+      },
+      "cited_text": {
+        "1": "Residents' Amenities Guide, Residents' Amenities Guide, 1. Swimming pool\n1.1 The pool is open every day from 06:00 to 22:00. It is closed on Mondays from 06:00 to 10:00 for cleaning.\n\n1.2 A lifeguard is on duty from 08:00 to 20:00. Outside these hours residents swim at their own risk.\n\n1.3 Children under 12 must be accompanied by an adult at all times. Glass, food and loud music are not allowed in the pool area.",
+        "2": "Residents' Amenities Guide, Residents' Amenities Guide, 6. Facility hours at a glance\nFacility: Swimming pool; Hours: 06:00 to 22:00, closed Monday 06:00 to 10:00; Booking: Not needed\nFacility: Gym; Hours: 24 hours; Booking: Not needed\nFacility: Barbecue area; Hours: 12:00 to 23:00; Booking: Tenant app, 4 hour slots\nFacility: Function room; Hours: 09:00 to 22:00; Booking: Reception, 3 working days ahead\nFacility: Service lift for moving; Hours: Monday to Saturday 09:00 to 17:00; Booking: Reception, 48 hours ahead"
+      }
+    },
+    {
+      "id": "x-ar-02",
+      "category": "cross_ar_to_en",
+      "question": "كم مبلغ التأمين عند حجز منطقة الشواء؟",
+      "facts": [
+        "AED 200 refundable deposit"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "يُفرض مبلغ تأمين قابل للاسترداد قدره 200 درهم عن كل حجز لمنطقة الشواء. [1] يُرد المبلغ خلال 5 أيام عمل إذا تُركت المنطقة نظيفة. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "amenities-guide#3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "يُفرض مبلغ تأمين قابل للاسترداد قدره 200 درهم عن كل حجز لمنطقة الشواء.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "A refundable deposit of AED 200 is charged for each booking"
+            }
+          ]
+        },
+        {
+          "text": "يُرد المبلغ خلال 5 أيام عمل إذا تُركت المنطقة نظيفة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "returned within 5 working days if the area is left clean"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/amenities-guide.md",
+          "title": "Residents' Amenities Guide",
+          "section": "3. Barbecue area",
+          "heading_path": "3. Barbecue area",
+          "page": null,
+          "label": "Residents' Amenities Guide, 3. Barbecue area",
+          "chunk_id": 60,
+          "quotes": [
+            "A refundable deposit of AED 200 is charged for each booking",
+            "returned within 5 working days if the area is left clean"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.23,
+      "cost_usd": 0.0057815,
+      "translation_cost_usd": 4.35e-05,
+      "retrieved": [
+        {
+          "document": "en/amenities-guide.md",
+          "section": "3. Barbecue area",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "6. Facility hours at a glance",
+          "score": 0.03225806451612903
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.2 مبلغ التأمين",
+          "score": 0.03131881575727918
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "4. Function room",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "6. التجديد والمغادرة > 6.4 فحص المغادرة واسترداد التأمين",
+          "score": 0.03036576949620428
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source states a refundable AED 200 deposit is charged per booking."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source states it is returned within 5 working days if the area is left clean."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "AED 200 refundable deposit",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1096,
+        "output_tokens": 122,
+        "cost_usd": 0.006824
+      },
+      "cited_text": {
+        "1": "Residents' Amenities Guide, Residents' Amenities Guide, 3. Barbecue area\n3.1 The barbecue area on the podium is booked through the tenant app, up to 14 days ahead, in slots of 4 hours between 12:00 and 23:00.\n\n3.2 A refundable deposit of AED 200 is charged for each booking and returned within 5 working days if the area is left clean.\n\n3.3 Up to 15 guests are allowed per booking. Each household can book at most two slots a month."
+      }
+    },
+    {
+      "id": "x-ar-03",
+      "category": "cross_ar_to_en",
+      "question": "ما الحد الأدنى للعمر لاستخدام النادي الرياضي؟",
+      "facts": [
+        "16",
+        "14 and 15 year olds only with a parent"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "الحد الأدنى للعمر لاستخدام النادي الرياضي هو 16 سنة. [1] يمكن لمن تبلغ أعمارهم 14 و15 سنة استخدام النادي الرياضي فقط بحضور أحد الوالدين. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "amenities-guide#2": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "الحد الأدنى للعمر لاستخدام النادي الرياضي هو 16 سنة.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "The minimum age is 16."
+            }
+          ]
+        },
+        {
+          "text": "يمكن لمن تبلغ أعمارهم 14 و15 سنة استخدام النادي الرياضي فقط بحضور أحد الوالدين.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Residents aged 14 and 15 may use the gym only with a parent present."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/amenities-guide.md",
+          "title": "Residents' Amenities Guide",
+          "section": "2. Gym",
+          "heading_path": "2. Gym",
+          "page": null,
+          "label": "Residents' Amenities Guide, 2. Gym",
+          "chunk_id": 59,
+          "quotes": [
+            "The minimum age is 16.",
+            "Residents aged 14 and 15 may use the gym only with a parent present."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.44,
+      "cost_usd": 0.005541399999999999,
+      "translation_cost_usd": 4.1400000000000003e-05,
+      "retrieved": [
+        {
+          "document": "en/amenities-guide.md",
+          "section": "2. Gym",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "4. Function room",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "5. قواعد المبنى > 5.2 الحيوانات الأليفة",
+          "score": 0.031746031746031744
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.2 ما المستندات المطلوبة للاستئجار؟",
+          "score": 0.029116045245077504
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "7. فترة التجربة والإشعار",
+          "score": 0.028958333333333332
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source states the minimum age is 16."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source states residents aged 14 and 15 may use the gym only with a parent present."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "16",
+            "covered": true
+          },
+          {
+            "fact": "14 and 15 year olds only with a parent",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1077,
+        "output_tokens": 133,
+        "cost_usd": 0.006968
+      },
+      "cited_text": {
+        "1": "Residents' Amenities Guide, Residents' Amenities Guide, 2. Gym\n2.1 The gym is open 24 hours a day and is entered with the building access card.\n\n2.2 The minimum age is 16. Residents aged 14 and 15 may use the gym only with a parent present.\n\n2.3 Personal trainers must be registered at reception before their first session. Each resident may bring one trainer at a time."
+      }
+    },
+    {
+      "id": "x-en-01",
+      "category": "cross_en_to_ar",
+      "question": "What is the daily allowance for a business trip to Europe?",
+      "facts": [
+        "AED 400 per day"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "The daily allowance for a trip to Europe is 400 dirhams per day of travel. [1] The allowance is not paid for days when the host provides full meals. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "travel-expenses-policy#5": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "The daily allowance for a trip to Europe is 400 dirhams per day of travel.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "الوجهة: أوروبا; البدل اليومي: 400 درهم"
+            }
+          ]
+        },
+        {
+          "text": "The allowance is not paid for days when the host provides full meals.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/travel-expenses-policy.md",
+          "title": "سياسة السفر ومصروفات العمل",
+          "section": "5. البدل اليومي",
+          "heading_path": "5. البدل اليومي",
+          "page": null,
+          "label": "سياسة السفر ومصروفات العمل, 5. البدل اليومي",
+          "chunk_id": 54,
+          "quotes": [
+            "الوجهة: أوروبا; البدل اليومي: 400 درهم",
+            "لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.66,
+      "cost_usd": 0.0070079999999999995,
+      "translation_cost_usd": 5e-05,
+      "retrieved": [
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "5. البدل اليومي",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "2. الموافقة على السفر",
+          "score": 0.029644268774703556
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "6. Carry-over and encashment",
+          "score": 0.029631255487269536
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "4. استحقاقات الإجازات",
+          "score": 0.029051670471052084
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "6. ترحيل الإجازة وصرف بدلها",
+          "score": 0.027984344422700588
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "The source lists the Europe daily allowance as 400 dirhams for each travel day."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Clause 5.2 states the allowance is not paid for days when the host provides full meals."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "AED 400 per day",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1125,
+        "output_tokens": 130,
+        "cost_usd": 0.0071
+      },
+      "cited_text": {
+        "1": "سياسة السفر ومصروفات العمل, سياسة السفر ومصروفات العمل, 5. البدل اليومي\n5.1 يُصرف للموظف بدل يومي عن كل يوم سفر لتغطية الوجبات والتنقلات المحلية حسب الوجهة:\n\nالوجهة: دول مجلس التعاون الخليجي; البدل اليومي: 250 درهماً\nالوجهة: أوروبا; البدل اليومي: 400 درهم\nالوجهة: باقي الدول; البدل اليومي: 300 درهم\n\n5.2 لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+      }
+    },
+    {
+      "id": "x-en-02",
+      "category": "cross_en_to_ar",
+      "question": "Can managers fly business class?",
+      "facts": [
+        "managers and above",
+        "flights over 6 hours"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Managers and those above them may fly business class on flights longer than 6 hours. [1] Employees fly economy class on flights shorter than 6 hours. [1] HR books all tickets, and tickets employees book themselves without prior approval are not refunded. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "travel-expenses-policy#3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "The sources do not say what class managers fly on flights of exactly 6 hours.",
+      "statements": [
+        {
+          "text": "Managers and those above them may fly business class on flights longer than 6 hours.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يحق للمديرين ومن هم أعلى منهم السفر على درجة رجال الأعمال في الرحلات التي تزيد مدتها على 6 ساعات."
+            }
+          ]
+        },
+        {
+          "text": "Employees fly economy class on flights shorter than 6 hours.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يسافر الموظفون على الدرجة السياحية في الرحلات التي تقل مدتها عن 6 ساعات."
+            }
+          ]
+        },
+        {
+          "text": "HR books all tickets, and tickets employees book themselves without prior approval are not refunded.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "تحجز إدارة الموارد البشرية جميع التذاكر، ولا تُرد قيمة التذاكر التي يحجزها الموظف بنفسه دون موافقة مسبقة."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/travel-expenses-policy.md",
+          "title": "سياسة السفر ومصروفات العمل",
+          "section": "3. تذاكر الطيران",
+          "heading_path": "3. تذاكر الطيران",
+          "page": null,
+          "label": "سياسة السفر ومصروفات العمل, 3. تذاكر الطيران",
+          "chunk_id": 52,
+          "quotes": [
+            "يحق للمديرين ومن هم أعلى منهم السفر على درجة رجال الأعمال في الرحلات التي تزيد مدتها على 6 ساعات.",
+            "يسافر الموظفون على الدرجة السياحية في الرحلات التي تقل مدتها عن 6 ساعات.",
+            "تحجز إدارة الموارد البشرية جميع التذاكر، ولا تُرد قيمة التذاكر التي يحجزها الموظف بنفسه دون موافقة مسبقة."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.48,
+      "cost_usd": 0.0078471,
+      "translation_cost_usd": 4.51e-05,
+      "retrieved": [
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "3. تذاكر الطيران",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "2. الموافقة على السفر",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "3. Remote work",
+          "score": 0.030090497737556562
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "5. Requesting leave",
+          "score": 0.029644268774703556
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "2. Working hours",
+          "score": 0.028958333333333332
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 clause 3.2 states that managers and those above them may fly business class on flights over 6 hours."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 clause 3.1 states that employees fly economy class on flights under 6 hours."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 1 clause 3.3 states that HR books all tickets and that self-booked tickets without prior approval are not refunded."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "managers and above",
+            "covered": true
+          },
+          {
+            "fact": "flights over 6 hours",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1147,
+        "output_tokens": 219,
+        "cost_usd": 0.008968
+      },
+      "cited_text": {
+        "1": "سياسة السفر ومصروفات العمل, سياسة السفر ومصروفات العمل, 3. تذاكر الطيران\n3.1 يسافر الموظفون على الدرجة السياحية في الرحلات التي تقل مدتها عن 6 ساعات.\n\n3.2 يحق للمديرين ومن هم أعلى منهم السفر على درجة رجال الأعمال في الرحلات التي تزيد مدتها على 6 ساعات.\n\n3.3 تحجز إدارة الموارد البشرية جميع التذاكر، ولا تُرد قيمة التذاكر التي يحجزها الموظف بنفسه دون موافقة مسبقة."
+      }
+    },
+    {
+      "id": "x-en-03",
+      "category": "cross_en_to_ar",
+      "question": "How much do I get back per kilometre when I use my own car for work?",
+      "facts": [
+        "AED 0.70 per km",
+        "plus parking and tolls"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "You are reimbursed 0.70 dirhams for each kilometre driven in your own car for work. [1] Parking fees and road tolls are paid in addition to the per-kilometre amount. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "travel-expenses-policy#6": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "You are reimbursed 0.70 dirhams for each kilometre driven in your own car for work.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يُعوض الموظف الذي يستخدم سيارته الخاصة في العمل بمبلغ 0.70 درهم عن كل كيلومتر"
+            }
+          ]
+        },
+        {
+          "text": "Parking fees and road tolls are paid in addition to the per-kilometre amount.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "إضافة إلى رسوم المواقف والتعرفة المرورية"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/travel-expenses-policy.md",
+          "title": "سياسة السفر ومصروفات العمل",
+          "section": "6. استخدام السيارة الخاصة",
+          "heading_path": "6. استخدام السيارة الخاصة",
+          "page": null,
+          "label": "سياسة السفر ومصروفات العمل, 6. استخدام السيارة الخاصة",
+          "chunk_id": 55,
+          "quotes": [
+            "يُعوض الموظف الذي يستخدم سيارته الخاصة في العمل بمبلغ 0.70 درهم عن كل كيلومتر",
+            "إضافة إلى رسوم المواقف والتعرفة المرورية"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 6.55,
+      "cost_usd": 0.006719200000000001,
+      "translation_cost_usd": 5.72e-05,
+      "retrieved": [
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "6. استخدام السيارة الخاصة",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "2. Working hours",
+          "score": 0.031054405392392875
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "3. Remote work",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "4. Leave entitlements",
+          "score": 0.030886196246139225
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "3. العمل عن بُعد",
+          "score": 0.030679156908665104
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source states 0.70 dirhams per kilometre for using a private car for work."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source says parking fees and traffic tolls are reimbursed in addition."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "AED 0.70 per km",
+            "covered": true
+          },
+          {
+            "fact": "plus parking and tolls",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1038,
+        "output_tokens": 146,
+        "cost_usd": 0.007072
+      },
+      "cited_text": {
+        "1": "سياسة السفر ومصروفات العمل, سياسة السفر ومصروفات العمل, 6. استخدام السيارة الخاصة\n6.1 يُعوض الموظف الذي يستخدم سيارته الخاصة في العمل بمبلغ 0.70 درهم عن كل كيلومتر، إضافة إلى رسوم المواقف والتعرفة المرورية."
+      }
+    },
+    {
+      "id": "p-01",
+      "category": "paraphrase",
+      "question": "My cheque bounced. What happens now?",
+      "facts": [
+        "AED 500 fee",
+        "replace within 7 days by transfer or certified cheque"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "A returned cheque costs AED 500. [1] You must replace it within 7 days with a bank transfer or a certified cheque. [1] After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#3.3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "A returned cheque costs AED 500.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "A returned cheque costs AED 500"
+            }
+          ]
+        },
+        {
+          "text": "You must replace it within 7 days with a bank transfer or a certified cheque.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "must be replaced within 7 days by a bank transfer or a certified cheque"
+            }
+          ]
+        },
+        {
+          "text": "After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "3.3 Late and returned payments",
+          "heading_path": "3. Rent and payments > 3.3 Late and returned payments",
+          "page": 2,
+          "label": "Tenant Handbook, 3. Rent and payments > 3.3 Late and returned payments, page 2",
+          "chunk_id": 97,
+          "quotes": [
+            "A returned cheque costs AED 500",
+            "must be replaced within 7 days by a bank transfer or a certified cheque",
+            "After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 6.91,
+      "cost_usd": 0.006337499999999999,
+      "translation_cost_usd": 4.75e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.3 Late and returned payments",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.1 Payment plans",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.3 الدفعات المتأخرة والشيكات المرتجعة",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.4 How long does it take to sign a contract?",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.2 How often do landlords receive their rent?",
+          "score": 0.031009615384615385
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 3.3.1 states a returned cheque costs AED 500."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 3.3.1 requires replacement within 7 days by bank transfer or certified cheque."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 3.3.2 states this almost verbatim."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "AED 500 fee",
+            "covered": true
+          },
+          {
+            "fact": "replace within 7 days by transfer or certified cheque",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1110,
+        "output_tokens": 197,
+        "cost_usd": 0.00838
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 3. Rent and payments > 3.3 Late and returned payments, page 2\n3.3.1 A returned cheque costs AED 500 and must be replaced within 7 days by a bank transfer or a certified cheque.\n\n3.3.2 After two returned cheques in one contract year, Palm Grove Realty may ask for the remaining rent of that year in a single payment.\n\n3.3.3 Rent paid by transfer more than 10 days late incurs a late payment fee of AED 300."
+      }
+    },
+    {
+      "id": "p-02",
+      "category": "paraphrase",
+      "question": "If I leave my flat before the lease is up, what will it cost me?",
+      "facts": [
+        "two months rent penalty",
+        "60 days notice",
+        "waived if an approved new tenant takes over"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Ending the contract early requires written notice 60 days in advance. [1] The early termination penalty is equal to two months' rent. [1] The penalty is waived if a new tenant approved by Palm Grove Realty takes over the unit within that period. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#6.3": 2
+        },
+        "top1": false
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Ending the contract early requires written notice 60 days in advance.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "يتطلب إنهاء العقد مبكراً إشعاراً كتابياً قبل 60 يوماً"
+            }
+          ]
+        },
+        {
+          "text": "The early termination penalty is equal to two months' rent.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "وغرامة تعادل إيجار شهرين"
+            }
+          ]
+        },
+        {
+          "text": "The penalty is waived if a new tenant approved by Palm Grove Realty takes over the unit within that period.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "وتُعفى الغرامة إذا استلم الوحدة مستأجر جديد توافق عليه بالم جروف العقارية خلال تلك المدة."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/tenant-handbook.md",
+          "title": "دليل المستأجر",
+          "section": "6.3 الإنهاء المبكر",
+          "heading_path": "6. التجديد والمغادرة > 6.3 الإنهاء المبكر",
+          "page": null,
+          "label": "دليل المستأجر, 6. التجديد والمغادرة > 6.3 الإنهاء المبكر",
+          "chunk_id": 46,
+          "quotes": [
+            "يتطلب إنهاء العقد مبكراً إشعاراً كتابياً قبل 60 يوماً",
+            "وغرامة تعادل إيجار شهرين",
+            "وتُعفى الغرامة إذا استلم الوحدة مستأجر جديد توافق عليه بالم جروف العقارية خلال تلك المدة."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.27,
+      "cost_usd": 0.0067573,
+      "translation_cost_usd": 5.5299999999999996e-05,
+      "retrieved": [
+        {
+          "document": "en/leave-policy.docx",
+          "section": "6. Carry-over and encashment",
+          "score": 0.030798389007344232
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "6. التجديد والمغادرة > 6.3 الإنهاء المبكر",
+          "score": 0.03015873015873016
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.02970950704225352
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.3 Late and returned payments",
+          "score": 0.02967032967032967
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "6. التجديد والمغادرة > 6.2 إشعار الإخلاء",
+          "score": 0.029198635976129584
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source states early termination requires written notice 60 days in advance."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source states a penalty equal to two months' rent."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source states the penalty is waived if a Palm Grove-approved new tenant takes the unit within that period."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "two months rent penalty",
+            "covered": true
+          },
+          {
+            "fact": "60 days notice",
+            "covered": true
+          },
+          {
+            "fact": "waived if an approved new tenant takes over",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1106,
+        "output_tokens": 206,
+        "cost_usd": 0.008544
+      },
+      "cited_text": {
+        "1": "دليل المستأجر, دليل المستأجر, 6. التجديد والمغادرة > 6.3 الإنهاء المبكر\n6.3.1 يتطلب إنهاء العقد مبكراً إشعاراً كتابياً قبل 60 يوماً وغرامة تعادل إيجار شهرين. وتُعفى الغرامة إذا استلم الوحدة مستأجر جديد توافق عليه بالم جروف العقارية خلال تلك المدة."
+      }
+    },
+    {
+      "id": "p-03",
+      "category": "paraphrase",
+      "question": "My AC stopped cooling in July. How fast will someone come?",
+      "facts": [
+        "urgent",
+        "within 24 hours"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "An AC that is not cooling between May and October is classed as Urgent, so July falls in that period. [1] The first response for Urgent requests is within 24 hours. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#4.2": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "The sources give only the time to first response, not how long until the AC is actually fixed.",
+      "statements": [
+        {
+          "text": "An AC that is not cooling between May and October is classed as Urgent, so July falls in that period.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Urgent; Examples: Air conditioning not cooling between May and October, no hot water"
+            }
+          ]
+        },
+        {
+          "text": "The first response for Urgent requests is within 24 hours.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "First response: Within 24 hours"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "4.2 Response times",
+          "heading_path": "4. Maintenance > 4.2 Response times",
+          "page": 2,
+          "label": "Tenant Handbook, 4. Maintenance > 4.2 Response times, page 2",
+          "chunk_id": 99,
+          "quotes": [
+            "Urgent; Examples: Air conditioning not cooling between May and October, no hot water",
+            "First response: Within 24 hours"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.79,
+      "cost_usd": 0.006287200000000001,
+      "translation_cost_usd": 5.72e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "4. Maintenance > 4.2 Response times",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "4. الصيانة > 4.2 أوقات الاستجابة",
+          "score": 0.03021353930031804
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "2. Moving in > 2.4 Utilities",
+          "score": 0.029462365591397848
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "4. الصيانة > 4.1 الإبلاغ عن مشكلة",
+          "score": 0.028814262023217248
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "2. الانتقال إلى الوحدة > 2.1 فحص الاستلام",
+          "score": 0.028283227848101267
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source lists AC not cooling between May and October as Urgent; July falling in that window follows directly."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source states Urgent first response is within 24 hours."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "urgent",
+            "covered": true
+          },
+          {
+            "fact": "within 24 hours",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1082,
+        "output_tokens": 137,
+        "cost_usd": 0.007068
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 4. Maintenance > 4.2 Response times, page 2\n4.2.1 Requests are prioritised as follows:\n\nPriority: Emergency; Examples: Water leak, power cut in the unit, lift entrapment, gas smell; First response: Within 2 hours, 24/7\nPriority: Urgent; Examples: Air conditioning not cooling between May and October, no hot water; First response: Within 24 hours\nPriority: Routine; Examples: Dripping tap, door handle, minor electrical fault; First response: Within 5 working days"
+      }
+    },
+    {
+      "id": "p-04",
+      "category": "paraphrase",
+      "question": "Am I allowed to grill on my balcony?",
+      "facts": [
+        "no open-flame barbecues",
+        "electric grills are allowed"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Barbecues with an open flame are not allowed on balconies. [1] Electric grills are allowed on balconies. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#5.3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Barbecues with an open flame are not allowed on balconies.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "barbecues with an open flame are not allowed on balconies"
+            }
+          ]
+        },
+        {
+          "text": "Electric grills are allowed on balconies.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Electric grills are allowed."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "5.3 Balconies",
+          "heading_path": "5. Building rules > 5.3 Balconies",
+          "page": 2,
+          "label": "Tenant Handbook, 5. Building rules > 5.3 Balconies, page 2",
+          "chunk_id": 104,
+          "quotes": [
+            "barbecues with an open flame are not allowed on balconies",
+            "Electric grills are allowed."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.27,
+      "cost_usd": 0.0045022000000000005,
+      "translation_cost_usd": 4.4200000000000004e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "5. Building rules > 5.3 Balconies",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "5. Other questions > 5.1 Are pets allowed?",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "3. Barbecue area",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "5. Building rules > 5.2 Pets",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "5. Building rules > 5.1 Quiet hours",
+          "score": 0.029850746268656716
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states open-flame barbecues are not allowed on balconies."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states electric grills are allowed."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "no open-flame barbecues",
+            "covered": true
+          },
+          {
+            "fact": "electric grills are allowed",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 962,
+        "output_tokens": 136,
+        "cost_usd": 0.006568
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 5. Building rules > 5.3 Balconies, page 2\n5.3.1 Laundry must not be visible from outside, and barbecues with an open flame are not allowed on balconies. Electric grills are allowed."
+      }
+    },
+    {
+      "id": "t-01",
+      "category": "table",
+      "question": "What discount do I get if I pay the whole year's rent at once?",
+      "facts": [
+        "2% discount"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Paying the whole year's rent in a single payment gives a 2% discount on the annual rent. [1] The single payment can be made by one cheque or by transfer. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#3.1": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Paying the whole year's rent in a single payment gives a 2% discount on the annual rent.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Plan: Single payment; Payments per year: 1 cheque or transfer; Price adjustment: 2% discount on annual rent"
+            }
+          ]
+        },
+        {
+          "text": "The single payment can be made by one cheque or by transfer.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Payments per year: 1 cheque or transfer"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "3.1 Payment plans",
+          "heading_path": "3. Rent and payments > 3.1 Payment plans",
+          "page": 1,
+          "label": "Tenant Handbook, 3. Rent and payments > 3.1 Payment plans, page 1",
+          "chunk_id": 95,
+          "quotes": [
+            "Plan: Single payment; Payments per year: 1 cheque or transfer; Price adjustment: 2% discount on annual rent",
+            "Payments per year: 1 cheque or transfer"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.23,
+      "cost_usd": 0.0064597,
+      "translation_cost_usd": 5.5700000000000005e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.1 Payment plans",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "3. الإيجار والدفعات > 3.1 خطط الدفع",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.5 Can I pay rent by credit card?",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.030776515151515152
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "3. Rent and payments > 3.2 Security deposit",
+          "score": 0.03030998851894374
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "The source lists the single payment plan with a 2% discount on annual rent."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "The source states that the single payment plan uses 1 cheque or transfer."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "2% discount",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1154,
+        "output_tokens": 118,
+        "cost_usd": 0.006976
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 3. Rent and payments > 3.1 Payment plans, page 1\n3.1.1 Rent is paid in advance for the contract year. You can choose one of these plans:\n\nPlan: Single payment; Payments per year: 1 cheque or transfer; Price adjustment: 2% discount on annual rent\nPlan: Two payments; Payments per year: 2 cheques; Price adjustment: 1% discount\nPlan: Standard; Payments per year: 4 cheques; Price adjustment: No adjustment\nPlan: Monthly; Payments per year: 12 cheques; Price adjustment: 3% surcharge\n\n3.1.2 Post-dated cheques are collected at contract signing and deposited on their due date. Bank transfers must quote the unit number as the payment reference."
+      }
+    },
+    {
+      "id": "t-02",
+      "category": "table",
+      "question": "How long is maternity leave, and how much of it is on full pay?",
+      "facts": [
+        "60 calendar days",
+        "45 days full pay, 15 days half pay"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Maternity leave is 60 calendar days. [1] 45 of those days are on full pay, and the other 15 days are on half pay. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "leave-policy#4": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "Maternity leave is 60 calendar days.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Leave type: Maternity leave; Entitlement: 60 calendar days"
+            }
+          ]
+        },
+        {
+          "text": "45 of those days are on full pay, and the other 15 days are on half pay.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "45 days full pay, 15 days half pay"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/leave-policy.docx",
+          "title": "Working Time and Leave Policy",
+          "section": "4. Leave entitlements",
+          "heading_path": "4. Leave entitlements",
+          "page": null,
+          "label": "Working Time and Leave Policy, 4. Leave entitlements",
+          "chunk_id": 68,
+          "quotes": [
+            "Leave type: Maternity leave; Entitlement: 60 calendar days",
+            "45 days full pay, 15 days half pay"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.26,
+      "cost_usd": 0.0071302,
+      "translation_cost_usd": 5.42e-05,
+      "retrieved": [
+        {
+          "document": "en/leave-policy.docx",
+          "section": "4. Leave entitlements",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "4. استحقاقات الإجازات",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "5. Requesting leave",
+          "score": 0.0315136476426799
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "6. Carry-over and encashment",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "5. طلب الإجازة",
+          "score": 0.03021353930031804
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 lists maternity leave as 60 calendar days."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states 45 days full pay and 15 days half pay."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "60 calendar days",
+            "covered": true
+          },
+          {
+            "fact": "45 days full pay, 15 days half pay",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1320,
+        "output_tokens": 143,
+        "cost_usd": 0.00814
+      },
+      "cited_text": {
+        "1": "Working Time and Leave Policy, Working Time and Leave Policy, 4. Leave entitlements\n4.1 Employees are entitled to the following paid and unpaid leave:\n\nLeave type: Annual leave; Entitlement: 25 working days per year, accrued monthly; Pay: Full pay\nLeave type: Sick leave; Entitlement: First 15 days per year; Pay: Full pay\nLeave type: Sick leave; Entitlement: Next 30 days; Pay: Half pay\nLeave type: Maternity leave; Entitlement: 60 calendar days; Pay: 45 days full pay, 15 days half pay\nLeave type: Parental leave; Entitlement: 5 working days within 6 months of the birth; Pay: Full pay\nLeave type: Bereavement leave; Entitlement: 5 days for a spouse, 3 days for a parent, child or sibling; Pay: Full pay\nLeave type: Study leave; Entitlement: 10 working days per year for approved exams; Pay: Full pay\n\n4.2 Annual leave accrues from the first day of employment but can be taken only after probation, except in an emergency approved by HR.\n\n4.3 Sick leave of more than one day needs a medical certificate, uploaded to the HR portal within 2 working days of returning."
+      }
+    },
+    {
+      "id": "t-03",
+      "category": "table",
+      "question": "What does the Managed Plus package cost and what does it add over Managed?",
+      "facts": [
+        "8% of annual rent",
+        "quarterly inspections",
+        "utility handling",
+        "yearly condition report"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "The Managed Plus package costs 8% of annual rent. [1] Managed Plus includes everything in Managed. [1] Over Managed, it adds quarterly inspections, utility handling and a yearly condition report. [1] Managed itself costs 6% of annual rent. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "service-faq#3.1": 1
+        },
+        "top1": true
+      },
+      "citations_total": 4,
+      "citations_valid": 4,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "The Managed Plus package costs 8% of annual rent.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Package: Managed Plus; Fee: 8% of annual rent"
+            }
+          ]
+        },
+        {
+          "text": "Managed Plus includes everything in Managed.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Managed, plus quarterly inspections, utility handling and a yearly condition report"
+            }
+          ]
+        },
+        {
+          "text": "Over Managed, it adds quarterly inspections, utility handling and a yearly condition report.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Managed, plus quarterly inspections, utility handling and a yearly condition report"
+            }
+          ]
+        },
+        {
+          "text": "Managed itself costs 6% of annual rent.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Package: Managed; Fee: 6% of annual rent"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/service-faq.md",
+          "title": "Customer Service FAQ",
+          "section": "3.1 Do you manage properties for owners?",
+          "heading_path": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "page": null,
+          "label": "Customer Service FAQ, 3. Landlord services > 3.1 Do you manage properties for owners?",
+          "chunk_id": 82,
+          "quotes": [
+            "Package: Managed Plus; Fee: 8% of annual rent",
+            "Managed, plus quarterly inspections, utility handling and a yearly condition report",
+            "Package: Managed; Fee: 6% of annual rent"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 4.62,
+      "cost_usd": 0.0068969,
+      "translation_cost_usd": 5.4900000000000006e-05,
+      "retrieved": [
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.04891591750396616
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.2 How often do landlords receive their rent?",
+          "score": 0.045890937019969276
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.3 What is the agency fee?",
+          "score": 0.04394190454670985
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "3. خدمات الملاك > 3.1 هل تديرون العقارات نيابة عن الملاك؟",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/amenities-guide.md",
+          "section": "4. Function room",
+          "score": 0.029030910609857977
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source lists Managed Plus fee as 8% of annual rent."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source says Managed Plus includes Managed."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source lists quarterly inspections, utility handling and a yearly condition report as additions."
+          },
+          {
+            "index": 4,
+            "verdict": "supported",
+            "reason": "Source lists Managed fee as 6% of annual rent."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "8% of annual rent",
+            "covered": true
+          },
+          {
+            "fact": "quarterly inspections",
+            "covered": true
+          },
+          {
+            "fact": "utility handling",
+            "covered": true
+          },
+          {
+            "fact": "yearly condition report",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1171,
+        "output_tokens": 252,
+        "cost_usd": 0.009724
+      },
+      "cited_text": {
+        "1": "Customer Service FAQ, Customer Service FAQ, 3. Landlord services > 3.1 Do you manage properties for owners?\nYes. We offer three management packages:\n\nPackage: Lease Only; Fee: 50% of one month's rent, once; What is included: Marketing, viewings, tenant screening, contract and registration\nPackage: Managed; Fee: 6% of annual rent; What is included: Lease Only, plus rent collection, maintenance coordination and renewals\nPackage: Managed Plus; Fee: 8% of annual rent; What is included: Managed, plus quarterly inspections, utility handling and a yearly condition report"
+      }
+    },
+    {
+      "id": "t-04",
+      "category": "table",
+      "question": "ما رقم هاتف قسم الحسابات وما ساعات عمله؟",
+      "facts": [
+        "04 555 0102",
+        "Monday to Friday 09:00 to 17:00"
+      ],
+      "language": "ar",
+      "answerable": true,
+      "answer": "رقم هاتف قسم الحسابات هو 04 555 0102. [1] ساعات عمل قسم الحسابات من الاثنين إلى الجمعة من 09:00 إلى 17:00. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "tenant-handbook#7": 1
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "",
+      "statements": [
+        {
+          "text": "رقم هاتف قسم الحسابات هو 04 555 0102.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "الفريق: الحسابات; البريد الإلكتروني: accounts@palmgrove.example; الهاتف: 04 555 0102"
+            }
+          ]
+        },
+        {
+          "text": "ساعات عمل قسم الحسابات من الاثنين إلى الجمعة من 09:00 إلى 17:00.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "ساعات العمل: من الاثنين إلى الجمعة 09:00 إلى 17:00"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "ar/tenant-handbook.md",
+          "title": "دليل المستأجر",
+          "section": "7. جهات الاتصال",
+          "heading_path": "7. جهات الاتصال",
+          "page": null,
+          "label": "دليل المستأجر, 7. جهات الاتصال",
+          "chunk_id": 48,
+          "quotes": [
+            "الفريق: الحسابات; البريد الإلكتروني: accounts@palmgrove.example; الهاتف: 04 555 0102",
+            "ساعات العمل: من الاثنين إلى الجمعة 09:00 إلى 17:00"
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.61,
+      "cost_usd": 0.0068782,
+      "translation_cost_usd": 4.4200000000000004e-05,
+      "retrieved": [
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "7. جهات الاتصال",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "1. ساعات العمل والتواصل > 1.1 متى يفتح المكتب؟",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "7. Contacts",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "1. ساعات العمل والتواصل > 1.2 كيف يمكنني التواصل معكم؟",
+          "score": 0.030798389007344232
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "1. Opening hours and contact > 1.1 When is the office open?",
+          "score": 0.03076923076923077
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "The source lists the accounts team's phone number as 04 555 0102."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "The source lists the accounts team's hours as Monday to Friday, 09:00 to 17:00."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "04 555 0102",
+            "covered": true
+          },
+          {
+            "fact": "Monday to Friday 09:00 to 17:00",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1258,
+        "output_tokens": 157,
+        "cost_usd": 0.008172
+      },
+      "cited_text": {
+        "1": "دليل المستأجر, دليل المستأجر, 7. جهات الاتصال\nالفريق: التأجير; البريد الإلكتروني: leasing@palmgrove.example; الهاتف: 04 555 0101; ساعات العمل: من الاثنين إلى الجمعة 09:00 إلى 18:00\nالفريق: الصيانة; البريد الإلكتروني: maintenance@palmgrove.example; الهاتف: 800 7256; ساعات العمل: على مدار الساعة\nالفريق: الحسابات; البريد الإلكتروني: accounts@palmgrove.example; الهاتف: 04 555 0102; ساعات العمل: من الاثنين إلى الجمعة 09:00 إلى 17:00\nالفريق: الاستقبال; البريد الإلكتروني: reception@palmgrove.example; الهاتف: 04 555 0100; ساعات العمل: يومياً 07:00 إلى 23:00"
+      }
+    },
+    {
+      "id": "m-01",
+      "category": "multi_document",
+      "question": "What fees do I pay when I first rent a flat through you, including the tenancy registration?",
+      "facts": [
+        "agency fee 5% of annual rent, minimum AED 5,000, plus VAT",
+        "registration fee AED 220"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "The agency fee for a new tenancy is 5% of the annual rent, with a minimum of AED 5,000, plus 5% VAT. [1] The tenant pays a tenancy registration fee of AED 220. [2] The registration fee is added to the first invoice. [2]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "service-faq#2.3": 2,
+          "tenant-handbook#2.3": 1
+        },
+        "top1": true
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "The sources do not list other first-time costs such as the security deposit amount or cheque amounts.",
+      "statements": [
+        {
+          "text": "The agency fee for a new tenancy is 5% of the annual rent, with a minimum of AED 5,000, plus 5% VAT.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "The agency fee for a new tenancy is 5% of the annual rent, with a minimum of AED 5,000, plus 5% VAT."
+            }
+          ]
+        },
+        {
+          "text": "The tenant pays a tenancy registration fee of AED 220.",
+          "citations": [
+            {
+              "n": 2,
+              "quote": "The registration fee of AED 220 is paid by the tenant and is added to the first invoice."
+            }
+          ]
+        },
+        {
+          "text": "The registration fee is added to the first invoice.",
+          "citations": [
+            {
+              "n": 2,
+              "quote": "The registration fee of AED 220 is paid by the tenant and is added to the first invoice."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/service-faq.md",
+          "title": "Customer Service FAQ",
+          "section": "2.3 What is the agency fee?",
+          "heading_path": "2. Renting a home > 2.3 What is the agency fee?",
+          "page": null,
+          "label": "Customer Service FAQ, 2. Renting a home > 2.3 What is the agency fee?",
+          "chunk_id": 79,
+          "quotes": [
+            "The agency fee for a new tenancy is 5% of the annual rent, with a minimum of AED 5,000, plus 5% VAT."
+          ]
+        },
+        {
+          "n": 2,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "2.3 Tenancy registration",
+          "heading_path": "2. Moving in > 2.3 Tenancy registration",
+          "page": 1,
+          "label": "Tenant Handbook, 2. Moving in > 2.3 Tenancy registration, page 1",
+          "chunk_id": 93,
+          "quotes": [
+            "The registration fee of AED 220 is paid by the tenant and is added to the first invoice."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 4.43,
+      "cost_usd": 0.0071494,
+      "translation_cost_usd": 6.54e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "2. Moving in > 2.3 Tenancy registration",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.3 What is the agency fee?",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.031754032258064516
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "2. الانتقال إلى الوحدة > 2.3 تسجيل عقد الإيجار",
+          "score": 0.03131881575727918
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "2. Renting a home > 2.4 How long does it take to sign a contract?",
+          "score": 0.03057889822595705
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states this agency fee verbatim."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 2 says the AED 220 registration fee is paid by the tenant."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 2 says the fee is added to the first invoice."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "agency fee 5% of annual rent, minimum AED 5,000, plus VAT",
+            "covered": true
+          },
+          {
+            "fact": "registration fee AED 220",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1221,
+        "output_tokens": 195,
+        "cost_usd": 0.008784
+      },
+      "cited_text": {
+        "1": "Customer Service FAQ, Customer Service FAQ, 2. Renting a home > 2.3 What is the agency fee?\nThe agency fee for a new tenancy is 5% of the annual rent, with a minimum of AED 5,000, plus 5% VAT. There is no agency fee when you renew a tenancy with us.",
+        "2": "Tenant Handbook, Tenant Handbook, 2. Moving in > 2.3 Tenancy registration, page 1\n2.3.1 Palm Grove Realty registers the tenancy contract with the government tenancy registration system within 5 working days of receiving the signed contract and a copy of your Emirates ID.\n\n2.3.2 The registration fee of AED 220 is paid by the tenant and is added to the first invoice."
+      }
+    },
+    {
+      "id": "m-02",
+      "category": "multi_document",
+      "question": "I am going to a 4 day conference in Europe for work. How early must I request the leave, and what daily allowance do I get?",
+      "facts": [
+        "request at least 14 days in advance",
+        "AED 400 per day in Europe"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "Leave of 3 days or more must be requested at least 14 days in advance, so a 4-day absence needs 14 days' notice. [1] The daily allowance for travel to Europe is 400 dirhams per travel day. [2] No daily allowance is paid for days when the host provides full meals. [2]",
+      "language_match": true,
+      "retrieval": {
+        "hit": true,
+        "ranks": {
+          "leave-policy#5": 2,
+          "travel-expenses-policy#5": 1
+        },
+        "top1": true
+      },
+      "citations_total": 3,
+      "citations_valid": 3,
+      "dropped": [],
+      "not_covered": "The sources do not say whether a work conference counts as leave, so the 14-day leave rule may not apply to a business trip. Business travel instead needs department head approval at least 10 working days before travel, plus CEO approval for trips outside the UAE.",
+      "statements": [
+        {
+          "text": "Leave of 3 days or more must be requested at least 14 days in advance, so a 4-day absence needs 14 days' notice.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Leave of 3 days or more must be requested at least 14 days in advance"
+            }
+          ]
+        },
+        {
+          "text": "The daily allowance for travel to Europe is 400 dirhams per travel day.",
+          "citations": [
+            {
+              "n": 2,
+              "quote": "الوجهة: أوروبا; البدل اليومي: 400 درهم"
+            }
+          ]
+        },
+        {
+          "text": "No daily allowance is paid for days when the host provides full meals.",
+          "citations": [
+            {
+              "n": 2,
+              "quote": "لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/leave-policy.docx",
+          "title": "Working Time and Leave Policy",
+          "section": "5. Requesting leave",
+          "heading_path": "5. Requesting leave",
+          "page": null,
+          "label": "Working Time and Leave Policy, 5. Requesting leave",
+          "chunk_id": 69,
+          "quotes": [
+            "Leave of 3 days or more must be requested at least 14 days in advance"
+          ]
+        },
+        {
+          "n": 2,
+          "document": "ar/travel-expenses-policy.md",
+          "title": "سياسة السفر ومصروفات العمل",
+          "section": "5. البدل اليومي",
+          "heading_path": "5. البدل اليومي",
+          "page": null,
+          "label": "سياسة السفر ومصروفات العمل, 5. البدل اليومي",
+          "chunk_id": 54,
+          "quotes": [
+            "الوجهة: أوروبا; البدل اليومي: 400 درهم",
+            "لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 5.05,
+      "cost_usd": 0.008280500000000001,
+      "translation_cost_usd": 8.05e-05,
+      "retrieved": [
+        {
+          "document": "ar/travel-expenses-policy.md",
+          "section": "5. البدل اليومي",
+          "score": 0.032266458495966696
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "5. Requesting leave",
+          "score": 0.03225806451612903
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "4. Leave entitlements",
+          "score": 0.0317780580075662
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "6. Carry-over and encashment",
+          "score": 0.031024531024531024
+        },
+        {
+          "document": "ar/leave-policy.docx",
+          "section": "5. طلب الإجازة",
+          "score": 0.030834914611005692
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 states leave of 3 days or more must be requested at least 14 days in advance."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 2 lists a daily allowance of 400 dirhams per travel day for Europe."
+          },
+          {
+            "index": 3,
+            "verdict": "supported",
+            "reason": "Source 2 section 5.2 says no daily allowance is paid on days the host provides full meals."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "request at least 14 days in advance",
+            "covered": true
+          },
+          {
+            "fact": "AED 400 per day in Europe",
+            "covered": true
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1394,
+        "output_tokens": 211,
+        "cost_usd": 0.009796
+      },
+      "cited_text": {
+        "1": "Working Time and Leave Policy, Working Time and Leave Policy, 5. Requesting leave\n5.1 Request leave through the HR portal. Leave of 3 days or more must be requested at least 14 days in advance; shorter leave at least 2 working days in advance.\n\n5.2 Managers answer leave requests within 3 working days. A request with no answer after 3 working days is escalated to HR automatically.\n\n5.3 No more than two people from the same team may be on annual leave at the same time between 15 December and 10 January.",
+        "2": "سياسة السفر ومصروفات العمل, سياسة السفر ومصروفات العمل, 5. البدل اليومي\n5.1 يُصرف للموظف بدل يومي عن كل يوم سفر لتغطية الوجبات والتنقلات المحلية حسب الوجهة:\n\nالوجهة: دول مجلس التعاون الخليجي; البدل اليومي: 250 درهماً\nالوجهة: أوروبا; البدل اليومي: 400 درهم\nالوجهة: باقي الدول; البدل اليومي: 300 درهم\n\n5.2 لا يُصرف البدل اليومي عن الأيام التي توفر فيها الجهة المضيفة الوجبات كاملة."
+      }
+    },
+    {
+      "id": "m-03",
+      "category": "multi_document",
+      "question": "How do I report a maintenance problem, and how do I complain if it is not fixed?",
+      "facts": [
+        "tenant app, maintenance email or 800 7256 hotline",
+        "complaints@palmgrove.example or the app, acknowledged within 1 working day"
+      ],
+      "language": "en",
+      "answerable": true,
+      "answer": "You can report maintenance through the tenant app, by email to maintenance@palmgrove.example, or by calling the 24 hour hotline on 800 7256. [1] Each request receives a reference number. [1]",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {
+          "tenant-handbook#4.1": 1,
+          "service-faq#4.1": null
+        },
+        "top1": true
+      },
+      "citations_total": 2,
+      "citations_valid": 2,
+      "dropped": [],
+      "not_covered": "The sources do not explain how to complain if a maintenance problem is not fixed; no complaint or escalation process is described.",
+      "statements": [
+        {
+          "text": "You can report maintenance through the tenant app, by email to maintenance@palmgrove.example, or by calling the 24 hour hotline on 800 7256.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Report maintenance through the tenant app, by email to maintenance@palmgrove.example, or by calling the 24 hour hotline on 800 7256."
+            }
+          ]
+        },
+        {
+          "text": "Each request receives a reference number.",
+          "citations": [
+            {
+              "n": 1,
+              "quote": "Each request receives a reference number."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "n": 1,
+          "document": "en/tenant-handbook.pdf",
+          "title": "Tenant Handbook",
+          "section": "4.1 Reporting a problem",
+          "heading_path": "4. Maintenance > 4.1 Reporting a problem",
+          "page": 2,
+          "label": "Tenant Handbook, 4. Maintenance > 4.1 Reporting a problem, page 2",
+          "chunk_id": 98,
+          "quotes": [
+            "Report maintenance through the tenant app, by email to maintenance@palmgrove.example, or by calling the 24 hour hotline on 800 7256.",
+            "Each request receives a reference number."
+          ]
+        }
+      ],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.79,
+      "cost_usd": 0.0063743,
+      "translation_cost_usd": 5.8299999999999994e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "4. Maintenance > 4.1 Reporting a problem",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "4. الصيانة > 4.1 الإبلاغ عن مشكلة",
+          "score": 0.03252247488101533
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "2. Moving in > 2.1 Handover inspection",
+          "score": 0.03200204813108039
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "4. Maintenance > 4.2 Response times",
+          "score": 0.03125
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "4. الصيانة > 4.2 أوقات الاستجابة",
+          "score": 0.029469122426868905
+        }
+      ],
+      "judge": {
+        "statements": [
+          {
+            "index": 1,
+            "verdict": "supported",
+            "reason": "Source 1 lists the app, the maintenance email and the 800 7256 hotline as reporting channels."
+          },
+          {
+            "index": 2,
+            "verdict": "supported",
+            "reason": "Source 1 states that each request receives a reference number."
+          }
+        ],
+        "facts": [
+          {
+            "fact": "tenant app, maintenance email or 800 7256 hotline",
+            "covered": true
+          },
+          {
+            "fact": "complaints@palmgrove.example or the app, acknowledged within 1 working day",
+            "covered": false
+          }
+        ],
+        "faithfulness": 1.0,
+        "model": "claude-opus-5-5",
+        "input_tokens": 1048,
+        "output_tokens": 176,
+        "cost_usd": 0.007712
+      },
+      "cited_text": {
+        "1": "Tenant Handbook, Tenant Handbook, 4. Maintenance > 4.1 Reporting a problem, page 2\n4.1.1 Report maintenance through the tenant app, by email to maintenance@palmgrove.example, or by calling the 24 hour hotline on 800 7256. Each request receives a reference number."
+      }
+    },
+    {
+      "id": "o-01",
+      "category": "out_of_scope",
+      "question": "Does Palm Grove Realty offer car rentals for tenants?",
+      "facts": [],
+      "language": "en",
+      "answerable": false,
+      "answer": "The documents do not contain an answer to this question.",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {},
+        "top1": false
+      },
+      "citations_total": 0,
+      "citations_valid": 0,
+      "dropped": [],
+      "not_covered": "The sources do not mention car rentals for tenants.",
+      "statements": [],
+      "sources": [],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 1.77,
+      "cost_usd": 0.0033949,
+      "translation_cost_usd": 5.0900000000000004e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "1. About this handbook",
+          "score": 0.047371031746031744
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "Tenant Handbook",
+          "score": 0.045890937019969276
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "Customer Service FAQ",
+          "score": 0.04477508513502811
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "5. Other questions > 5.1 Are pets allowed?",
+          "score": 0.0441133766807651
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "4. Maintenance > 4.3 Tenant responsibilities",
+          "score": 0.04387320923315221
+        }
+      ]
+    },
+    {
+      "id": "o-02",
+      "category": "out_of_scope",
+      "question": "What is the salary range for a property officer?",
+      "facts": [],
+      "language": "en",
+      "answerable": false,
+      "answer": "The documents do not contain an answer to this question.",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {},
+        "top1": false
+      },
+      "citations_total": 0,
+      "citations_valid": 0,
+      "dropped": [],
+      "not_covered": "The sources do not give any salary range for a property officer. They only mention property officers in relation to remote work and working hours.",
+      "statements": [],
+      "sources": [],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 1.8,
+      "cost_usd": 0.0046879,
+      "translation_cost_usd": 4.39e-05,
+      "retrieved": [
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.03201844262295082
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "3. Remote work",
+          "score": 0.03200204813108039
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "5. Other questions > 5.2 Do you help with buying a property?",
+          "score": 0.03200204813108039
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "3. خدمات الملاك > 3.1 هل تديرون العقارات نيابة عن الملاك؟",
+          "score": 0.03131881575727918
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "1. Opening hours and contact > 1.1 When is the office open?",
+          "score": 0.03047794966520434
+        }
+      ]
+    },
+    {
+      "id": "o-03",
+      "category": "out_of_scope",
+      "question": "هل تقدمون خدمات تنظيف المنازل للمستأجرين؟",
+      "facts": [],
+      "language": "ar",
+      "answerable": false,
+      "answer": "لا تحتوي المستندات على إجابة لهذا السؤال.",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {},
+        "top1": false
+      },
+      "citations_total": 0,
+      "citations_valid": 0,
+      "dropped": [],
+      "not_covered": "لا تذكر المصادر أي خدمات لتنظيف المنازل للمستأجرين. فهي تتناول باقات إدارة العقارات للملاك ومسؤوليات الصيانة والدفع فقط.",
+      "statements": [],
+      "sources": [],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.18,
+      "cost_usd": 0.005246300000000001,
+      "translation_cost_usd": 4.23e-05,
+      "retrieved": [
+        {
+          "document": "ar/service-faq.md",
+          "section": "3. خدمات الملاك > 3.1 هل تديرون العقارات نيابة عن الملاك؟",
+          "score": 0.03278688524590164
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "3. Landlord services > 3.1 Do you manage properties for owners?",
+          "score": 0.031746031746031744
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "3. خدمات الملاك > 3.2 متى يستلم الملاك الإيجار؟",
+          "score": 0.03128054740957967
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "4. الصيانة > 4.3 مسؤوليات المستأجر",
+          "score": 0.03125763125763126
+        },
+        {
+          "document": "ar/service-faq.md",
+          "section": "2. استئجار منزل > 2.5 هل يمكنني دفع الإيجار ببطاقة الائتمان؟",
+          "score": 0.030536130536130537
+        }
+      ]
+    },
+    {
+      "id": "o-04",
+      "category": "out_of_scope",
+      "question": "How much is the rent for a 2 bedroom apartment at Palm Grove Residences?",
+      "facts": [],
+      "language": "en",
+      "answerable": false,
+      "answer": "The documents do not contain an answer to this question.",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {},
+        "top1": false
+      },
+      "citations_total": 0,
+      "citations_valid": 0,
+      "dropped": [],
+      "not_covered": "The sources do not give the rent for a 2 bedroom apartment at Palm Grove Residences. They only say that district cooling charges are included in the rent and that the tenancy contract applies if it differs from the handbook.",
+      "statements": [],
+      "sources": [],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 3.21,
+      "cost_usd": 0.0043271,
+      "translation_cost_usd": 5.11e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "2. Moving in > 2.4 Utilities",
+          "score": 0.031746031746031744
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "1. حول هذا الدليل",
+          "score": 0.030621785881252923
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "1. About this handbook",
+          "score": 0.02943722943722944
+        },
+        {
+          "document": "ar/tenant-handbook.md",
+          "section": "2. الانتقال إلى الوحدة > 2.3 تسجيل عقد الإيجار",
+          "score": 0.029386529386529386
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "5. Other questions > 5.1 Are pets allowed?",
+          "score": 0.02921395544346364
+        }
+      ]
+    },
+    {
+      "id": "o-05",
+      "category": "out_of_scope",
+      "question": "What is the name of Palm Grove Realty's chief executive?",
+      "facts": [],
+      "language": "en",
+      "answerable": false,
+      "answer": "The documents do not contain an answer to this question.",
+      "language_match": true,
+      "retrieval": {
+        "hit": false,
+        "ranks": {},
+        "top1": false
+      },
+      "citations_total": 0,
+      "citations_valid": 0,
+      "dropped": [],
+      "not_covered": "The sources do not name Palm Grove Realty's chief executive. They only mention an HR Manager as owner of a policy, without a name.",
+      "statements": [],
+      "sources": [],
+      "model": "claude-sonnet-5-5",
+      "latency_s": 2.6,
+      "cost_usd": 0.0036062,
+      "translation_cost_usd": 5.02e-05,
+      "retrieved": [
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "1. About this handbook",
+          "score": 0.048131080389144903
+        },
+        {
+          "document": "en/tenant-handbook.pdf",
+          "section": "Tenant Handbook",
+          "score": 0.04793840039741679
+        },
+        {
+          "document": "en/service-faq.md",
+          "section": "Customer Service FAQ",
+          "score": 0.04627081163075461
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "Working Time and Leave Policy",
+          "score": 0.04529114263053264
+        },
+        {
+          "document": "en/leave-policy.docx",
+          "section": "1. Purpose and scope",
+          "score": 0.04461659663865546
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "questions": 32,
+    "in_scope": 27,
+    "out_of_scope": 5,
+    "retrieval_hit": "26/27 (96%)",
+    "top1": "25/27 (93%)",
+    "faithfulness": "100%",
+    "statements_supported": "67/67 (100%)",
+    "fully_faithful": "27/27 (100%)",
+    "facts_covered": "49/50 (98%)",
+    "citation_validity": "67/67 (100%)",
+    "refused_out_of_scope": "5/5 (100%)",
+    "wrongly_refused": "0/27 (0%)",
+    "language_match": "32/32 (100%)",
+    "latency_s": 3.5834375,
+    "latency_max_s": 7.56,
+    "cost_usd": 0.0063518343750000004,
+    "judge_cost_usd": 0.21384
+  },
+  "stopped": null
+}

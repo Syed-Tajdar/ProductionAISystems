@@ -1,0 +1,59 @@
+id: us_insurance
+name: US insurance sales call
+version: 1
+languages: [en]
+description: >
+  Outbound or inbound sales call for health or auto insurance in the US.
+  Focus on recording disclosure, consent and honest product claims.
+pass_threshold: 80   # overall score needed, and no critical item may fail
+
+items:
+  - id: agent_identification
+    title: Agent identification
+    weight: 10
+    critical: false
+    pass_if: Agent states their own name and the company name near the start of the call.
+    fail_if: Agent gives no name, or no company, before discussing the product.
+
+  - id: recording_disclosure
+    title: Recording disclosure
+    weight: 20
+    critical: true
+    pass_if: Agent says the call is recorded (or may be recorded) within the first 30 seconds.
+    fail_if: No recording disclosure, or it comes after the first 30 seconds.
+
+  - id: consent_to_continue
+    title: Consent before questions
+    weight: 20
+    critical: true
+    pass_if: Agent asks permission and gets a clear yes before collecting personal details or presenting plans.
+    fail_if: Agent asks for personal details (date of birth, address, SSN, health info) without first asking permission.
+
+  - id: needs_discovery
+    title: Needs discovery
+    weight: 15
+    critical: false
+    pass_if: Agent asks at least two questions about current coverage, household, budget, doctors or vehicles.
+    fail_if: Agent pitches or collects identifiers without learning what the customer needs.
+
+  - id: no_misleading_claims
+    title: No misleading claims
+    weight: 20
+    critical: true
+    pass_if: Agent makes no guarantees about approval, price or cost, and hedges estimates.
+    fail_if: Agent says approval is guaranteed, the plan is free or "basically free", or uses false urgency such as an offer that expires tonight.
+
+  - id: dnc_handling
+    title: Do-not-call request
+    weight: 10
+    critical: true
+    pass_if: When the customer asks not to be called again, the agent stops selling and confirms they will be removed.
+    fail_if: Agent keeps pitching, ignores the request, or schedules another call after it.
+    na_if: The customer never asks to stop calls.
+
+  - id: next_steps
+    title: Clear next step
+    weight: 5
+    critical: false
+    pass_if: Call ends with a specific next step the customer agrees to (time, channel), or a clean close if the customer declines.
+    fail_if: Vague follow-up such as "I'll call you later" with no agreed time, or a follow-up the customer did not agree to.

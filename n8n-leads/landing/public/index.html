@@ -1,0 +1,175 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Lead Automation demo</title>
+  <meta name="description" content="Send a test enquiry to a live n8n workflow and see what it does with it: urgency and reason, repeat check, sales alert and the reply email.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="demo-base.css">
+  <link rel="stylesheet" href="landing.css">
+  <link rel="stylesheet" href="demo-ui.css">
+  <script src="config.js"></script>
+  <script src="landing.js" defer></script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top"><div class="wrap">
+    <a class="brand" href="./">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" class="mark-bg"/><path d="M8.5 10h15l-6 7.2v5.3l-3 1.5v-6.8z" class="mark-a"/><circle cx="23.5" cy="22" r="1.8" class="mark-dot"/></svg>
+      <span>Lead Automation</span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="https://syed-tajdar.vercel.app/projects/n8n-leads" class="muted hide-sm">How it's built</a>
+      <a href="https://syed-tajdar.vercel.app" class="back">&larr; <span class="hide-xs">Back to </span>portfolio</a>
+      <button type="button" class="du-theme" data-du-theme hidden aria-label="Dark theme" aria-pressed="false">
+  <svg class="du-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+  <svg class="du-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+    </nav>
+  </div></header>
+  <div class="demo-bar"><div class="wrap demo-row">
+    <span class="demo-note"><span class="dot" aria-hidden="true"></span>Demo with a fictional agency. Use made-up details: demo leads are deleted after 7 days.</span>
+    <span class="limits-text">5 per 10 min each <span class="muted">&middot; 100 a day in total</span></span>
+  </div></div>
+
+  <main id="main" class="wrap narrow" data-plain="demo">
+    <section class="intro">
+      <h1>Send a test enquiry</h1>
+      <p class="muted">This is the contact form of Palm Grove Realty, a fictional Dubai property agency. Send it and see what the n8n workflow did with your enquiry: how urgent it is and why, whether it was a repeat, whether sales got an alert, and the reply email. The server sleeps when nobody uses it, so the first enquiry after a quiet spell takes 2 to 3 minutes.</p>
+    </section>
+
+    <section class="du-card" data-du-card="leads" aria-labelledby="du-card-leads">
+  <div class="du-card-head">
+    <h2 id="du-card-leads">What this demo shows</h2>
+    <button type="button" class="du-dismiss" data-du-dismiss hidden aria-label="Hide this card">&times;</button>
+  </div>
+  <ol class="du-points"><li>An AI model reads each enquiry, in English or Arabic, and rates it hot, warm or cold with a one-line reason.</li><li>A repeat enquiry is matched by phone or email and updates the saved lead instead of adding a second one. Hot leads alert sales on Telegram.</li><li>The reply email is written for real and shown on this page instead of sent, so this public form can&#39;t be used to send messages to someone else&#39;s address. In a real setup the same step sends it.</li></ol>
+</section>
+<script src="demo-ui.js"></script>
+
+    <form id="lead-form" class="lead-form" method="post" action="#webhook-not-set" data-per-visitor="5" data-window-minutes="10">
+      <div class="examples">
+        <span class="muted try" id="try-label">Try an example</span>
+        <div class="example-row" role="group" aria-labelledby="try-label">
+          <button type="button" data-example="0">Hot rental</button><button type="button" data-example="1">Buyer in Arabic</button><button type="button" data-example="2">Just browsing</button><button type="button" data-example="3">Spam</button>
+        </div>
+      </div>
+      <label>Name
+        <input name="name" autocomplete="off" required dir="auto" maxlength="120">
+      </label>
+      <div class="row">
+        <label><span>Phone <small>with country code</small></span>
+          <input name="phone" type="tel" autocomplete="off" inputmode="tel" placeholder="+971 50 000 0000">
+        </label>
+        <label><span>Email</span>
+          <input name="email" type="email" autocomplete="off" placeholder="name@example.com">
+        </label>
+      </div>
+      <label>What are you looking for?
+        <textarea name="message" required dir="auto" maxlength="4000" placeholder="e.g. 2 bedroom to rent in Dubai Marina, budget 120k, moving next month"></textarea>
+      </label>
+      <label class="hp" aria-hidden="true">Company
+        <input name="company" tabindex="-1" autocomplete="off">
+      </label>
+      <label class="consent">
+        <input type="checkbox" name="consent" value="yes" required>
+        <span>I understand this is a demo and I used made-up details.</span>
+      </label>
+      <div class="send-row">
+        <button type="submit">Send enquiry</button>
+        <span class="server" id="server" aria-live="polite" hidden></span>
+      </div>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+      <p class="privacy muted">Messages are read by a third-party AI service (Anthropic). Send the same phone or email twice to see the repeat check.</p>
+      <noscript><p class="privacy muted">Without JavaScript the form still sends, and the workflow's answer shows as raw data.</p></noscript>
+    </form>
+
+    <div class="sending" id="sending" role="status" aria-live="polite" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="sending-text" id="sending-text">Sending your enquiry to the workflow...</span>
+      <span class="skeleton" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+
+    <div id="state-slot"></div>
+    <template id="state-limit"><div class="du-state du-limit" role="status">
+  <svg class="du-state-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+  <p class="du-state-title">Demo limit reached</p>
+  <p class="du-state-body">-</p>
+  
+</div></template>
+    <template id="state-error"><div class="du-state du-error" role="alert">
+  <svg class="du-state-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.2v.3"/></svg>
+  <p class="du-state-title">The workflow did not answer</p>
+  <p class="du-state-body">-</p>
+  <a class="du-state-action" href="#lead-form">Try again</a>
+</div></template>
+    <template id="state-received"><div class="du-state du-empty" role="status">
+  <svg class="du-state-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5H4z"/></svg>
+  <p class="du-state-title">Enquiry received</p>
+  <p class="du-state-body">The workflow saved it. This server is not in demo mode, so it does not show the details here.</p>
+  
+</div></template>
+    <template id="state-setup"><div class="du-state du-empty" role="status">
+  <svg class="du-state-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h4l2 3h4l2-3h4M4 13l2.5-7h11L20 13v5H4z"/></svg>
+  <p class="du-state-title">Not connected yet</p>
+  <p class="du-state-body">This page has no workflow address. Set LEAD_WEBHOOK_URL on the hosting project and deploy again.</p>
+  
+</div></template>
+
+    <section class="result" id="result" aria-labelledby="result-title" tabindex="-1" hidden>
+      <h2 id="result-title">What the workflow did</h2>
+      <ol class="timeline">
+        <li class="step" id="step-sorted">
+          <h3>Sorted</h3>
+          <div class="verdict">
+            <span class="badge" id="r-category"></span>
+            <span class="intent muted" id="r-intent"></span>
+          </div>
+          <p class="reason" id="r-reason"></p>
+          <p class="summary muted" id="r-summary"></p>
+        </li>
+        <li class="step" id="step-repeat">
+          <h3>Repeat check</h3>
+          <p id="r-duplicate"></p>
+        </li>
+        <li class="step" id="step-alert">
+          <h3>Sales alert</h3>
+          <p id="r-alert"></p>
+          <figure class="tg" id="r-tg" hidden>
+            <figcaption class="tg-head"><span class="tg-avatar" aria-hidden="true">L</span><span><strong>Lead alerts</strong><span class="tg-sub">bot, in the sales chat on Telegram</span></span></figcaption>
+            <div class="tg-bubble" id="r-tg-text"></div>
+          </figure>
+        </li>
+        <li class="step" id="step-email">
+          <h3>Reply email</h3>
+          <p id="r-email-status"></p>
+          <article class="email" id="r-email" aria-labelledby="email-title" hidden>
+            <h4 id="email-title">Reply email</h4>
+            <p class="email-note">Demo mode: this email is shown here instead of sent, so this public form can't be used to send messages to someone else's address. In a real setup, this step sends it automatically.</p>
+            <dl class="email-head">
+              <div><dt>To</dt><dd id="r-to"></dd></div>
+              <div><dt>Subject</dt><dd id="r-subject"></dd></div>
+            </dl>
+            <div class="email-body" id="r-body"></div>
+          </article>
+        </li>
+      </ol>
+      <p class="again"><button type="button" class="again-button" id="again">Try another example</button></p>
+    </section>
+  </main>
+  <footer class="du-footer"><div class="wrap du-footer-row">
+  <span>Built by Syed Tajdar</span>
+  <nav class="du-footer-links" aria-label="About the author">
+    <a href="https://syed-tajdar.vercel.app">Portfolio</a>
+    <a href="https://www.linkedin.com/in/syed-tajdar-nazar-a2b431389" target="_blank" rel="noopener">LinkedIn<span class="du-sr"> (opens in a new tab)</span></a>
+    <a href="https://syed-tajdar.vercel.app/#contact">Contact</a>
+  </nav>
+</div></footer>
+  <script type="application/json" id="examples">[{"email": "sara.{n}@example.com", "label": "Hot rental", "message": "Looking for a 2 bedroom to rent in Dubai Marina, budget 120k a year. We need to move within 3 weeks, can someone call me today?", "name": "Sara Ahmed", "phone": "+971 50 000 {n}"}, {"email": "khalid.{n}@example.com", "label": "Buyer in Arabic", "message": "\u0623\u0628\u062d\u062b \u0639\u0646 \u0634\u0642\u0629 \u0628\u063a\u0631\u0641\u062a\u064a\u0646 \u0644\u0644\u0634\u0631\u0627\u0621 \u0641\u064a \u0627\u0644\u062e\u0644\u064a\u062c \u0627\u0644\u062a\u062c\u0627\u0631\u064a \u062e\u0644\u0627\u0644 \u0634\u0647\u0631\u064a\u0646\u060c \u0648\u0627\u0644\u0645\u064a\u0632\u0627\u0646\u064a\u0629 \u062d\u0648\u0627\u0644\u064a \u0645\u0644\u064a\u0648\u0646 \u0648\u0646\u0635\u0641 \u062f\u0631\u0647\u0645.", "name": "\u062e\u0627\u0644\u062f", "phone": ""}, {"email": "lena.{n}@example.com", "label": "Just browsing", "message": "Just curious what rents look like in JVC for next year, no rush at all.", "name": "Lena", "phone": ""}, {"email": "offers.{n}@example.com", "label": "Spam", "message": "We guarantee first page Google ranking and 500 backlinks for your agency website. Reply for our price list.", "name": "Rank Pro", "phone": ""}]</script>
+</body>
+</html>

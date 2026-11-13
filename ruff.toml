@@ -1,0 +1,21 @@
+# One lint configuration for every Python project in this repository: ruff check .
+line-length = 160
+target-version = "py311"
+extend-exclude = ["node_modules", ".venv", "out"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+  "B008",  # FastAPI declares dependencies as argument defaults
+]
+
+[lint.per-file-ignores]
+# Test modules share pytest fixtures by importing them, and use short names in comprehensions.
+"**/tests/**" = ["F811", "E741"]
+# Prompt text: one rule per line, however long, so wrapping never changes what the model reads.
+"rag-mcp/rag/answer.py" = ["E501"]
+"rag-mcp/rag/retrieval.py" = ["E501"]
+"rag-mcp/evals/judge.py" = ["E501"]
+
+[lint.isort]
+known-first-party = ["gemini", "app", "evals", "rag", "harness", "mock_api", "fake_n8n", "setup_n8n", "n8n_errors"]

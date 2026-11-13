@@ -1,0 +1,512 @@
+{
+  "version": 1,
+  "scoring": {
+    "overall_score": "100 * sum(weight of pass items) / sum(weight of items not na)",
+    "passed": "overall_score >= rubric pass_threshold and no critical item has verdict fail",
+    "start_time": "seconds from call start, estimated from the script; recompute from the real transcript after TTS"
+  },
+  "calls": [
+    {
+      "call_id": "call_01",
+      "script": "scripts/call_01_us_insurance_good.md",
+      "rubric": "us_insurance",
+      "language": "en",
+      "expected_overall_score": 100.0,
+      "expected_passed": true,
+      "items": [
+        {
+          "item_id": "agent_identification",
+          "verdict": "pass",
+          "evidence_quote": "this is Maria Lopez, a licensed agent with Harborline Insurance",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "recording_disclosure",
+          "verdict": "pass",
+          "evidence_quote": "this call is recorded for quality and compliance purposes",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "consent_to_continue",
+          "verdict": "pass",
+          "evidence_quote": "Do I have your permission to ask a few questions",
+          "start_time": 13.5
+        },
+        {
+          "item_id": "needs_discovery",
+          "verdict": "pass",
+          "evidence_quote": "Do you currently have any health coverage?",
+          "start_time": 28.2
+        },
+        {
+          "item_id": "no_misleading_claims",
+          "verdict": "pass",
+          "evidence_quote": "I can't promise a specific price until the application is reviewed",
+          "start_time": 61.4
+        },
+        {
+          "item_id": "dnc_handling",
+          "verdict": "na",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "next_steps",
+          "verdict": "pass",
+          "evidence_quote": "I'll call you back tomorrow at two p.m. to go through them",
+          "start_time": 78.0
+        }
+      ]
+    },
+    {
+      "call_id": "call_02",
+      "script": "scripts/call_02_us_insurance_no_disclosure.md",
+      "rubric": "us_insurance",
+      "language": "en",
+      "expected_overall_score": 77.8,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "agent_identification",
+          "verdict": "pass",
+          "evidence_quote": "this is James Carter with Harborline Insurance",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "recording_disclosure",
+          "verdict": "fail",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "consent_to_continue",
+          "verdict": "pass",
+          "evidence_quote": "Is it okay if I ask some questions about your vehicles and drivers",
+          "start_time": 13.5
+        },
+        {
+          "item_id": "needs_discovery",
+          "verdict": "pass",
+          "evidence_quote": "Any accidents or tickets in the last three years?",
+          "start_time": 44.0
+        },
+        {
+          "item_id": "no_misleading_claims",
+          "verdict": "pass",
+          "evidence_quote": "so I can't promise a number yet",
+          "start_time": 52.2
+        },
+        {
+          "item_id": "dnc_handling",
+          "verdict": "na",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "next_steps",
+          "verdict": "pass",
+          "evidence_quote": "I'll call you Thursday at ten a.m. to answer any questions",
+          "start_time": 70.3
+        }
+      ]
+    },
+    {
+      "call_id": "call_03",
+      "script": "scripts/call_03_us_insurance_pushy.md",
+      "rubric": "us_insurance",
+      "language": "en",
+      "expected_overall_score": 33.3,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "agent_identification",
+          "verdict": "pass",
+          "evidence_quote": "this is Kevin from Harborline Insurance",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "recording_disclosure",
+          "verdict": "pass",
+          "evidence_quote": "this call is being recorded",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "consent_to_continue",
+          "verdict": "fail",
+          "evidence_quote": "So what's your date of birth and zip code?",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "needs_discovery",
+          "verdict": "fail",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "no_misleading_claims",
+          "verdict": "fail",
+          "evidence_quote": "gets guaranteed approval",
+          "start_time": 13.9
+        },
+        {
+          "item_id": "dnc_handling",
+          "verdict": "na",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "next_steps",
+          "verdict": "fail",
+          "evidence_quote": "I'll call you back later then.",
+          "start_time": 78.4
+        }
+      ]
+    },
+    {
+      "call_id": "call_04",
+      "script": "scripts/call_04_us_insurance_dnc_ignored.md",
+      "rubric": "us_insurance",
+      "language": "en",
+      "expected_overall_score": 85.0,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "agent_identification",
+          "verdict": "pass",
+          "evidence_quote": "this is Priya Shah, a licensed agent with Harborline Insurance",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "recording_disclosure",
+          "verdict": "pass",
+          "evidence_quote": "this call is recorded for quality and compliance",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "consent_to_continue",
+          "verdict": "pass",
+          "evidence_quote": "Is it alright if I ask a few questions",
+          "start_time": 10.4
+        },
+        {
+          "item_id": "needs_discovery",
+          "verdict": "pass",
+          "evidence_quote": "do you have any supplement or Advantage plan right now",
+          "start_time": 29.0
+        },
+        {
+          "item_id": "no_misleading_claims",
+          "verdict": "pass",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "dnc_handling",
+          "verdict": "fail",
+          "evidence_quote": "I understand, but this will only take two more minutes.",
+          "start_time": 45.2
+        },
+        {
+          "item_id": "next_steps",
+          "verdict": "fail",
+          "evidence_quote": "give you a call next week to go over them",
+          "start_time": 60.6
+        }
+      ]
+    },
+    {
+      "call_id": "call_05",
+      "script": "scripts/call_05_gulf_real_estate_mixed_good.md",
+      "rubric": "gulf_real_estate",
+      "language": "ar-en",
+      "expected_overall_score": 100.0,
+      "expected_passed": true,
+      "items": [
+        {
+          "item_id": "greeting_identification",
+          "verdict": "pass",
+          "evidence_quote": "Palm Crest Properties, this is Omar speaking",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "language_match",
+          "verdict": "pass",
+          "evidence_quote": "صباح النور، أهلاً وسهلاً",
+          "start_time": 10.7
+        },
+        {
+          "item_id": "requirements_capture",
+          "verdict": "pass",
+          "evidence_quote": "كم الميزانية السنوية تقريباً؟",
+          "start_time": 20.0
+        },
+        {
+          "item_id": "no_guaranteed_returns",
+          "verdict": "na",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "viewing_or_callback",
+          "verdict": "pass",
+          "evidence_quote": "أقدر أرتب لك زيارة يوم الخميس الساعة خمسة العصر",
+          "start_time": 46.1
+        },
+        {
+          "item_id": "contact_confirmation",
+          "verdict": "pass",
+          "evidence_quote": "Can I confirm your WhatsApp number is the one ending in four four seven one?",
+          "start_time": 59.1
+        }
+      ]
+    },
+    {
+      "call_id": "call_06",
+      "script": "scripts/call_06_gulf_real_estate_mixed_bad.md",
+      "rubric": "gulf_real_estate",
+      "language": "ar-en",
+      "expected_overall_score": 0.0,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "greeting_identification",
+          "verdict": "fail",
+          "evidence_quote": "Hello, yes, Palm Crest.",
+          "start_time": 5.1
+        },
+        {
+          "item_id": "language_match",
+          "verdict": "fail",
+          "evidence_quote": "English is fine, I'll speak slowly.",
+          "start_time": 17.0
+        },
+        {
+          "item_id": "requirements_capture",
+          "verdict": "fail",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "no_guaranteed_returns",
+          "verdict": "fail",
+          "evidence_quote": "You get a guaranteed ten percent rental yield every year",
+          "start_time": 17.0
+        },
+        {
+          "item_id": "viewing_or_callback",
+          "verdict": "fail",
+          "evidence_quote": "Call us when you're ready.",
+          "start_time": 68.2
+        },
+        {
+          "item_id": "contact_confirmation",
+          "verdict": "fail",
+          "evidence_quote": null,
+          "start_time": null
+        }
+      ]
+    },
+    {
+      "call_id": "call_07",
+      "script": "scripts/call_07_gulf_real_estate_no_viewing.md",
+      "rubric": "gulf_real_estate",
+      "language": "en",
+      "expected_overall_score": 85.0,
+      "expected_passed": true,
+      "items": [
+        {
+          "item_id": "greeting_identification",
+          "verdict": "pass",
+          "evidence_quote": "thank you for calling Palm Crest Properties. My name is Hana.",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "language_match",
+          "verdict": "pass",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "requirements_capture",
+          "verdict": "pass",
+          "evidence_quote": "Are you looking at ready units or off-plan, and when are you hoping to buy?",
+          "start_time": 45.5
+        },
+        {
+          "item_id": "no_guaranteed_returns",
+          "verdict": "pass",
+          "evidence_quote": "I can't guarantee any return.",
+          "start_time": 25.1
+        },
+        {
+          "item_id": "viewing_or_callback",
+          "verdict": "fail",
+          "evidence_quote": "I'll send you some options and you can let me know which ones you like.",
+          "start_time": 63.7
+        },
+        {
+          "item_id": "contact_confirmation",
+          "verdict": "pass",
+          "evidence_quote": "Got it, d dot ahmed at example dot com.",
+          "start_time": 81.0
+        }
+      ]
+    },
+    {
+      "call_id": "call_08",
+      "script": "scripts/call_08_customer_support_good.md",
+      "rubric": "customer_support",
+      "language": "en",
+      "expected_overall_score": 100.0,
+      "expected_passed": true,
+      "items": [
+        {
+          "item_id": "greeting",
+          "verdict": "pass",
+          "evidence_quote": "Thank you for calling Brightwave Internet, this is Sara.",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "identity_verification",
+          "verdict": "pass",
+          "evidence_quote": "can you confirm your full name and the last four digits of your account number?",
+          "start_time": 14.3
+        },
+        {
+          "item_id": "empathy",
+          "verdict": "pass",
+          "evidence_quote": "Two days without internet when you work from home is a big disruption",
+          "start_time": 14.3
+        },
+        {
+          "item_id": "issue_restated",
+          "verdict": "pass",
+          "evidence_quote": "So the connection dropped on Monday, and restarting the router hasn't helped, is that right?",
+          "start_time": 35.9
+        },
+        {
+          "item_id": "resolution_or_escalation",
+          "verdict": "pass",
+          "evidence_quote": "under ticket number B W four eight two one three",
+          "start_time": 81.0
+        },
+        {
+          "item_id": "no_unauthorized_promises",
+          "verdict": "pass",
+          "evidence_quote": "I can't apply a credit myself",
+          "start_time": 67.9
+        },
+        {
+          "item_id": "closing",
+          "verdict": "pass",
+          "evidence_quote": "Is there anything else I can help you with?",
+          "start_time": 81.0
+        }
+      ]
+    },
+    {
+      "call_id": "call_09",
+      "script": "scripts/call_09_customer_support_bad.md",
+      "rubric": "customer_support",
+      "language": "en",
+      "expected_overall_score": 25.0,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "greeting",
+          "verdict": "fail",
+          "evidence_quote": "Support.",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "identity_verification",
+          "verdict": "fail",
+          "evidence_quote": "Account for eighteen Cedar Lane, card ending three three one zero",
+          "start_time": 16.6
+        },
+        {
+          "item_id": "empathy",
+          "verdict": "fail",
+          "evidence_quote": "That happens sometimes.",
+          "start_time": 32.1
+        },
+        {
+          "item_id": "issue_restated",
+          "verdict": "pass",
+          "evidence_quote": "So you got charged twice.",
+          "start_time": 32.1
+        },
+        {
+          "item_id": "resolution_or_escalation",
+          "verdict": "fail",
+          "evidence_quote": "Just call back tomorrow and ask for billing.",
+          "start_time": 65.3
+        },
+        {
+          "item_id": "no_unauthorized_promises",
+          "verdict": "pass",
+          "evidence_quote": null,
+          "start_time": null
+        },
+        {
+          "item_id": "closing",
+          "verdict": "fail",
+          "evidence_quote": "Okay. Bye.",
+          "start_time": 72.2
+        }
+      ]
+    },
+    {
+      "call_id": "call_10",
+      "script": "scripts/call_10_customer_support_unauthorized_refund.md",
+      "rubric": "customer_support",
+      "language": "en",
+      "expected_overall_score": 85.0,
+      "expected_passed": false,
+      "items": [
+        {
+          "item_id": "greeting",
+          "verdict": "pass",
+          "evidence_quote": "you're speaking with Daniel",
+          "start_time": 0.0
+        },
+        {
+          "item_id": "identity_verification",
+          "verdict": "pass",
+          "evidence_quote": "can you give me your full name and the last four digits of your account number?",
+          "start_time": 15.0
+        },
+        {
+          "item_id": "empathy",
+          "verdict": "pass",
+          "evidence_quote": "an unexpected jump like that on three bills is frustrating",
+          "start_time": 15.0
+        },
+        {
+          "item_id": "issue_restated",
+          "verdict": "pass",
+          "evidence_quote": "So your bill went from forty-five to seventy dollars",
+          "start_time": 32.0
+        },
+        {
+          "item_id": "resolution_or_escalation",
+          "verdict": "pass",
+          "evidence_quote": "I've logged this under ticket B W five zero nine one seven",
+          "start_time": 68.3
+        },
+        {
+          "item_id": "no_unauthorized_promises",
+          "verdict": "fail",
+          "evidence_quote": "I'll refund the full seventy-five dollars, guaranteed",
+          "start_time": 55.2
+        },
+        {
+          "item_id": "closing",
+          "verdict": "pass",
+          "evidence_quote": "Is there anything else I can help you with today?",
+          "start_time": 81.0
+        }
+      ]
+    }
+  ]
+}

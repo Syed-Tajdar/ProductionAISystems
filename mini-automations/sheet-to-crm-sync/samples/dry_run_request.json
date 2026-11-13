@@ -1,0 +1,94 @@
+{
+  "values": [
+    [
+      "Name",
+      "Email",
+      "Phone",
+      "Company",
+      "Stage",
+      "Owner",
+      "Notes",
+      "CRM status"
+    ],
+    [
+      "Sara Ahmed",
+      "Sara.Ahmed@example.com",
+      "050 000 0101",
+      "Dune Logistics",
+      "Qualified",
+      "Sara",
+      "Wants a demo next week",
+      ""
+    ],
+    [
+      "Faisal Al Harbi",
+      "faisal.h@example.com",
+      "+966 55 000 0101",
+      "Najd Foods",
+      "New",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Priya Nair",
+      "priya.nair@example",
+      "+971 52 222 3344",
+      "Coral Clinics",
+      "New",
+      "Omar",
+      "",
+      ""
+    ],
+    [
+      "Tom Becker",
+      "tom.becker@example.com",
+      "12345",
+      "Becker Trading",
+      "New",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Lina Saeed",
+      "lina.saeed@example.com",
+      "+971 50 000 0103",
+      "Saeed Interiors",
+      "Hot",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Sara A.",
+      "sara.ahmed@example.com",
+      "050 000 0101",
+      "Dune Logistics",
+      "Qualified",
+      "",
+      "Same person, second row",
+      ""
+    ],
+    [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "أحمد علي",
+      "ahmed.ali@example.com",
+      "00971 50 000 0102",
+      "Ali Properties",
+      "Customer",
+      "Omar",
+      "",
+      "synced 2026-11-01 09:00"
+    ]
+  ]
+}

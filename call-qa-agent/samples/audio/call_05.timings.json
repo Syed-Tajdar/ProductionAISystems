@@ -1,0 +1,153 @@
+{
+  "call_id": "call_05",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "gemini",
+      "voice": "Charon",
+      "gender": "male"
+    },
+    "CUSTOMER": {
+      "engine": "gemini",
+      "voice": "Kore",
+      "gender": "female"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 0.3,
+      "end": 3.82,
+      "text": "Good morning, Palm Crest Properties, this is Omar speaking. How can I help you?"
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 4.27,
+      "end": 7.81,
+      "text": "صباح الخير، أبحث عن شقة للإيجار في دبي مارينا."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 8.26,
+      "end": 12.62,
+      "text": "صباح النور، أهلاً وسهلاً. أكيد أقدر أساعدك. كم غرفة تحتاج؟"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 13.07,
+      "end": 17.27,
+      "text": "غرفتين، and ideally with a sea view if possible."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 17.72,
+      "end": 22.6,
+      "text": "Two bedrooms with a sea view, noted. كم الميزانية السنوية تقريباً؟"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 23.05,
+      "end": 25.51,
+      "text": "حوالي مية وعشرين ألف درهم في السنة."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 25.96,
+      "end": 28.06,
+      "text": "تمام. ومتى تبي تنتقل؟"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 28.51,
+      "end": 31.16,
+      "text": "بداية الشهر الجاي، early next month."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 31.61,
+      "end": 36.49,
+      "text": "ممتاز. Do you prefer one cheque, or would four cheques work better for you?"
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 36.94,
+      "end": 42.04,
+      "text": "Four cheques is better for me. وأحتاج موقف سيارة واحد على الأقل."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 42.49,
+      "end": 50.92,
+      "text": "أكيد، كل الشقق عندنا فيها موقف. عندي ثلاث شقق تناسب طلبك. أقدر أرتب لك زيارة يوم الخميس الساعة خمسة العصر، يناسبك؟"
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 51.37,
+      "end": 54.12,
+      "text": "نعم، الخميس الساعة خمسة مناسب."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 54.57,
+      "end": 62.42,
+      "text": "Great. Can I confirm your WhatsApp number is the one ending in four four seven one? I'll send you the locations and photos there."
+    },
+    {
+      "index": 13,
+      "role": "CUSTOMER",
+      "voice": "Kore",
+      "gender": "female",
+      "start": 62.87,
+      "end": 64.24,
+      "text": "Yes, that's correct."
+    },
+    {
+      "index": 14,
+      "role": "AGENT",
+      "voice": "Charon",
+      "gender": "male",
+      "start": 64.69,
+      "end": 67.12,
+      "text": "شكراً لك، نشوفك يوم الخميس إن شاء الله."
+    }
+  ]
+}

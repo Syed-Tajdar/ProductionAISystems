@@ -1,0 +1,47 @@
+# Lint for every Python project (ruff, one configuration in ruff.toml) and a check of the locked
+# dependency versions against known vulnerabilities (pip-audit on each requirements.lock).
+name: lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.py"
+      - "ruff.toml"
+      - "**/requirements.lock"
+      - ".github/workflows/lint.yml"
+  pull_request:
+    paths:
+      - "**.py"
+      - "ruff.toml"
+      - "**/requirements.lock"
+      - ".github/workflows/lint.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.11"
+      - run: pip install ruff==0.17.4 pip-audit==2.10.1
+      - run: ruff check .
+      - name: Audit the locked dependencies
+        run: |
+          status=0
+          for lock in call-qa-agent rag-mcp mini-automations/cv-screener mini-automations/invoice-to-sheet mini-automations/price-monitor; do
+            echo "::group::$lock"
+            pip-audit --require-hashes --disable-pip -r "$lock/requirements.lock" || status=1
+            echo "::endgroup::"
+          done
+          exit $status

@@ -1,0 +1,121 @@
+# Render Blueprint for the public demo: n8n on the free web plan, no card needed.
+# New > Blueprint > pick this repo, Blueprint path: n8n-leads/render.yaml. Steps: DEPLOY.md.
+#
+# n8n keeps its own data (workflows, credentials, executions) in the "n8n" schema of the existing
+# Supabase database, apart from the lead tables, and N8N_ENCRYPTION_KEY is a fixed value you keep,
+# so a sleep, restart or redeploy loses nothing. The free plan (512 MB, 0.1 CPU) sleeps after
+# 15 minutes without traffic. Measured in a container with the same limits: /healthz answers after
+# about 80 s, the webhooks after about 2 minutes, then about 4 s per lead. The settings under
+# "Fit the free plan" keep n8n under 512 MB and let its Code runner start on 0.1 CPU.
+
+services:
+  - type: web
+    name: n8n-leads
+    runtime: image
+    image:
+      url: docker.io/n8nio/n8n:2.45.0
+    plan: free
+    region: frankfurt
+    healthCheckPath: /healthz
+    envVars:
+      # Supabase session pooler (IPv4; the direct database host is IPv6 only):
+      # Supabase > Connect > Session pooler. Host aws-0-<region>.pooler.supabase.com, port 5432,
+      # user postgres.<project-ref>.
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        sync: false
+      - key: DB_POSTGRESDB_PORT
+        value: "5432"
+      - key: DB_POSTGRESDB_DATABASE
+        value: postgres
+      - key: DB_POSTGRESDB_USER
+        sync: false
+      - key: DB_POSTGRESDB_PASSWORD
+        sync: false
+      - key: DB_POSTGRESDB_SCHEMA
+        value: n8n
+      - key: DB_POSTGRESDB_SSL_ENABLED
+        value: "true"
+      # Supabase signs with its own CA. n8n checks the server certificate against that CA, which is a
+      # Render secret file (supabase-ca.crt, from supabase/prod-ca-2021.crt): DEPLOY.md, "Check the database certificate".
+      - key: DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED
+        value: "true"
+      - key: DB_POSTGRESDB_SSL_CA_FILE
+        value: /etc/secrets/supabase-ca.crt
+      - key: DB_POSTGRESDB_CONNECTION_TIMEOUT
+        value: "60000"
+      # Create once with `openssl rand -hex 32` and keep a copy: without it the saved credentials are lost.
+      - key: N8N_ENCRYPTION_KEY
+        sync: false
+      - key: PORT
+        value: "5678"
+      - key: N8N_PORT
+        value: "5678"
+      - key: N8N_PROTOCOL
+        value: https
+      - key: N8N_HOST
+        sync: false   # the exact host on the service page, <your-service>.onrender.com (Render may add a suffix)
+      - key: WEBHOOK_URL
+        sync: false   # https://<your-service>.onrender.com/
+      - key: N8N_SECURE_COOKIE
+        value: "true"
+      - key: N8N_PROXY_HOPS
+        value: "1"
+      - key: GENERIC_TIMEZONE
+        value: Asia/Dubai
+      - key: TZ
+        value: Asia/Dubai
+      - key: N8N_DIAGNOSTICS_ENABLED
+        value: "false"
+      - key: N8N_VERSION_NOTIFICATIONS_ENABLED
+        value: "false"
+      - key: N8N_PERSONALIZATION_ENABLED
+        value: "false"
+      # Fit the free plan. Without the heap limits n8n was killed for memory at 512 MB; without the
+      # longer token lifetime the Code runner starts too slowly on 0.1 CPU and Code nodes fail.
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=320
+      - key: N8N_RUNNERS_MAX_OLD_SPACE_SIZE
+        value: "96"
+      - key: N8N_RUNNERS_GRANT_TOKEN_TTL
+        value: "300"
+      - key: N8N_RUNNERS_TASK_REQUEST_TIMEOUT
+        value: "180"
+      - key: N8N_DISABLED_MODULES
+        value: insights,mcp-registry,mcp,chat-hub,workflow-builder,data-table,quick-connect,breaking-changes
+      - key: N8N_TEMPLATES_ENABLED
+        value: "false"
+      - key: N8N_COMMUNITY_PACKAGES_ENABLED
+        value: "false"
+      # Keep the n8n schema small: one week of executions.
+      - key: EXECUTIONS_DATA_PRUNE
+        value: "true"
+      - key: EXECUTIONS_DATA_MAX_AGE
+        value: "168"
+      - key: EXECUTIONS_DATA_SAVE_ON_SUCCESS
+        value: none
+      # Lead workflow settings (see .env.example), read through $env.
+      - key: N8N_BLOCK_ENV_ACCESS_IN_NODE
+        value: "false"
+      - key: LEADS_SUPABASE_URL
+        sync: false
+      - key: LEADS_BUSINESS_NAME
+        value: Palm Grove Realty
+      - key: LEADS_SALES_CHAT_ID
+        sync: false
+      - key: LEADS_OPS_CHAT_ID
+        sync: false
+      - key: LEADS_DEFAULT_COUNTRY_CODE
+        value: "971"
+      # Public demo: emails shown on the page instead of sent, caps per visitor, per day and for alerts.
+      - key: LEADS_DEMO_MODE
+        value: "true"
+      - key: LEADS_DEMO_PER_VISITOR
+        value: "5"
+      - key: LEADS_DEMO_WINDOW_MINUTES
+        value: "10"
+      - key: LEADS_DEMO_DAILY_CAP
+        value: "100"
+      - key: LEADS_DEMO_ALERTS_PER_DAY
+        value: "20"

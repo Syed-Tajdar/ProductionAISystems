@@ -1,0 +1,153 @@
+{
+  "call_id": "call_01",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "thalia",
+      "gender": "female"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "arcas",
+      "gender": "male"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 0.3,
+      "end": 11.16,
+      "text": "Hi, this is Maria Lopez, a licensed agent with Harborline Insurance. Before we continue, I need to let you know this call is recorded for quality and compliance purposes."
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 11.61,
+      "end": 12.94,
+      "text": "Okay, that's fine."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 13.39,
+      "end": 22.75,
+      "text": "Thank you. You filled out a form online about health coverage. Do I have your permission to ask a few questions about your household and go over plan options with you today?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 23.2,
+      "end": 23.99,
+      "text": "Yes, go ahead."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 24.44,
+      "end": 26.96,
+      "text": "Great. Do you currently have any health coverage?"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 27.41,
+      "end": 29.44,
+      "text": "No, I lost my employer plan last month."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 29.89,
+      "end": 36.65,
+      "text": "I'm sorry to hear that. How many people would be on the plan, and is there a monthly budget you're trying to stay under?"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 37.1,
+      "end": 40.09,
+      "text": "Just me and my daughter. Ideally under four hundred a month."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 40.54,
+      "end": 44.54,
+      "text": "Understood. Are there any doctors or prescriptions you want to keep?"
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 44.99,
+      "end": 49.61,
+      "text": "My daughter sees a pediatrician at Lakeside Clinic, and I take one blood pressure medication."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 50.06,
+      "end": 61.92,
+      "text": "Thanks. I'll check which plans have Lakeside Clinic in network and cover your medication. I can't promise a specific price until the application is reviewed, but I'll show you the estimated premiums and deductibles side by side."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 62.37,
+      "end": 63.32,
+      "text": "That sounds good."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 63.77,
+      "end": 72.01,
+      "text": "I'll email you a comparison of three plans within the hour, and I'll call you back tomorrow at two p.m. to go through them. Does that time work?"
+    },
+    {
+      "index": 13,
+      "role": "CUSTOMER",
+      "voice": "arcas",
+      "gender": "male",
+      "start": 72.46,
+      "end": 73.35,
+      "text": "Yes, two works."
+    },
+    {
+      "index": 14,
+      "role": "AGENT",
+      "voice": "thalia",
+      "gender": "female",
+      "start": 73.8,
+      "end": 77.24,
+      "text": "Perfect. Thank you for your time, and talk to you tomorrow."
+    }
+  ]
+}

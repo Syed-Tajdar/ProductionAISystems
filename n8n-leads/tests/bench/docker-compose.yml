@@ -1,0 +1,33 @@
+# Test bench for the lead workflows: n8n (SQLite) only. The mock APIs and SMTP server run
+# inside the test process on the host (mock_api.py), reached at host.docker.internal:8091 and :2525.
+# Driven by harness.py. Not for production.
+name: n8n-leads-test
+
+services:
+  n8n:
+    image: n8nio/n8n:${N8N_VERSION:-2.45.0}
+    ports:
+      - "${N8N_TEST_PORT:-5680}:5678"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      N8N_ENCRYPTION_KEY: local-test-bench-only
+      N8N_LISTEN_ADDRESS: 0.0.0.0
+      N8N_SECURE_COOKIE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      GENERIC_TIMEZONE: Asia/Dubai
+      TZ: Asia/Dubai
+      # The workflows read their deployment settings from LEADS_* variables.
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      LEADS_SUPABASE_URL: http://host.docker.internal:8091/supabase
+      LEADS_BUSINESS_NAME: Palm Grove Realty
+      LEADS_SALES_CHAT_ID: "-1001000000001"
+      LEADS_OPS_CHAT_ID: "-1001000000002"
+      LEADS_EMAIL_FROM: Palm Grove Realty <hello@palmgrove.example>
+      LEADS_EMAIL_REPLY_TO: advisors@palmgrove.example
+      LEADS_DEFAULT_COUNTRY_CODE: "971"
+    volumes:
+      - n8n_test_data:/home/node/.n8n
+
+volumes:
+  n8n_test_data:

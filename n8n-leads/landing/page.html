@@ -1,0 +1,141 @@
+{#- Source of public/index.html. Edit here, then run `python build.py`. Uses the shared demo UI macros. -#}
+{% import "demo_ui.html" as ui %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Lead Automation demo</title>
+  <meta name="description" content="Send a test enquiry to a live n8n workflow and see what it does with it: urgency and reason, repeat check, sales alert and the reply email.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="demo-base.css">
+  <link rel="stylesheet" href="landing.css">
+  <link rel="stylesheet" href="demo-ui.css">
+  <script src="config.js"></script>
+  <script src="landing.js" defer></script>
+  {#- Vercel Web Analytics: cookie-free page views, served from this site's own origin once enabled for the project. #}
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top"><div class="wrap">
+    <a class="brand" href="./">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" class="mark-bg"/><path d="M8.5 10h15l-6 7.2v5.3l-3 1.5v-6.8z" class="mark-a"/><circle cx="23.5" cy="22" r="1.8" class="mark-dot"/></svg>
+      <span>Lead Automation</span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="{{ portfolio_url.rstrip('/') }}/projects/n8n-leads" class="muted hide-sm">How it's built</a>
+      <a href="{{ portfolio_url }}" class="back">&larr; <span class="hide-xs">Back to </span>portfolio</a>
+      {{ ui.theme_toggle() }}
+    </nav>
+  </div></header>
+  <div class="demo-bar"><div class="wrap demo-row">
+    <span class="demo-note"><span class="dot" aria-hidden="true"></span>Demo with a fictional agency. Use made-up details: demo leads are deleted after 7 days.</span>
+    <span class="limits-text">{{ limits.per_visitor }} per {{ limits.window_minutes }} min each <span class="muted">&middot; {{ limits.daily_cap }} a day in total</span></span>
+  </div></div>
+
+  <main id="main" class="wrap narrow" data-plain="demo">
+    <section class="intro">
+      <h1>Send a test enquiry</h1>
+      <p class="muted">This is the contact form of Palm Grove Realty, a fictional Dubai property agency. Send it and see what the n8n workflow did with your enquiry: how urgent it is and why, whether it was a repeat, whether sales got an alert, and the reply email. The server sleeps when nobody uses it, so the first enquiry after a quiet spell takes 2 to 3 minutes.</p>
+    </section>
+
+    {{ ui.demo_card("leads", "What this demo shows", points, "demo-ui.js") }}
+
+    <form id="lead-form" class="lead-form" method="post" action="#webhook-not-set" data-per-visitor="{{ limits.per_visitor }}" data-window-minutes="{{ limits.window_minutes }}">
+      <div class="examples">
+        <span class="muted try" id="try-label">Try an example</span>
+        <div class="example-row" role="group" aria-labelledby="try-label">
+          {% for ex in examples %}<button type="button" data-example="{{ loop.index0 }}">{{ ex.label }}</button>{% endfor %}
+        </div>
+      </div>
+      <label>Name
+        <input name="name" autocomplete="off" required dir="auto" maxlength="120">
+      </label>
+      <div class="row">
+        <label><span>Phone <small>with country code</small></span>
+          <input name="phone" type="tel" autocomplete="off" inputmode="tel" placeholder="+971 50 000 0000">
+        </label>
+        <label><span>Email</span>
+          <input name="email" type="email" autocomplete="off" placeholder="name@example.com">
+        </label>
+      </div>
+      <label>What are you looking for?
+        <textarea name="message" required dir="auto" maxlength="4000" placeholder="e.g. 2 bedroom to rent in Dubai Marina, budget 120k, moving next month"></textarea>
+      </label>
+      <label class="hp" aria-hidden="true">Company
+        <input name="company" tabindex="-1" autocomplete="off">
+      </label>
+      <label class="consent">
+        <input type="checkbox" name="consent" value="yes" required>
+        <span>I understand this is a demo and I used made-up details.</span>
+      </label>
+      <div class="send-row">
+        <button type="submit">Send enquiry</button>
+        <span class="server" id="server" aria-live="polite" hidden></span>
+      </div>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+      <p class="privacy muted">Messages are read by a third-party AI service (Anthropic). Send the same phone or email twice to see the repeat check.</p>
+      <noscript><p class="privacy muted">Without JavaScript the form still sends, and the workflow's answer shows as raw data.</p></noscript>
+    </form>
+
+    <div class="sending" id="sending" role="status" aria-live="polite" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="sending-text" id="sending-text">Sending your enquiry to the workflow...</span>
+      <span class="skeleton" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+
+    <div id="state-slot"></div>
+    <template id="state-limit">{{ ui.state("limit", "Demo limit reached", "-") }}</template>
+    <template id="state-error">{{ ui.state("error", "The workflow did not answer", "-", "#lead-form", "Try again") }}</template>
+    <template id="state-received">{{ ui.state("empty", "Enquiry received", "The workflow saved it. This server is not in demo mode, so it does not show the details here.") }}</template>
+    <template id="state-setup">{{ ui.state("empty", "Not connected yet", "This page has no workflow address. Set LEAD_WEBHOOK_URL on the hosting project and deploy again.") }}</template>
+
+    <section class="result" id="result" aria-labelledby="result-title" tabindex="-1" hidden>
+      <h2 id="result-title">What the workflow did</h2>
+      {#- One step per thing the workflow reports back; landing.js fills them from the response. #}
+      <ol class="timeline">
+        <li class="step" id="step-sorted">
+          <h3>Sorted</h3>
+          <div class="verdict">
+            <span class="badge" id="r-category"></span>
+            <span class="intent muted" id="r-intent"></span>
+          </div>
+          <p class="reason" id="r-reason"></p>
+          <p class="summary muted" id="r-summary"></p>
+        </li>
+        <li class="step" id="step-repeat">
+          <h3>Repeat check</h3>
+          <p id="r-duplicate"></p>
+        </li>
+        <li class="step" id="step-alert">
+          <h3>Sales alert</h3>
+          <p id="r-alert"></p>
+          <figure class="tg" id="r-tg" hidden>
+            <figcaption class="tg-head"><span class="tg-avatar" aria-hidden="true">L</span><span><strong>Lead alerts</strong><span class="tg-sub">bot, in the sales chat on Telegram</span></span></figcaption>
+            <div class="tg-bubble" id="r-tg-text"></div>
+          </figure>
+        </li>
+        <li class="step" id="step-email">
+          <h3>Reply email</h3>
+          <p id="r-email-status"></p>
+          <article class="email" id="r-email" aria-labelledby="email-title" hidden>
+            <h4 id="email-title">Reply email</h4>
+            <p class="email-note">Demo mode: this email is shown here instead of sent, so this public form can't be used to send messages to someone else's address. In a real setup, this step sends it automatically.</p>
+            <dl class="email-head">
+              <div><dt>To</dt><dd id="r-to"></dd></div>
+              <div><dt>Subject</dt><dd id="r-subject"></dd></div>
+            </dl>
+            <div class="email-body" id="r-body"></div>
+          </article>
+        </li>
+      </ol>
+      <p class="again"><button type="button" class="again-button" id="again">Try another example</button></p>
+    </section>
+  </main>
+  {{ ui.footer(profile, portfolio_url) }}
+  <script type="application/json" id="examples">{{ examples | tojson }}</script>
+</body>
+</html>

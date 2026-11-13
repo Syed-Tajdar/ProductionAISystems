@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ heading }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="/dashboard">&larr; All calls</a></p>
+{{ ui.state(kind, heading, body, "/dashboard" if kind != "limit" else "", "Back to all calls") }}
+{% endblock %}

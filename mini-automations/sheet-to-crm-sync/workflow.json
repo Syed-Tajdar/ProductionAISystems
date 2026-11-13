@@ -1,0 +1,616 @@
+{
+  "id": "mnSheetCrmSync001",
+  "name": "Sheet to CRM sync",
+  "nodes": [
+    {
+      "id": "23b4dfe4-d18d-5752-803c-aa4e4de92768",
+      "name": "About",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -320
+      ],
+      "parameters": {
+        "content": "## Sheet to CRM sync\nEvery 15 minutes: read the Leads sheet -> validate rows (email, phone to E.164, stage) -> upsert new or changed rows into HubSpot contacts by email, in batches of 100 -> write \"synced\" or the error back into the CRM status column.\n\nDry run: POST sheet values to `/webhook/sheet-crm-sync?dry_run=1`.",
+        "width": 480,
+        "height": 220
+      }
+    },
+    {
+      "id": "ffd9510a-36e3-5a5f-86c8-a7bea6778f9e",
+      "name": "Every 15 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -60
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "42e753ec-6255-5bcc-b58b-4df63f04fe85",
+      "name": "Sync webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        140
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sheet-crm-sync",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "webhookId": "889b0937-338a-55fe-9f74-c4b84bbf4b11",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnWebhookToken004",
+          "name": "Sync webhook token"
+        }
+      }
+    },
+    {
+      "id": "2b2860df-d5cb-5a81-a2c8-a98821fc1ee4",
+      "name": "Prepare run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        40
+      ],
+      "parameters": {
+        "jsCode": "// Settings: edit these before going live.\nconst settings = {\n  spreadsheet_id: 'YOUR_SPREADSHEET_ID',\n  sheet_name: 'Leads',          // columns A to H: Name, Email, Phone, Company, Stage, Owner, Notes, CRM status\n  status_column: 'H',\n  default_country_code: '+971', // for local numbers such as 050 000 0101\n  stages: { New: 'lead', Qualified: 'salesqualifiedlead', Opportunity: 'opportunity', Customer: 'customer' },\n  owner_ids: { Sara: '1001', Omar: '1002' },  // sheet owner name -> HubSpot owner ID; unknown names are left unassigned\n  batch_size: 100,              // HubSpot batch limit\n};\n\nconst j = $input.first().json;\nconst fromWebhook = 'webhookUrl' in j;\nconst q = fromWebhook ? (j.query || {}) : {};\nconst body = fromWebhook ? (j.body || {}) : {};\nconst dryRun = ['1', 'true', 'yes'].includes(String(q.dry_run ?? body.dry_run ?? '').toLowerCase());\nreturn [{ json: { settings, dry_run: dryRun, source: fromWebhook ? 'webhook' : 'schedule', sample_values: dryRun ? (body.values || []) : [] } }];\n"
+      }
+    },
+    {
+      "id": "708fdf1a-cfec-5d0e-9e14-e1ab7d0222b9",
+      "name": "Dry run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ff1ef51e-664c-5f2d-8281-69f63551d018",
+              "leftValue": "={{ $json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "aa3683a4-21fe-55d4-9503-65db1a7941bf",
+      "name": "Read sheet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        140
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://sheets.googleapis.com/v4/spreadsheets/{{ $('Prepare run').first().json.settings.spreadsheet_id }}/values/{{ $('Prepare run').first().json.settings.sheet_name }}!A1:H",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "mnGoogleSheets001",
+          "name": "Google Sheets"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "21c1ef8c-61ad-5df0-9757-74ccdc2795b6",
+      "name": "Plan sync",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        40
+      ],
+      "parameters": {
+        "jsCode": "const run = $('Prepare run').first().json;\nconst s = run.settings;\nconst res = run.dry_run ? { values: run.sample_values } : $input.first().json;\nconst fetch_error = res.error ? (res.error.message || 'could not read the sheet') : null;\nconst values = res.values || [];\n\nconst header = (values[0] || []).map((h) => String(h).trim().toLowerCase().replace(/\\s+/g, '_'));\nconst col = (row, name) => String(row[header.indexOf(name)] ?? '').trim();\n\nfunction phoneE164(raw) {\n  let p = raw.replace(/[\\s()-]/g, '');\n  if (!p) return '';\n  if (p.startsWith('00')) p = '+' + p.slice(2);\n  else if (p.startsWith('0')) p = s.default_country_code + p.slice(1);\n  else if (!p.startsWith('+')) p = '+' + p;\n  return /^\\+[1-9]\\d{7,14}$/.test(p) ? p : null;\n}\n// Stable string of the properties, used to skip rows that have not changed since the last sync.\nconst fingerprint = (props) => JSON.stringify(Object.keys(props).sort().map((k) => [k, props[k]]));\n\nconst store = $getWorkflowStaticData('global');\nconst synced = store.synced ??= {};\nconst seen = {};\nconst upserts = [];\nconst statuses = [];\nlet unchanged = 0;\n\nvalues.slice(1).forEach((row, i) => {\n  const rowNumber = i + 2;\n  if (!row.some((c) => String(c).trim())) return;\n  const current = col(row, 'crm_status');\n  const fail = (reason) => statuses.push({ row: rowNumber, status: `error: ${reason}`, current });\n\n  const email = col(row, 'email').toLowerCase();\n  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return fail(`invalid email \"${col(row, 'email')}\"`);\n  if (seen[email]) return fail(`duplicate of row ${seen[email]}`);\n  seen[email] = rowNumber;\n\n  const phone = phoneE164(col(row, 'phone'));\n  if (phone === null) return fail(`invalid phone \"${col(row, 'phone')}\"`);\n  const stage = col(row, 'stage');\n  const lifecyclestage = s.stages[stage];\n  if (stage && !lifecyclestage) return fail(`unknown stage \"${stage}\", use ${Object.keys(s.stages).join(', ')}`);\n\n  const [firstname, ...rest] = col(row, 'name').split(/\\s+/);\n  const props = { email, firstname: firstname || '', lastname: rest.join(' '), company: col(row, 'company') };\n  if (phone) props.phone = phone;\n  if (lifecyclestage) props.lifecyclestage = lifecyclestage;\n  const owner = s.owner_ids[col(row, 'owner')];\n  if (owner) props.hubspot_owner_id = owner;\n\n  const fp = fingerprint(props);\n  if (synced[email] === fp && current.startsWith('synced')) { unchanged += 1; return; }\n  upserts.push({ row: rowNumber, email, properties: props, fingerprint: fp, current });\n});\n\nconst batches = [];\nfor (let i = 0; i < upserts.length; i += s.batch_size) batches.push(upserts.slice(i, i + s.batch_size));\n\nreturn [{ json: {\n  dry_run: run.dry_run, source: run.source, fetch_error,\n  rows: Math.max(values.length - 1, 0), unchanged, upserts, invalid: statuses,\n  batches: batches.map((b) => ({ inputs: b.map((u) => ({ idProperty: 'email', id: u.email, properties: u.properties })) })),\n} }];\n"
+      }
+    },
+    {
+      "id": "9edec313-f060-576f-a25f-cc77f78bc679",
+      "name": "Live run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "05debe59-92fd-52b5-90ec-8235f6af1c8a",
+              "leftValue": "={{ !$json.dry_run && !$json.fetch_error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "c47fcc23-1746-52e7-ba8a-3bb6865749c6",
+      "name": "Anything to upsert?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        -60
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e960e0a-8c9f-5bbb-b8c3-617290b8528f",
+              "leftValue": "={{ $json.batches.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "379ecaa9-6932-5fc6-90fd-efe857ba54c1",
+      "name": "Split batches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        -160
+      ],
+      "parameters": {
+        "jsCode": "return $input.first().json.batches.map((b) => ({ json: b }));\n"
+      }
+    },
+    {
+      "id": "2492c294-ce56-58e6-aeb1-0b307af40bc3",
+      "name": "HubSpot batch upsert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        -160
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mnHubSpotToken001",
+          "name": "HubSpot private app"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "f2b818aa-e1f9-581a-9a29-6be15a469f05",
+      "name": "Collect results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        -60
+      ],
+      "parameters": {
+        "jsCode": "// Turn HubSpot results into one status per row, and remember what was synced.\nconst plan = $('Plan sync').first().json;\nconst s = $('Prepare run').first().json.settings;\nlet responses = [];\ntry { responses = $('HubSpot batch upsert').all().map((i) => i.json); } catch (e) { /* nothing to upsert this run */ }\n\nconst okEmails = new Set();\nconst batchErrors = {};\nresponses.forEach((res, b) => {\n  const inputs = plan.batches[b]?.inputs || [];\n  if (res.error || !Array.isArray(res.results)) {\n    const msg = res.error?.message || res.message || 'HubSpot request failed';\n    inputs.forEach((x) => (batchErrors[x.id] = msg));\n    return;\n  }\n  res.results.forEach((r) => okEmails.add(String(r.properties?.email || r.id || '').toLowerCase()));\n  (res.errors || []).forEach((e) => (e.context?.ids || []).forEach((id) => (batchErrors[String(id).toLowerCase()] = e.message)));\n});\n\nconst now = DateTime.now().toFormat('yyyy-MM-dd HH:mm');  // n8n instance timezone\nconst store = $getWorkflowStaticData('global');\nconst synced = store.synced ??= {};\nconst statuses = [...plan.invalid];\nlet synced_count = 0;\nfor (const u of plan.upserts) {\n  if (okEmails.has(u.email)) {\n    synced[u.email] = u.fingerprint;\n    synced_count += 1;\n    statuses.push({ row: u.row, status: `synced ${now}`, current: u.current });\n  } else {\n    delete synced[u.email];\n    statuses.push({ row: u.row, status: `error: ${batchErrors[u.email] || 'not in HubSpot response'}`, current: u.current });\n  }\n}\n// Only write cells whose text changes, so an unchanged sheet is not rewritten every 15 minutes.\nconst writes = statuses.filter((x) => x.status !== x.current).sort((a, b) => a.row - b.row);\nreturn [{ json: {\n  synced: synced_count, failed: statuses.filter((x) => x.status.startsWith('error')).length, writes,\n  sheet_update: { valueInputOption: 'RAW', data: writes.map((x) => ({ range: `${s.sheet_name}!${s.status_column}${x.row}`, values: [[x.status]] })) },\n} }];\n"
+      },
+      "executeOnce": true
+    },
+    {
+      "id": "113eee3d-8d1f-534e-b2ea-943c993293b3",
+      "name": "Status changes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1720,
+        -60
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d5e8683b-3e5b-5f85-bd78-b1f2ea88f25b",
+              "leftValue": "={{ $json.writes.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "d3f2a8fa-2190-5707-8e3a-41d5265b6d66",
+      "name": "Write status to sheet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1940,
+        -140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://sheets.googleapis.com/v4/spreadsheets/{{ $('Prepare run').first().json.settings.spreadsheet_id }}/values:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Collect results').first().json.sheet_update) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "mnGoogleSheets001",
+          "name": "Google Sheets"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "44acc24e-9726-583e-86ae-d243d3eee6b1",
+      "name": "Summarize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        40
+      ],
+      "parameters": {
+        "jsCode": "const plan = $('Plan sync').first().json;\nlet result = null;\ntry { result = $('Collect results').first().json; } catch (e) { /* dry run */ }\nconst { batches, upserts, ...rest } = plan;\nrest.upserts = upserts.map(({ row, email, properties }) => ({ row, email, properties }));\nreturn [{ json: plan.dry_run\n  ? { ...rest, would_write: plan.invalid.filter((x) => x.status !== x.current), hubspot_batches: batches }\n  : { ...rest, synced: result?.synced ?? 0, failed: result?.failed ?? 0, status_cells_written: result?.writes.length ?? 0 } }];\n"
+      },
+      "executeOnce": true
+    },
+    {
+      "id": "e7235ac2-da81-5dbd-b2a9-3559ee290e85",
+      "name": "From webhook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2380,
+        40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a5abadab-25e0-5f87-a05b-913ccbcc12ba",
+              "leftValue": "={{ $json.source === 'webhook' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "f0b1f0c4-ea28-562b-a61d-0d30bb9571a5",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2600,
+        20
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every 15 minutes": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare run": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Plan sync",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read sheet": {
+      "main": [
+        [
+          {
+            "node": "Plan sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan sync": {
+      "main": [
+        [
+          {
+            "node": "Live run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Live run?": {
+      "main": [
+        [
+          {
+            "node": "Anything to upsert?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anything to upsert?": {
+      "main": [
+        [
+          {
+            "node": "Split batches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Collect results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split batches": {
+      "main": [
+        [
+          {
+            "node": "HubSpot batch upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot batch upsert": {
+      "main": [
+        [
+          {
+            "node": "Collect results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect results": {
+      "main": [
+        [
+          {
+            "node": "Status changes?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status changes?": {
+      "main": [
+        [
+          {
+            "node": "Write status to sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write status to sheet": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "From webhook?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From webhook?": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

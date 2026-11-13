@@ -1,0 +1,153 @@
+{
+  "call_id": "call_02",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "apollo",
+      "gender": "male"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "helena",
+      "gender": "female"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 0.3,
+      "end": 11.57,
+      "text": "Good afternoon, this is James Carter with Harborline Insurance. I'm following up on the auto insurance quote you requested this morning. Is now a good time?"
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 12.02,
+      "end": 14.06,
+      "text": "Sure, I've got a few minutes."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 14.51,
+      "end": 22.27,
+      "text": "Thanks. Is it okay if I ask some questions about your vehicles and drivers so I can put a few options together?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 22.72,
+      "end": 24.32,
+      "text": "Yes, that's fine."
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 24.77,
+      "end": 29.33,
+      "text": "How many vehicles would you like to insure, and who will be driving them?"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 29.78,
+      "end": 32.22,
+      "text": "Two cars. Me and my husband."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 32.67,
+      "end": 37.23,
+      "text": "And who is your current insurer, and when does that policy renew?"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 37.68,
+      "end": 41.56,
+      "text": "We're with another company, and it renews on the fifteenth of next month."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 42.01,
+      "end": 45.73,
+      "text": "Any accidents or tickets in the last three years?"
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 46.18,
+      "end": 49.62,
+      "text": "One speeding ticket for me, about two years ago."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 50.07,
+      "end": 68.51,
+      "text": "Thanks for being upfront. Based on that, I'd estimate somewhere between one hundred sixty and two hundred ten a month for both cars, but the final price depends on underwriting, so I can't promise a number yet."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 68.96,
+      "end": 71.32,
+      "text": "Okay, that's around what we pay now."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 71.77,
+      "end": 82.09,
+      "text": "I'll email you two options with full coverage details by end of day today, and I'll call you Thursday at ten a.m. to answer any questions. Does that work?"
+    },
+    {
+      "index": 13,
+      "role": "CUSTOMER",
+      "voice": "helena",
+      "gender": "female",
+      "start": 82.54,
+      "end": 84.62,
+      "text": "Thursday at ten is fine."
+    },
+    {
+      "index": 14,
+      "role": "AGENT",
+      "voice": "apollo",
+      "gender": "male",
+      "start": 85.07,
+      "end": 89.03,
+      "text": "Great. Thank you, and have a good afternoon."
+    }
+  ]
+}

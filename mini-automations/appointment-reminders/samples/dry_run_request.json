@@ -1,0 +1,101 @@
+{
+  "now": "2026-11-10T09:00:00+04:00",
+  "appointments": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "patient_name": "John Mathews",
+      "phone": "+971500002001",
+      "language": "en",
+      "starts_at": "2026-11-11T10:00:00+04:00",
+      "doctor": "Dr. Lina Haddad",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "patient_name": "Aisha Rahman",
+      "phone": "+971500002002",
+      "language": "en",
+      "starts_at": "2026-11-11T08:30:00+04:00",
+      "doctor": "Dr. Lina Haddad",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "patient_name": "فاطمة الزعابي",
+      "phone": "+971500002003",
+      "language": "ar",
+      "starts_at": "2026-11-10T10:30:00+04:00",
+      "doctor": "د. سامي يوسف",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "patient_name": "Ravi Kumar",
+      "phone": "+971500002004",
+      "language": "en",
+      "starts_at": "2026-11-10T15:00:00+04:00",
+      "doctor": "Dr. Lina Haddad",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": "2026-11-09T15:00:00+04:00",
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "patient_name": "Noura Saeed",
+      "phone": "+971500002005",
+      "language": "ar",
+      "starts_at": "2026-11-10T10:00:00+04:00",
+      "doctor": "د. سامي يوسف",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": "2026-11-09T10:00:00+04:00",
+      "reminder_2h_sent_at": "2026-11-10T08:00:00+04:00"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "patient_name": "Mark Evans",
+      "phone": "+971500002006",
+      "language": "en",
+      "starts_at": "2026-11-11T09:00:00+04:00",
+      "doctor": "Dr. Lina Haddad",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "cancelled",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "patient_name": "حمد المري",
+      "phone": "+971500002007",
+      "language": "ar",
+      "starts_at": "2026-11-10T13:00:00+04:00",
+      "doctor": "د. سامي يوسف",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "patient_name": "Sofia Petrova",
+      "phone": "+971500002008",
+      "language": "en",
+      "starts_at": "2026-11-11T00:30:00+04:00",
+      "doctor": "Dr. Lina Haddad",
+      "location": "Al Noor Family Clinic, Al Barsha",
+      "status": "booked",
+      "reminder_24h_sent_at": null,
+      "reminder_2h_sent_at": null
+    }
+  ]
+}

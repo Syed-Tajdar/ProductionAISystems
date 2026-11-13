@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Documents | {% endblock %}
+{% block content %}
+  <section class="intro">
+    <h1>Documents</h1>
+    <p class="muted">Everything the answers can draw on: the policies and guides of Palm Grove Realty, a fictional company. Each document is split into sections and passages, and each passage is searched by meaning and by keywords.</p>
+    {% if rows %}<p class="doc-totals mono">{{ totals.documents }} documents &middot; {{ totals.sections }} sections &middot; {{ totals.passages }} passages</p>{% endif %}
+  </section>
+
+  {% if error %}
+  {{ ui.state("error", "Documents not available", error, "/", "Back to questions") }}
+  {% elif not rows %}
+  {{ ui.state("empty", "No documents indexed yet", "Run the ingest step (see DEPLOY.md); documents show up here once they are indexed.") }}
+  {% else %}
+  <ul class="doc-list">
+    {% for d in rows %}
+    <li class="doc-card">
+      <div class="doc-main">
+        <p class="doc-title" dir="auto">{{ d.title }}</p>
+        <p class="doc-path mono">{{ d.path }}</p>
+      </div>
+      <dl class="doc-facts">
+        <div><dt>Language</dt><dd><span class="lang-tag" lang="{{ d.language }}">{{ d.language_name }}</span></dd></div>
+        <div><dt>Sections</dt><dd>{{ d.sections }}</dd></div>
+        <div><dt>Passages</dt><dd>{{ d.chunk_count }}</dd></div>
+        <div><dt>Indexed</dt><dd><time datetime="{{ d.indexed }}" title="{{ d.indexed | replace('T', ' ') }} UTC">{{ d.ago }}</time></dd></div>
+      </dl>
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="muted small-note">Formats: {{ rows | map(attribute="format") | unique | sort | join(", ") }}. Re-indexing skips unchanged files, so "Indexed" is when a file last changed or was added.</p>
+  {% endif %}
+{% endblock %}

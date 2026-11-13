@@ -1,0 +1,49 @@
+# pytest suites of the Python mini automations, with mocked APIs.
+name: mini-automations-python
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mini-automations/cv-screener/**"
+      - "mini-automations/invoice-to-sheet/**"
+      - "mini-automations/price-monitor/**"
+      - "mini-automations/_shared/**"
+      - ".github/workflows/mini-automations-python.yml"
+  pull_request:
+    paths:
+      - "mini-automations/cv-screener/**"
+      - "mini-automations/invoice-to-sheet/**"
+      - "mini-automations/price-monitor/**"
+      - "mini-automations/_shared/**"
+      - ".github/workflows/mini-automations-python.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (${{ matrix.project }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [cv-screener, invoice-to-sheet, price-monitor]
+    defaults:
+      run:
+        working-directory: mini-automations/${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: mini-automations/${{ matrix.project }}/requirements.lock
+      - run: pip install --require-hashes -r requirements.lock  # exact versions, checked against their hashes
+      - run: pytest -q

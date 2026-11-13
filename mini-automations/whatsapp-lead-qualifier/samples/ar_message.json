@@ -1,0 +1,39 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "WABA_ID",
+      "changes": [
+        {
+          "field": "messages",
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "971500000000",
+              "phone_number_id": "PHONE_NUMBER_ID"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Omar"
+                },
+                "wa_id": "971500001002"
+              }
+            ],
+            "messages": [
+              {
+                "from": "971500001002",
+                "id": "wamid.SAMPLE3",
+                "timestamp": "1762250000",
+                "type": "text",
+                "text": {
+                  "body": "السلام عليكم، أبي أشتري شقة غرفتين في الخليج التجاري، الميزانية ١٫٥ مليون"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

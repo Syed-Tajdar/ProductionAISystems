@@ -1,0 +1,36 @@
+[project]
+name = "call-qa-agent"
+version = "0.1.0"
+description = "Transcribes calls and scores them against a QA rubric with quoted evidence."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.30,<1",
+  "pydantic-settings>=2.4,<3",
+  "httpx>=0.27,<1",
+  "pyyaml>=6.0,<7",
+  "python-multipart>=0.0.9",
+  "anthropic>=2.4,<3",
+  "jinja2>=3.1,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "psycopg[binary]>=3.2,<4", "playwright==1.63.0"]  # psycopg: SQL tests of the migrations; playwright: the browser smoke test
+audio = ["numpy>=2,<3", "scipy>=1.13,<2", "pyloudnorm>=0.1.1,<0.2"]  # scripts/make_sample_audio.py and check_sample_audio.py (also need ffmpeg)
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["templates/*.html", "static/*.css", "static/*.js", "static/*.svg"]
+
+# Vercel: the FastAPI app this project serves (one Vercel Function, Fluid compute).
+[tool.vercel]
+entrypoint = "app.main:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

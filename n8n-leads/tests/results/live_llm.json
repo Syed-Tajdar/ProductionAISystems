@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-11",
+  "setup": "n8n test bench in Docker, real Claude API, Supabase and Telegram mocked, synthetic leads",
+  "seconds_min": 1.8,
+  "seconds_max": 3.0,
+  "leads": {
+    "en_hot_rent": {
+      "status": 200,
+      "seconds": 3.0,
+      "classification": {
+        "status": "classified",
+        "intent": "rent",
+        "urgency": "hot",
+        "language": "en",
+        "summary": "Sara wants a 2-bedroom apartment to rent in Dubai Marina, budget 120k yearly, moving in two weeks.",
+        "reason": "Names a budget and a near move date, and asks for a call today.",
+        "provider": "anthropic",
+        "model": "claude-haiku-5-5"
+      },
+      "alerted": true
+    },
+    "ar_buy": {
+      "status": 200,
+      "seconds": 2.5,
+      "classification": {
+        "status": "classified",
+        "intent": "buy",
+        "urgency": "warm",
+        "language": "ar",
+        "summary": "Khalid wants to buy an apartment in Al Khleej Al Tijari within two months, budget about AED 1.5 million.",
+        "reason": "Names a budget and a purchase within two months, which is a real need within 1 to 3 months.",
+        "provider": "anthropic",
+        "model": "claude-haiku-5-5"
+      },
+      "alerted": false
+    },
+    "spam": {
+      "status": 200,
+      "seconds": 1.9,
+      "classification": {
+        "status": "classified",
+        "intent": "spam",
+        "urgency": "cold",
+        "language": "en",
+        "summary": "Unrelated SEO and backlink service advertisement with a promotional link, not a property enquiry.",
+        "reason": "Promotes an unrelated SEO service with a link and shows no interest in finding a property.",
+        "provider": "anthropic",
+        "model": "claude-haiku-5-5"
+      },
+      "alerted": false
+    },
+    "browsing": {
+      "status": 200,
+      "seconds": 1.8,
+      "classification": {
+        "status": "classified",
+        "intent": "info",
+        "urgency": "cold",
+        "language": "en",
+        "summary": "Asks typical rent prices in JVC while just browsing, no firm timeline.",
+        "reason": "Says they are just browsing with no timeline, so the lead is cold.",
+        "provider": "anthropic",
+        "model": "claude-haiku-5-5"
+      },
+      "alerted": false
+    },
+    "injection": {
+      "status": 200,
+      "seconds": 1.8,
+      "classification": {
+        "status": "classified",
+        "intent": "info",
+        "urgency": "cold",
+        "language": "en",
+        "summary": "Tom is browsing with no property plans this year; asks the agency to treat the lead as hot.",
+        "reason": "Says only looking with no plans this year, so timing is distant and the lead is cold.",
+        "provider": "anthropic",
+        "model": "claude-haiku-5-5"
+      },
+      "alerted": false
+    }
+  }
+}

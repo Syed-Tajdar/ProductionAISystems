@@ -1,0 +1,32 @@
+{"id": "en-01", "category": "english", "question": "What is the fee for a returned cheque?", "expected": ["tenant-handbook#3.3"], "facts": ["AED 500", "must be replaced within 7 days"]}
+{"id": "en-02", "category": "english", "question": "How many access cards does each unit get, and what does a replacement card cost?", "expected": ["tenant-handbook#2.2"], "facts": ["two access cards", "AED 250 for a lost card"]}
+{"id": "en-03", "category": "english", "question": "When are the quiet hours in the building?", "expected": ["tenant-handbook#5.1"], "facts": ["22:00 to 07:00"]}
+{"id": "en-04", "category": "english", "question": "How long is the probation period, and what notice applies during it?", "expected": ["leave-policy#7"], "facts": ["6 months", "14 days notice"]}
+{"id": "en-05", "category": "english", "question": "Is the office open on Saturdays?", "expected": ["service-faq#1.1"], "facts": ["Saturday 10:00 to 14:00"]}
+{"id": "ar-01", "category": "arabic", "question": "كم يبلغ مبلغ التأمين للوحدة المفروشة؟", "expected": ["tenant-handbook#3.2"], "facts": ["10% of the annual rent"]}
+{"id": "ar-02", "category": "arabic", "question": "كم يوماً من الإجازة السنوية يستحق الموظف؟", "expected": ["leave-policy#4"], "facts": ["25 working days per year"]}
+{"id": "ar-03", "category": "arabic", "question": "ما المستندات المطلوبة لاستئجار شقة؟", "expected": ["service-faq#2.2"], "facts": ["passport", "residence visa", "Emirates ID"]}
+{"id": "ar-04", "category": "arabic", "question": "خلال كم يوماً يُرد مبلغ التأمين بعد المغادرة؟", "expected": ["tenant-handbook#6.4"], "facts": ["within 30 days after keys are returned and the utility clearance is received"]}
+{"id": "ar-05", "category": "arabic", "question": "هل يمكنني العمل من المنزل، وكم يوماً في الأسبوع؟", "expected": ["leave-policy#3"], "facts": ["up to 2 days per week", "after probation, with manager approval"]}
+{"id": "x-ar-01", "category": "cross_ar_to_en", "question": "ما مواعيد عمل المسبح؟", "expected": ["amenities-guide#1"], "facts": ["06:00 to 22:00 daily", "closed Monday 06:00 to 10:00"]}
+{"id": "x-ar-02", "category": "cross_ar_to_en", "question": "كم مبلغ التأمين عند حجز منطقة الشواء؟", "expected": ["amenities-guide#3"], "facts": ["AED 200 refundable deposit"]}
+{"id": "x-ar-03", "category": "cross_ar_to_en", "question": "ما الحد الأدنى للعمر لاستخدام النادي الرياضي؟", "expected": ["amenities-guide#2"], "facts": ["16", "14 and 15 year olds only with a parent"]}
+{"id": "x-en-01", "category": "cross_en_to_ar", "question": "What is the daily allowance for a business trip to Europe?", "expected": ["travel-expenses-policy#5"], "facts": ["AED 400 per day"]}
+{"id": "x-en-02", "category": "cross_en_to_ar", "question": "Can managers fly business class?", "expected": ["travel-expenses-policy#3"], "facts": ["managers and above", "flights over 6 hours"]}
+{"id": "x-en-03", "category": "cross_en_to_ar", "question": "How much do I get back per kilometre when I use my own car for work?", "expected": ["travel-expenses-policy#6"], "facts": ["AED 0.70 per km", "plus parking and tolls"]}
+{"id": "p-01", "category": "paraphrase", "question": "My cheque bounced. What happens now?", "expected": ["tenant-handbook#3.3"], "facts": ["AED 500 fee", "replace within 7 days by transfer or certified cheque"]}
+{"id": "p-02", "category": "paraphrase", "question": "If I leave my flat before the lease is up, what will it cost me?", "expected": ["tenant-handbook#6.3"], "facts": ["two months rent penalty", "60 days notice", "waived if an approved new tenant takes over"]}
+{"id": "p-03", "category": "paraphrase", "question": "My AC stopped cooling in July. How fast will someone come?", "expected": ["tenant-handbook#4.2"], "facts": ["urgent", "within 24 hours"]}
+{"id": "p-04", "category": "paraphrase", "question": "Am I allowed to grill on my balcony?", "expected": ["tenant-handbook#5.3"], "facts": ["no open-flame barbecues", "electric grills are allowed"]}
+{"id": "t-01", "category": "table", "question": "What discount do I get if I pay the whole year's rent at once?", "expected": ["tenant-handbook#3.1"], "facts": ["2% discount"]}
+{"id": "t-02", "category": "table", "question": "How long is maternity leave, and how much of it is on full pay?", "expected": ["leave-policy#4"], "facts": ["60 calendar days", "45 days full pay, 15 days half pay"]}
+{"id": "t-03", "category": "table", "question": "What does the Managed Plus package cost and what does it add over Managed?", "expected": ["service-faq#3.1"], "facts": ["8% of annual rent", "quarterly inspections", "utility handling", "yearly condition report"]}
+{"id": "t-04", "category": "table", "question": "ما رقم هاتف قسم الحسابات وما ساعات عمله؟", "expected": ["tenant-handbook#7"], "facts": ["04 555 0102", "Monday to Friday 09:00 to 17:00"]}
+{"id": "m-01", "category": "multi_document", "question": "What fees do I pay when I first rent a flat through you, including the tenancy registration?", "expected": ["service-faq#2.3", "tenant-handbook#2.3"], "facts": ["agency fee 5% of annual rent, minimum AED 5,000, plus VAT", "registration fee AED 220"]}
+{"id": "m-02", "category": "multi_document", "question": "I am going to a 4 day conference in Europe for work. How early must I request the leave, and what daily allowance do I get?", "expected": ["leave-policy#5", "travel-expenses-policy#5"], "facts": ["request at least 14 days in advance", "AED 400 per day in Europe"]}
+{"id": "m-03", "category": "multi_document", "question": "How do I report a maintenance problem, and how do I complain if it is not fixed?", "expected": ["tenant-handbook#4.1", "service-faq#4.1"], "facts": ["tenant app, maintenance email or 800 7256 hotline", "complaints@palmgrove.example or the app, acknowledged within 1 working day"]}
+{"id": "o-01", "category": "out_of_scope", "question": "Does Palm Grove Realty offer car rentals for tenants?", "expected": [], "facts": []}
+{"id": "o-02", "category": "out_of_scope", "question": "What is the salary range for a property officer?", "expected": [], "facts": []}
+{"id": "o-03", "category": "out_of_scope", "question": "هل تقدمون خدمات تنظيف المنازل للمستأجرين؟", "expected": [], "facts": []}
+{"id": "o-04", "category": "out_of_scope", "question": "How much is the rent for a 2 bedroom apartment at Palm Grove Residences?", "expected": [], "facts": []}
+{"id": "o-05", "category": "out_of_scope", "question": "What is the name of Palm Grove Realty's chief executive?", "expected": [], "facts": []}

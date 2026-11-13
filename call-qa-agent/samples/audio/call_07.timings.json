@@ -1,0 +1,135 @@
+{
+  "call_id": "call_07",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "athena",
+      "gender": "female"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "aries",
+      "gender": "male"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 0.3,
+      "end": 5.93,
+      "text": "Good afternoon, thank you for calling Palm Crest Properties. My name is Hana. How can I help you today?"
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 6.38,
+      "end": 12.74,
+      "text": "Hi Hana. I'm looking to buy a two-bedroom apartment as an investment, maybe in Jumeirah Village Circle."
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 13.19,
+      "end": 17.27,
+      "text": "Sure. Is this purely for rental income, or might you live in it later?"
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 17.72,
+      "end": 20.72,
+      "text": "Purely rental. What kind of return can I expect?"
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 21.17,
+      "end": 34.25,
+      "text": "I can't guarantee any return. Recent rental yields for two-bedrooms in that area have been around six to seven percent, but it depends on the building, service charges and the market, so please treat that as an estimate only."
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 34.7,
+      "end": 38.1,
+      "text": "Fair enough. My budget is around one point four million dirhams."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 38.55,
+      "end": 43.55,
+      "text": "Thank you. Are you looking at ready units or off-plan, and when are you hoping to buy?"
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 44.0,
+      "end": 46.04,
+      "text": "Ready, and within the next three months."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 46.49,
+      "end": 50.05,
+      "text": "Understood. Will you need a mortgage, or is this a cash purchase?"
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 50.5,
+      "end": 52.7,
+      "text": "Mortgage, probably for about half."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 53.15,
+      "end": 60.27,
+      "text": "Okay. I have a few ready two-bedroom units in that range. I'll send you some options and you can let me know which ones you like."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "aries",
+      "gender": "male",
+      "start": 60.72,
+      "end": 67.96,
+      "text": "Sounds good. Please send them to my email, it's d dot ahmed at example dot com."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "athena",
+      "gender": "female",
+      "start": 68.41,
+      "end": 74.05,
+      "text": "Got it, d dot ahmed at example dot com. I'll send them today. Thank you for calling."
+    }
+  ]
+}

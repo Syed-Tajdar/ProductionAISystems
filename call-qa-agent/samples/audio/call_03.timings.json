@@ -1,0 +1,135 @@
+{
+  "call_id": "call_03",
+  "rate": 24000,
+  "voices": {
+    "AGENT": {
+      "engine": "deepgram",
+      "voice": "orion",
+      "gender": "male"
+    },
+    "CUSTOMER": {
+      "engine": "deepgram",
+      "voice": "luna",
+      "gender": "female"
+    }
+  },
+  "lines": [
+    {
+      "index": 0,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 0.3,
+      "end": 8.18,
+      "text": "Hey, this is Kevin from Harborline Insurance, and just so you know, this call is being recorded. So what's your date of birth and zip code?"
+    },
+    {
+      "index": 1,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 8.63,
+      "end": 10.1,
+      "text": "Uh, why do you need that already?"
+    },
+    {
+      "index": 2,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 10.55,
+      "end": 22.71,
+      "text": "Just to pull up your rates. Trust me, this is the best deal out there. Everyone who signs up today gets guaranteed approval, no medical questions, and with the government subsidy it's basically free."
+    },
+    {
+      "index": 3,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 23.16,
+      "end": 25.15,
+      "text": "Basically free? Really?"
+    },
+    {
+      "index": 4,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 25.6,
+      "end": 29.92,
+      "text": "Yep, most people pay zero dollars a month. So, date of birth?"
+    },
+    {
+      "index": 5,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 30.37,
+      "end": 35.43,
+      "text": "March twelfth, nineteen eighty-one. Zip code is three three six one zero."
+    },
+    {
+      "index": 6,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 35.88,
+      "end": 41.95,
+      "text": "Perfect. And I'll need your Social Security number so I can lock in the rate before it expires tonight."
+    },
+    {
+      "index": 7,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 42.4,
+      "end": 45.99,
+      "text": "I'm not comfortable giving that over the phone. I don't even know which plan this is."
+    },
+    {
+      "index": 8,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 46.44,
+      "end": 53.36,
+      "text": "It's totally standard, everybody does it. The offer ends at midnight, and after that the price goes way up."
+    },
+    {
+      "index": 9,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 53.81,
+      "end": 56.01,
+      "text": "I'd still rather think about it and read something first."
+    },
+    {
+      "index": 10,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 56.46,
+      "end": 62.3,
+      "text": "Look, I'm trying to save you money here. Most people in your situation sign up on the first call."
+    },
+    {
+      "index": 11,
+      "role": "CUSTOMER",
+      "voice": "luna",
+      "gender": "female",
+      "start": 62.75,
+      "end": 65.4,
+      "text": "I understand, but I'm not doing it today."
+    },
+    {
+      "index": 12,
+      "role": "AGENT",
+      "voice": "orion",
+      "gender": "male",
+      "start": 65.85,
+      "end": 69.09,
+      "text": "Alright, alright. I'll call you back later then."
+    }
+  ]
+}

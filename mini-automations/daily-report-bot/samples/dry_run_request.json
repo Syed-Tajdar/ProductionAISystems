@@ -1,0 +1,173 @@
+{
+  "report_date": "2026-11-09",
+  "rows": [
+    {
+      "day": "2026-11-02",
+      "channel": "website",
+      "orders": 40,
+      "revenue_aed": 12000.0,
+      "new_leads": 18
+    },
+    {
+      "day": "2026-11-02",
+      "channel": "whatsapp",
+      "orders": 15,
+      "revenue_aed": 4500.0,
+      "new_leads": 9
+    },
+    {
+      "day": "2026-11-02",
+      "channel": "walk_in",
+      "orders": 25,
+      "revenue_aed": 6000.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-03",
+      "channel": "website",
+      "orders": 42,
+      "revenue_aed": 12600.0,
+      "new_leads": 19
+    },
+    {
+      "day": "2026-11-03",
+      "channel": "whatsapp",
+      "orders": 16,
+      "revenue_aed": 4800.0,
+      "new_leads": 9
+    },
+    {
+      "day": "2026-11-03",
+      "channel": "walk_in",
+      "orders": 26,
+      "revenue_aed": 6240.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-04",
+      "channel": "website",
+      "orders": 38,
+      "revenue_aed": 11400.0,
+      "new_leads": 17
+    },
+    {
+      "day": "2026-11-04",
+      "channel": "whatsapp",
+      "orders": 14,
+      "revenue_aed": 4200.0,
+      "new_leads": 9
+    },
+    {
+      "day": "2026-11-04",
+      "channel": "walk_in",
+      "orders": 24,
+      "revenue_aed": 5760.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-05",
+      "channel": "website",
+      "orders": 44,
+      "revenue_aed": 13200.0,
+      "new_leads": 20
+    },
+    {
+      "day": "2026-11-05",
+      "channel": "whatsapp",
+      "orders": 16,
+      "revenue_aed": 4800.0,
+      "new_leads": 10
+    },
+    {
+      "day": "2026-11-05",
+      "channel": "walk_in",
+      "orders": 28,
+      "revenue_aed": 6720.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-06",
+      "channel": "website",
+      "orders": 36,
+      "revenue_aed": 10800.0,
+      "new_leads": 16
+    },
+    {
+      "day": "2026-11-06",
+      "channel": "whatsapp",
+      "orders": 14,
+      "revenue_aed": 4200.0,
+      "new_leads": 8
+    },
+    {
+      "day": "2026-11-06",
+      "channel": "walk_in",
+      "orders": 22,
+      "revenue_aed": 5280.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-07",
+      "channel": "website",
+      "orders": 40,
+      "revenue_aed": 12000.0,
+      "new_leads": 18
+    },
+    {
+      "day": "2026-11-07",
+      "channel": "whatsapp",
+      "orders": 15,
+      "revenue_aed": 4500.0,
+      "new_leads": 9
+    },
+    {
+      "day": "2026-11-07",
+      "channel": "walk_in",
+      "orders": 25,
+      "revenue_aed": 6000.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-08",
+      "channel": "website",
+      "orders": 41,
+      "revenue_aed": 12300.0,
+      "new_leads": 18
+    },
+    {
+      "day": "2026-11-08",
+      "channel": "whatsapp",
+      "orders": 15,
+      "revenue_aed": 4500.0,
+      "new_leads": 9
+    },
+    {
+      "day": "2026-11-08",
+      "channel": "walk_in",
+      "orders": 26,
+      "revenue_aed": 6240.0,
+      "new_leads": 4
+    },
+    {
+      "day": "2026-11-09",
+      "channel": "website",
+      "orders": 42,
+      "revenue_aed": 12600.0,
+      "new_leads": 19
+    },
+    {
+      "day": "2026-11-09",
+      "channel": "whatsapp",
+      "orders": 26,
+      "revenue_aed": 7800.0,
+      "new_leads": 17
+    },
+    {
+      "day": "2026-11-09",
+      "channel": "walk_in",
+      "orders": 14,
+      "revenue_aed": 3360.0,
+      "new_leads": 3
+    }
+  ]
+}

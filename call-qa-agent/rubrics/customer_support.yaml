@@ -1,0 +1,58 @@
+id: customer_support
+name: Customer support call
+version: 1
+languages: [en]
+description: >
+  Inbound support call for a subscription service. Focus on identity checks
+  before account details, empathy, and resolving or escalating with a reference.
+pass_threshold: 80
+
+items:
+  - id: greeting
+    title: Greeting
+    weight: 5
+    critical: false
+    pass_if: Agent greets the caller with the company name and their own name.
+    fail_if: Agent gives no name or no company name.
+
+  - id: identity_verification
+    title: Identity verified before account details
+    weight: 25
+    critical: true
+    pass_if: Agent verifies identity (for example full name plus account number digits) before reading out or changing any account details.
+    fail_if: Agent discloses or changes account details before verification, or never verifies.
+
+  - id: empathy
+    title: Empathy
+    weight: 15
+    critical: false
+    pass_if: Agent acknowledges the impact of the problem on the caller in their own words.
+    fail_if: Agent ignores or dismisses the caller's frustration.
+
+  - id: issue_restated
+    title: Issue restated
+    weight: 10
+    critical: false
+    pass_if: Agent restates the problem to confirm they understood it.
+    fail_if: Agent never confirms their understanding of the problem.
+
+  - id: resolution_or_escalation
+    title: Resolution or escalation
+    weight: 25
+    critical: false
+    pass_if: Agent resolves the issue, or escalates and gives a ticket or reference number with an expected timeline.
+    fail_if: No fix and no reference number, or the caller is told to call back without a ticket.
+
+  - id: no_unauthorized_promises
+    title: No unauthorized promises
+    weight: 15
+    critical: true
+    pass_if: Agent only commits to what they can do, and says when something needs approval.
+    fail_if: Agent promises a refund, credit or outcome as guaranteed when it needs someone else's approval.
+
+  - id: closing
+    title: Closing
+    weight: 5
+    critical: false
+    pass_if: Agent asks if there is anything else and closes politely.
+    fail_if: Call ends abruptly without checking for anything else.

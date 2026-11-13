@@ -1,0 +1,16 @@
+Omar Khalil
+Customer Support Agent
+Phone: 052 000 3303 | omar.k@example.com
+Gender: Male
+Marital Status: Single
+
+SUMMARY
+Customer support agent with 2 years of experience in telecom.
+
+EXPERIENCE
+Customer Support Agent, Gulf Telecom, Sharjah (2023 - present)
+- Resolve billing and connectivity issues by phone in Arabic and English.
+- Log every case in Salesforce Service Cloud.
+
+EDUCATION
+BA Business Administration, University of Sharjah

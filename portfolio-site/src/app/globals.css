@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --fg: #15171c;
+  --muted: #585e6a;
+  --line: #e3e3de;
+  --accent: #0f6e66;
+  --accent-fg: #ffffff;
+  --accent-soft: #e5f1ef;
+  /* Diagrams paint their own canvas, boxes and text from these, so they stay readable as one unit
+     even if a browser darkens the page. */
+  --diagram-canvas: #fafaf8;
+  --diagram-box: #ffffff;
+  --diagram-line: #d4d4cd;
+  --diagram-text: #15171c;
+  --diagram-sub: #3d434e;
+  /* "only" tells browsers not to apply their own automatic dark mode: the page has both themes. */
+  color-scheme: only light;
+}
+
+.dark {
+  --bg: #0c0e11;
+  --surface: #13161a;
+  --fg: #e7e8eb;
+  --muted: #9ba1ac;
+  --line: #252930;
+  --accent: #3ad1bd;
+  --accent-fg: #04201c;
+  --accent-soft: #0f2c29;
+  --diagram-canvas: #0c0e11;
+  --diagram-box: #181c21;
+  --diagram-line: #343a43;
+  --diagram-text: #e7e8eb;
+  --diagram-sub: #c3c8d0;
+  color-scheme: only dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-diagram-canvas: var(--diagram-canvas);
+  --color-diagram-box: var(--diagram-box);
+  --color-diagram-line: var(--diagram-line);
+  --color-diagram-text: var(--diagram-text);
+  --color-diagram-sub: var(--diagram-sub);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Hero pipeline: a pulse runs along each connector, then the next step lights up. 4.8 s per cycle. */
+.pipe-pulse {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  animation: pipe-flow 4.8s linear infinite;
+}
+.pipe-glow {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--accent);
+  border-radius: inherit;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  opacity: 0;
+  animation: pipe-node 4.8s ease-out infinite;
+}
+.pipe-live {
+  animation: pipe-blink 2.4s ease-in-out infinite;
+}
+@keyframes pipe-flow {
+  0% { transform: translateX(-100%); opacity: 0; }
+  4% { opacity: 1; }
+  22% { opacity: 1; }
+  25%, 100% { transform: translateX(230%); opacity: 0; }
+}
+@keyframes pipe-node {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  22%, 100% { opacity: 0; }
+}
+@keyframes pipe-blink {
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+}
+
+/* PDF export (scripts/export-calyx.mjs prints /calyx): light colours, A4, no page chrome. */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 16mm 18mm;
+  }
+  :root,
+  .dark {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --fg: #15171c;
+    --muted: #4a505b;
+    --line: #dcdcd6;
+    --accent: #0f6e66;
+    --accent-fg: #ffffff;
+    --accent-soft: #eaf4f2;
+    --diagram-canvas: #ffffff;
+    --diagram-box: #ffffff;
+    --diagram-line: #cfcfc8;
+    --diagram-text: #15171c;
+    --diagram-sub: #3d434e;
+    color-scheme: only light;
+  }
+  html,
+  body {
+    background: #fff;
+  }
+  body {
+    font-size: 12.5px;
+  }
+}
+
+/* The phone "Try a demo" button fades in when it appears (motion-safe only). */
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(6px); }
+}
