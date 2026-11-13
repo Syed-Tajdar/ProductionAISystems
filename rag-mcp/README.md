@@ -355,5 +355,4 @@ The database tests start a throwaway pgvector container with Docker. To use an e
 
 ## Not yet
 
-- Deploying to Vercel (the code and settings are ready).
 - The demo video (Claude Desktop and the web page).
