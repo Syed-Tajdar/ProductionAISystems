@@ -8,7 +8,7 @@ The public demo runs n8n on **Render's free plan** (no card) with its own data i
 | n8n's own data (workflows, credentials, executions) | Supabase, schema `n8n`, apart from the lead tables | $0, inside the Supabase free plan |
 | Lead tables and demo limits | Supabase, schema `public` | $0 |
 | Demo page | Vercel Hobby, `landing/` | $0 |
-| Lead classification | Claude Haiku, about $0.001 per lead; the demo allows 100 leads a day | at most about $0.10 a day |
+| Lead classification | Claude Haiku, $0.000128 per lead on average in the live test (`tests/results/live_llm.json`); the demo allows 100 leads a day | about $0.01 a day at the most expensive lead in the test |
 
 What the free plan means: n8n sleeps after 15 minutes without traffic, and the next request waits while it starts. Measured with the same limits (512 MB, 0.1 CPU): `/healthz` answers after about 80 s, the webhooks after about 2 minutes, then about 4 s per lead. The demo page wakes n8n as soon as it opens and waits up to 5 minutes, so a visitor sees a calm "starting up" message, not an error. Nothing is lost on a sleep or restart: everything n8n stores is in Postgres, and `N8N_ENCRYPTION_KEY` is a fixed value you keep.
 
@@ -30,7 +30,7 @@ Six steps, all from a phone browser: Render blueprint, n8n owner signup, an n8n 
 ## 1. n8n on Render (10 minutes)
 
 1. dashboard.render.com > **New > Blueprint**. Connect the GitHub repository, set **Blueprint Path** to `n8n-leads/render.yaml`, and continue. Render shows one free web service.
-2. Fill in the values Render asks for. The address is not known yet, so `N8N_HOST` and `WEBHOOK_URL` get a temporary value now and the real one in step 4:
+2. Fill in the values Render asks for. The address is not known yet, so `N8N_HOST` and `N8N_WEBHOOK_URL` get a temporary value now and the real one in step 4:
 
    | Key | Value |
    | --- | --- |
@@ -39,14 +39,14 @@ Six steps, all from a phone browser: Render blueprint, n8n owner signup, an n8n 
    | `DB_POSTGRESDB_PASSWORD` | the database password |
    | `N8N_ENCRYPTION_KEY` | the value from 0.3 |
    | `N8N_HOST` | `set-after-deploy.invalid` for now |
-   | `WEBHOOK_URL` | `https://set-after-deploy.invalid/` for now |
+   | `N8N_WEBHOOK_URL` | `https://set-after-deploy.invalid/` for now |
    | `LEADS_SUPABASE_URL` | `https://<project-ref>.supabase.co` |
    | `LEADS_SALES_CHAT_ID`, `LEADS_OPS_CHAT_ID` | the chat id from 0.4 |
 
 3. **Apply.** The first start creates n8n's tables in the `n8n` schema and takes 3 to 5 minutes.
-4. Open the service in the Render dashboard and copy its address from the top of the page (`https://<your-service>.onrender.com`). Under **Environment**, set `N8N_HOST` to that host (`<your-service>.onrender.com`, no `https://`) and `WEBHOOK_URL` to `https://<your-service>.onrender.com/`, then press **Manual Deploy**.
+4. Open the service in the Render dashboard and copy its address from the top of the page (`https://<your-service>.onrender.com`). Under **Environment**, set `N8N_HOST` to that host (`<your-service>.onrender.com`, no `https://`) and `N8N_WEBHOOK_URL` to `https://<your-service>.onrender.com/`, then press **Manual Deploy**.
 
-Everything else is already in `render.yaml`: the demo mode and its caps (`LEADS_DEMO_*`), no email sender, one week of execution history, and the settings that keep n8n inside 512 MB and let its Code runner start on 0.1 CPU.
+Everything else is already in `render.yaml`: the demo mode and its caps (`LEADS_DEMO_*`), no email sender, one week of execution history, the settings that keep n8n inside 512 MB and let its Code runner start on 0.1 CPU, and the [pinned settings](#pinned-n8n-settings) whose defaults change in n8n 3.0.
 
 ## 2. n8n owner signup (2 minutes)
 
@@ -134,6 +134,36 @@ Do the steps in this order. Each one can be undone, and the service keeps runnin
 
 What is tested here: n8n 2.45 against a local Postgres with TLS starts with the right CA, given as text or as a file (`DB_POSTGRESDB_SSL_CA_FILE`), and refuses to connect with another CA; the check script accepts the right CA and rejects a wrong CA and a wrong host name (`tests/test_db_tls.py`). Not tested from here: the Supabase pooler itself, which step 1 covers.
 
+## Pinned n8n settings
+
+n8n 2.45 warns at start-up about settings that are deprecated or whose defaults change in n8n 3.0. Each one is now set explicitly in `render.yaml`, `docker-compose.yml` and `.env.example` (and the test bench), so an upgrade cannot change behaviour without a change here.
+
+| Setting | Value | Why |
+| --- | --- | --- |
+| `N8N_WEBHOOK_URL` | `https://<your-service>.onrender.com/` | Replaces `WEBHOOK_URL`, deprecated in 2.35. In 2.45 it takes precedence and sets the base of both production and test webhooks; `WEBHOOK_URL` is only read when it is empty, so 2.45 does not need it. |
+| `N8N_UNVERIFIED_PACKAGES_ENABLED` | `false` | The default becomes `false` in 3.0. No community packages are installed here (`N8N_COMMUNITY_PACKAGES_ENABLED=false`), so `false` changes nothing today. |
+| `N8N_RUNNERS_MODE` | `internal` | Explained below. This is the one warning left. |
+| `N8N_RUNNERS_TASK_TIMEOUT` | `300` | The default drops to 60 s in 3.0. The Code nodes build LLM requests and read the answers; on a cold start on 0.1 CPU a Code task can take longer than a minute, so the current 300 s stays. |
+| `N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES` | `268435456` (256 MiB) | The default drops from 2 GiB to 256 MiB in 3.0. No workflow here uses the Compression node, and 2 GiB could never be unpacked inside a 512 MB instance anyway, so 3.0's limit is set now. |
+| `N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES` | `1000` | The default drops from 5,000 to 1,000 in 3.0. Same reason. |
+
+**Why internal runner mode stays.** Code nodes run in a separate task runner process. In internal mode n8n starts that process itself, inside the same container. External mode, which n8n recommends and which 3.0 is expected to require, moves the runner into a second container (the `n8nio/runners` image, same version as n8n) that connects to n8n's task broker on port 5679 with a shared `N8N_RUNNERS_AUTH_TOKEN`. On Render that second container would be a separate service reaching n8n over the private network, and the free plan rules that out twice: private services and background workers have no free instances, and a free web service cannot receive private network traffic, so the runner could not reach the broker on the free n8n service either. A second free web service would also sleep on its own and would need the broker exposed to the internet. So on the free plan the runner stays internal, and n8n 2.45 logs one warning for it at every start (it warns whenever the mode is `internal`, even when set explicitly). Moving to external mode is part of moving off the free plan: a paid private service for the runner, `N8N_RUNNERS_MODE=external`, `N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0` and the same auth token on both services.
+
+**Changing the live service.** `render.yaml` already has the new settings, but a Blueprint sync does not fill in values marked `sync: false` and does not remove variables, so make the change by hand in the dashboard (the n8n service > **Environment**). Two deploys, so each change can be checked and undone on its own:
+
+1. **Add the new settings, keep the old one.** Add these six variables, then **Save, rebuild, and deploy**:
+   - `N8N_WEBHOOK_URL` = the same value `WEBHOOK_URL` has now (`https://<your-service>.onrender.com/`, with the trailing slash)
+   - `N8N_UNVERIFIED_PACKAGES_ENABLED` = `false`
+   - `N8N_RUNNERS_MODE` = `internal`
+   - `N8N_RUNNERS_TASK_TIMEOUT` = `300`
+   - `N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES` = `268435456`
+   - `N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES` = `1000`
+2. **Check it.** Under **Logs**, wait for `n8n ready on` and `Editor is now accessible`. The deprecation block should list only `WEBHOOK_URL` and `N8N_RUNNERS_MODE`. Then open the demo page and send one enquiry: it must show the timeline as before.
+3. **Remove the old one.** Delete `WEBHOOK_URL`, then **Save, rebuild, and deploy**.
+4. **Check again.** The deprecation block should list only `N8N_RUNNERS_MODE`. Send one more enquiry from the demo page, and in the n8n editor open Workflow A's webhook node: its production URL must start with your service's address.
+
+**Rollback.** After step 3: add `WEBHOOK_URL` back with the same value and deploy. After step 1: delete the six variables and deploy; every one of them only fixes the value n8n already used, except the two compression limits, which no workflow reaches.
+
 ## Reading n8n errors from GitHub
 
 **Actions > n8n-errors > Run workflow** (`.github/workflows/n8n-errors.yml`) shows where recent executions went wrong without opening the n8n editor. Input `limit`: how many of the latest executions to read (default 3). For each one it prints the status, start time and workflow id, the workflow error if there is one, and every node that failed or returned something that looks like an error (an error field, a status code, "unauthorized", "not found"). It only reads: `GET /executions` with `N8N_HOST` and `N8N_API_KEY`, values of secrets in its environment are masked, and lead data is not printed: names, phone numbers, emails and messages are replaced before anything reaches the log. If n8n was asleep and the run times out, run it again: the first request wakes it.
@@ -146,6 +176,7 @@ What is tested here: n8n 2.45 against a local Postgres with TLS starts with the 
 | Render log: `password authentication failed` | User must be `postgres.<project-ref>` for the pooler, not `postgres`. |
 | Render log: `Mismatching encryption keys` | `N8N_ENCRYPTION_KEY` changed. Put back the saved value. |
 | Render event: out of memory | Check that `NODE_OPTIONS` and `N8N_RUNNERS_MAX_OLD_SPACE_SIZE` from `render.yaml` are set. |
+| Demo page: "The workflow did not answer" right after a deploy or a wake-up; n8n-errors gets HTTP 404 from `/api/v1`; the log shows `Processed 0 draft workflows, 0 published workflows` | n8n was still starting; the workflows were not lost. On 0.1 CPU, n8n 2.45 opens its port and `/healthz` (where Render marks the deploy live) about 80 s after it starts, but mounts its other routes about 80 s later. Until then every request, the form webhook and `/api/v1` included, gets a 404 without a CORS header, which a browser reports as a failed request. The published workflows are activated before `Editor is now accessible` is logged. The `Processed ...` line is the dependency index, which counts only workflows it has not indexed yet, so it says 0 on every normal restart. Nothing to fix: the demo page and n8n-errors now wait up to 6 and 7 minutes. If it still fails, wait for `Editor is now accessible` and try again; setup-n8n is not needed. Measured with n8n 2.45 at 512 MB and 0.1 CPU on Postgres: port at 78 to 81 s, webhook answering at 150 to 173 s, all four workflows still published after each restart. |
 | Demo page: "Not connected yet" | `LEAD_WEBHOOK_URL` is missing on the Vercel project; set it and redeploy. |
 | Demo page: "Demo limit reached" | 5 leads per visitor in 10 minutes, or 100 a day in total (UTC). |
 | Result says the alert was skipped | The 20 demo alerts of the day are used up. |
@@ -184,7 +215,7 @@ Prices are approximate, from public pricing pages checked in November 2026.
 
 1. New project > **Create > Database > PostgreSQL**, then **Create > Docker Image** `n8nio/n8n:2.45.0`, renamed `n8n`.
 2. In the n8n service, **Variables > Raw Editor**: the `DB_POSTGRESDB_*` values as `${{Postgres.PGHOST}}`, `${{Postgres.PGPORT}}`, `${{Postgres.PGDATABASE}}`, `${{Postgres.PGUSER}}`, `${{Postgres.PGPASSWORD}}`, plus `DB_TYPE=postgresdb`, `N8N_ENCRYPTION_KEY`, `N8N_PORT=5678`, `N8N_LISTEN_ADDRESS=::`, `N8N_PROTOCOL=https`, `N8N_HOST`, `WEBHOOK_URL`, `N8N_PROXY_HOPS=1`, `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`, `GENERIC_TIMEZONE=Asia/Dubai` and the `LEADS_*` values (see `.env.example`).
-3. **Settings > Networking > Generate Domain** (port 5678), put the domain into `N8N_HOST` and `WEBHOOK_URL`, redeploy.
+3. **Settings > Networking > Generate Domain** (port 5678), put the domain into `N8N_HOST` and `N8N_WEBHOOK_URL`, redeploy.
 4. **Workspace > Usage**: set a usage limit.
 
 ### Local or VPS with Docker

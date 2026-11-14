@@ -237,7 +237,7 @@ python -m evals.run --provider anthropic --text-calls call_05,call_06 --no-db
 | Evidence on the right line | 48/56 (86%) |
 | Avg transcription latency per call (8 audio calls, without database writes) | 0.8 s |
 | Avg scoring latency per call (without database writes) | 4.5 s |
-| Avg LLM cost per call, at list price ($2 / $10 per million input / output tokens) | $0.0102 (from $0.0092 to $0.0108) |
+| Avg LLM cost per call, at list price ($2 / $10 per million input / output tokens) | $0.0101 (from $0.0091 to $0.0108) |
 | Avg Deepgram cost per call | not measured (`DEEPGRAM_PRICE_PER_MIN` not set) |
 
 - **Run-to-run variation:** a run earlier the same day, before the prompt injection rule was added to the scoring prompt, scored 66/67 ([output](evals/results/2026-11-11-before-injection-rule.json)). The item that differed is `contact_confirmation` on call_07, expected pass, scored fail: speech recognition heard the spelled-out email differently in the customer's line and in the agent's read-back, so in the transcript the agent did not repeat what the customer said. The item is not critical and the call's pass/fail result was right in both runs. Expect that item to go either way.

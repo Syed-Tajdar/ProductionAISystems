@@ -4,13 +4,16 @@
 
 Lead data never reaches the log: personal fields (name, phone, email, message and the texts built from them) are
 replaced by a length marker, and emails, phone numbers, names and messages inside any other text, such as an
-error message, are masked. Values of secrets in the environment are masked too.
+error message, are masked. Values of secrets in the environment are masked too. A sleeping or restarting n8n is
+waited for up to 7 minutes: while it starts, /api/v1 answers 404.
 """
 
 import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -89,6 +92,30 @@ def report(executions: list[dict], scrub=lambda text: text) -> list[str]:
     return lines
 
 
+STARTING = (404, 502, 503, 504)  # n8n 2.45 opens its port about 80 s before /api/v1 exists (404); Render answers 502 to 504
+
+
+def fetch(request, wait_seconds: int = 420, pause: int = 10, opener=urllib.request.urlopen, sleep=time.sleep,
+          clock=time.monotonic, log=print) -> bytes:
+    """The response body. A sleeping or restarting n8n is waited for, as setup-n8n does, instead of being read as
+    a missing API."""
+    deadline = clock() + wait_seconds
+    while True:
+        try:
+            with opener(request, timeout=240) as response:
+                return response.read()
+        except urllib.error.HTTPError as e:
+            if e.code not in STARTING or clock() + pause > deadline:
+                raise
+            reason = f"HTTP {e.code}"
+        except (urllib.error.URLError, ConnectionError, TimeoutError) as e:
+            if clock() + pause > deadline:
+                raise
+            reason = type(e).__name__
+        log(f"n8n is starting ({reason}), retrying in {pause} s")
+        sleep(pause)
+
+
 def main() -> int:
     host = os.environ["N8N_HOST"].strip().removeprefix("https://").strip("/")
     key = os.environ["N8N_API_KEY"].strip()
@@ -102,8 +129,7 @@ def main() -> int:
 
     request = urllib.request.Request(f"https://{host}/api/v1/executions?includeData=true&limit={urllib.parse.quote(limit)}",
                                      headers={"X-N8N-API-KEY": key, "accept": "application/json"})
-    with urllib.request.urlopen(request, timeout=240) as response:
-        executions = json.loads(response.read()).get("data", [])
+    executions = json.loads(fetch(request)).get("data", [])
     for line in report(executions, scrub):
         print(line)
     return 0

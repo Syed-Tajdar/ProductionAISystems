@@ -5,6 +5,7 @@ import { Services } from "@/components/Services";
 import { Recruiters } from "@/components/Recruiters";
 import { DemoJump } from "@/components/DemoJump";
 import { HowIBuild } from "@/components/HowIBuild";
+import { RunningCost } from "@/components/RunningCost";
 import { MiniAutomations } from "@/components/MiniAutomations";
 import { Skills } from "@/components/Skills";
 import { Experience } from "@/components/Experience";
@@ -33,6 +34,7 @@ export default function Home() {
         <Recruiters />
         <MiniAutomations />
         <HowIBuild />
+        <RunningCost />
         <Contact />
       </main>
       <Footer />

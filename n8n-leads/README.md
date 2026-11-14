@@ -75,7 +75,7 @@ flowchart LR
 
 Provider and models are set at the top of **Normalize lead**; everything that differs per deployment comes from environment variables (below).
 
-Measured on the test bench with the real Claude API (Supabase and Telegram mocked, five synthetic leads; one run on 11 November 2026, output in [`tests/results/live_llm.json`](tests/results/live_llm.json)): every lead classified, 1.8 to 3.0 s per submission end to end; the English rental lead came back hot and was the only one alerted, the Arabic lead `ar`/`buy`, the SEO pitch `spam`, and a message telling the model to rate it hot came back `info`/`cold`.
+Measured on the test bench with the real Claude API (Supabase and Telegram mocked, five synthetic leads; one run on 14 November 2026, output in [`tests/results/live_llm.json`](tests/results/live_llm.json)): every lead classified with one Claude Haiku call, 1.1 to 3.0 s per submission end to end and $0.000128 per lead on average at list price ($0.000121 to $0.000135, 805 to 844 input and 82 to 103 output tokens); the English rental lead came back hot and was the only one alerted, the Arabic lead `ar`/`buy`, the SEO pitch `spam`, and a message telling the model to rate it hot came back `info`/`cold`.
 
 ## Demo mode
 
@@ -138,7 +138,7 @@ Credentials in n8n: **Supabase** (Custom Auth, `{"headers": {"apikey": "<secret 
 
 ## Hosting on Render: what to know
 
-- **Use the exact URL.** Render may add a suffix to the service name (`n8n-leads-<suffix>.onrender.com`) when the plain name is taken, and the plain name can be someone else's n8n. `N8N_HOST`, `WEBHOOK_URL` and `LEAD_WEBHOOK_URL` must all use the address shown on the service page in the Render dashboard; this README and DEPLOY.md write it as `<your-service>.onrender.com`. Sign up as the n8n owner only on that address.
+- **Use the exact URL.** Render may add a suffix to the service name (`n8n-leads-<suffix>.onrender.com`) when the plain name is taken, and the plain name can be someone else's n8n. `N8N_HOST`, `N8N_WEBHOOK_URL` and `LEAD_WEBHOOK_URL` must all use the address shown on the service page in the Render dashboard; this README and DEPLOY.md write it as `<your-service>.onrender.com`. Sign up as the n8n owner only on that address.
 - **Fallbacks for instances whose public API differs.** Our instance is a standard n8n 2.45: setup-n8n updates its credentials in place. For an instance that answers differently (one met on another host), setup-n8n also handles: no credential list or update (405), so it replaces credentials and rewires the nodes; a read-only credential id; a missing publish route (404), so it activates instead; activation that finishes after the request, so it reads each workflow back until it is active; a firewall that blocks plain JSON bodies, so every body is gzip-compressed; and HTML error pages, reported as plain text. Details in [DEPLOY.md](DEPLOY.md#fallbacks-for-instances-whose-public-api-differs).
 - **The first activation is slow** on the free plan (0.1 CPU): with the wake-up, the first setup-n8n run can take 20 minutes.
 - **Reading errors:** the read-only **n8n-errors** workflow (script: [`.github/scripts/n8n_errors.py`](../.github/scripts/n8n_errors.py)) prints the latest executions with their failed nodes and error outputs, secrets and lead data masked, without opening the n8n editor.
@@ -161,7 +161,7 @@ n8n runs on Render's free plan, which stops the instance when it is idle and sta
 
 - Opening the page sends a no-cors request to n8n's `/healthz`, which wakes a sleeping n8n while the visitor reads.
 - The form posts `application/x-www-form-urlencoded`, a simple CORS request with no preflight: `name`, `phone`, `email`, `message`, `consent`, `source=web_form`, `page`, `submitted_at`, UTM tags, and the hidden `company` honeypot.
-- While n8n starts, the page shows a calm "starting up" message, retries the 404 (webhook not registered yet) and the host's 502 to 504 answers, and waits up to 5 minutes. A JSON answer from the workflow is final.
+- While n8n starts, the page shows a calm "starting up" message, retries the 404 (routes or webhook not registered yet; before the routes exist the 404 has no CORS header, so the browser reports a failed request, which is retried too unless the visitor is offline) and the host's 502 to 504 answers, and waits up to 6 minutes. A JSON answer from the workflow is final.
 - The result is a timeline of the steps the workflow reports: Sorted (category, intent and reason), Repeat check, Sales alert (with a preview of the Telegram message exactly as sales received it, from `alert_message`, when it was sent) and Reply email (shown with the note that it is not sent). Everything from the server is written as text, never as HTML. **Try another example** resets the form and scrolls back up. The CSP allows scripts and styles from the page itself, and requests and form posts to `*.onrender.com` only.
 - Without script the form still posts: the Vercel build writes the webhook into its `action`, the browser checks the required fields, and the visitor sees the workflow's raw JSON answer.
 - Example buttons fill in made-up leads with a random number, so the first send is new and a second send shows the repeat check.

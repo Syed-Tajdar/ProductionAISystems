@@ -10,7 +10,7 @@ export function Contact() {
     ...(githubHref ? [{ label: "GitHub", value: site.github.replace(/^(\[?)https?:\/\//, "$1"), href: githubHref }] : []),
   ];
   return (
-    <Section id="contact" index="08" title="Contact" intro="The fastest way to reach me is email.">
+    <Section id="contact" index="09" title="Contact" intro="The fastest way to reach me is email.">
       <TextLink
         href={emailHref}
         className="inline-block break-all text-2xl font-semibold tracking-tight underline decoration-accent/40 decoration-2 underline-offset-[6px] hover:decoration-accent sm:text-4xl"

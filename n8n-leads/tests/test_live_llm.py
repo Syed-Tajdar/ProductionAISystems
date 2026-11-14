@@ -5,7 +5,8 @@
 
 The mock relays /anthropic/* to api.anthropic.com and adds the key from this process's
 environment, so the key is never stored in n8n or a file. Skipped unless LIVE_ANTHROPIC=1.
-Each run writes what it measured to tests/results/live_llm.json, which is committed.
+Each run writes what it measured to tests/results/live_llm.json, which is committed: time per lead, the
+labels, and the tokens of each Claude call with their cost at list price.
 """
 
 import datetime
@@ -21,6 +22,9 @@ import harness  # noqa: E402
 import mock_api  # noqa: E402
 
 M = mock_api.MOCK
+# USD per million input / output tokens, Claude API list price (checked 14 November 2026). Haiku's rate applies
+# to prompts up to 100K tokens; these prompts are under 2K.
+PRICES = {"claude-haiku-5-5": (0.10, 0.50)}
 RESULTS = Path(__file__).resolve().parent / "results" / "live_llm.json"
 LIVE = os.environ.get("LIVE_ANTHROPIC") == "1" and bool(os.environ.get("ANTHROPIC_API_KEY"))
 
@@ -49,15 +53,26 @@ class LiveClaude(unittest.TestCase):
             M.reset()
             started = time.monotonic()
             status, _ = harness.post("lead-intake", {"source": "web_form", "consent": "yes", **lead})
+            calls = [{"model": r["model"], "input_tokens": r["usage"].get("input_tokens", 0),
+                      "output_tokens": r["usage"].get("output_tokens", 0)} for r in M.relayed]
+            cost = sum((c["input_tokens"] * PRICES[c["model"]][0] + c["output_tokens"] * PRICES[c["model"]][1]) / 1e6
+                       for c in calls if c["model"] in PRICES)
             cls.results[key] = {"status": status, "seconds": round(time.monotonic() - started, 1),
                                 "classification": M.calls("/supabase/rest/v1/rpc/upsert_lead")[0]["body"]["lead"]["classification"],
-                                "alerted": bool(M.calls("/telegram/"))}
+                                "alerted": bool(M.calls("/telegram/")), "claude_calls": calls,
+                                "cost_usd": round(cost, 7) if calls and all(c["model"] in PRICES for c in calls) else None}
         seconds = [r["seconds"] for r in cls.results.values()]
+        costs = [r["cost_usd"] for r in cls.results.values()]
         RESULTS.parent.mkdir(exist_ok=True)
         RESULTS.write_text(json.dumps({
             "date": datetime.date.today().isoformat(),
             "setup": "n8n test bench in Docker, real Claude API, Supabase and Telegram mocked, synthetic leads",
-            "seconds_min": min(seconds), "seconds_max": max(seconds), "leads": cls.results,
+            "seconds_min": min(seconds), "seconds_max": max(seconds),
+            "prices_usd_per_million_tokens": {m: {"input": p[0], "output": p[1]} for m, p in PRICES.items()},
+            "cost_usd_mean": round(sum(costs) / len(costs), 7) if None not in costs else None,
+            "cost_usd_min": min(costs) if None not in costs else None,
+            "cost_usd_max": max(costs) if None not in costs else None,
+            "leads": cls.results,
         }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print()
         for key, r in cls.results.items():
@@ -82,6 +97,11 @@ class LiveClaude(unittest.TestCase):
         self.assertEqual(c["spam"]["intent"], "spam")
         self.assertNotEqual(c["browsing"]["urgency"], "hot")
         self.assertNotEqual(c["injection"]["urgency"], "hot")
+
+    def test_each_lead_is_one_priced_claude_call(self):
+        for key, r in self.results.items():
+            self.assertEqual(len(r["claude_calls"]), 1, key)
+            self.assertGreater(r["cost_usd"], 0, key)
 
     def test_alerts_follow_the_rules(self):
         self.assertTrue(self.results["en_hot_rent"]["alerted"])

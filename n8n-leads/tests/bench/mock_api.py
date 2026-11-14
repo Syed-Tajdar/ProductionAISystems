@@ -50,6 +50,7 @@ class Mock:
             self.requests, self.overrides, self.leads = [], [], {}
             self.mail, self.smtp_reject = [], {}  # smtp_reject: recipient (or "*") -> SMTP reply
             self.demo_slots, self.demo_alerts = [], 0
+            self.relayed = []  # live mode: model and token usage of each answer from api.anthropic.com
 
     def set(self, prefix: str, body=None, status: int = 200, times: int | None = None):
         """Answer requests whose path starts with prefix; times=None means until reset()."""
@@ -202,6 +203,9 @@ class Handler(BaseHTTPRequestHandler):
             with MOCK.lock:
                 MOCK.requests.append({"method": self.command, "path": self.path, "headers": {}, "body": body})
             status, out = relay_to_anthropic(self.path, headers, raw)
+            if isinstance(out, dict) and out.get("usage"):
+                with MOCK.lock:
+                    MOCK.relayed.append({"model": out.get("model"), "usage": out["usage"]})
         else:
             status, out = MOCK.respond(self.command, self.path, headers, body)
         data = b"" if out is None else json.dumps(out).encode()

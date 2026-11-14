@@ -58,7 +58,7 @@ export const projectPages: ProjectPage[] = [
       },
       {
         q: "What does it cost per call?",
-        a: "Scoring averaged $0.0102 per call in the eval, at list price ($0.0092 to $0.0108). Speech-to-text is billed separately by Deepgram per audio minute and is not in that figure. Every score row stores the model, tokens, latency and cost, so spend is visible per call.",
+        a: "Scoring averaged $0.0101 per call in the eval, at list price ($0.0091 to $0.0108). Speech-to-text is billed separately by Deepgram per audio minute and is not in that figure. Every score row stores the model, tokens, latency and cost, so spend is visible per call.",
       },
       {
         q: "Where does call data go, and who can see it?",
@@ -85,7 +85,7 @@ export const projectPages: ProjectPage[] = [
       ["67/67", "rubric items matched the expected verdict on 10 test calls"],
       ["10/10", "calls got the expected pass or fail result"],
       ["91%", "of speech time attributed to the right speaker (8 audio calls)"],
-      ["$0.0102", "average LLM cost per scored call, at list price"],
+      ["$0.0101", "average LLM cost per scored call, at list price"],
     ],
     problem:
       "Call centers review a small sample of calls by hand, so a missed disclosure or a misleading claim can go unnoticed. Reviewers also need to see why a call failed, not only a score.",
@@ -133,7 +133,7 @@ export const projectPages: ProjectPage[] = [
       ["Evidence on the right line", "48/56 (86%)"],
       ["Average transcription latency (8 audio calls)", "0.8 s"],
       ["Average scoring latency", "4.5 s"],
-      ["Average LLM cost per call ($2 / $10 per million tokens)", "$0.0102 ($0.0092 to $0.0108)"],
+      ["Average LLM cost per call ($2 / $10 per million tokens)", "$0.0101 ($0.0091 to $0.0108)"],
     ],
     scope: [
       "These are 10 scripted calls written alongside the rubrics and expected verdicts. The score shows that the pipeline, prompts and evidence checks work end to end; it does not measure accuracy on real calls. A run earlier the same day scored 66 of 67: the item that differed was a contact check on a call where speech recognition misheard a spelled-out email address, so that item can go either way.",
@@ -199,7 +199,7 @@ export const projectPages: ProjectPage[] = [
         : "Four workflows (intake, follow-up, daily summary and errors), tested end to end on a test bench."],
     ],
     numbers: [
-      ["1.8 to 3.0 s", "per submission end to end, with the real Claude API"],
+      ["1.1 to 3.0 s", "per submission end to end, with the real Claude API"],
       ["5/5", "synthetic test leads classified as expected, including Arabic and spam"],
       ["1 transaction", "to deduplicate by phone, then email, safe against two racing submissions"],
     ],
@@ -242,7 +242,7 @@ export const projectPages: ProjectPage[] = [
     resultsIntro: "Measured on 11 November 2026 on the test bench with the real Claude API (claude-haiku-5-5); Supabase and Telegram were mocked. One run of five synthetic leads.",
     results: [
       ["Leads classified", "5 of 5"],
-      ["Time per submission, end to end", "1.8 to 3.0 s"],
+      ["Time per submission, end to end", "1.1 to 3.0 s"],
       ["English rental lead", "hot, and the only one alerted"],
       ["Arabic lead", "language ar, intent buy"],
       ["SEO sales pitch", "spam"],
@@ -282,7 +282,7 @@ export const projectPages: ProjectPage[] = [
       },
       {
         q: "What does a question cost?",
-        a: "$0.0064 on average at list price in the eval, including about $0.00005 for translating the question for the second keyword search. Repeated questions come from a cache, and the public demo has a daily cap of 150 questions, which bounds spend at about $1 a day.",
+        a: "$0.0063 on average at list price in the eval, including about $0.000049 for translating the question for the second keyword search. Repeated questions come from a cache, and the public demo has a daily cap of 150 questions, so a full day costs about $0.95 at the average, and $1.70 if every question cost as much as the most expensive one in the eval.",
       },
       {
         q: "How does it find Arabic answers to an English question?",
@@ -309,7 +309,7 @@ export const projectPages: ProjectPage[] = [
       ["26/27", "answerable questions with every expected section in the top 5 (96%)"],
       ["67/67", "citations whose quote was found in the cited passage"],
       ["5/5", "out-of-scope questions answered with \"not in the documents\""],
-      ["$0.0064", "average cost per question, at list price"],
+      ["$0.0063", "average cost per question, at list price"],
     ],
     problem:
       "Staff and customers need answers from policies, manuals and FAQs in Arabic and English, with sources they can check. AI agents need the same answers through a tool interface, without write access.",
@@ -332,7 +332,7 @@ export const projectPages: ProjectPage[] = [
       },
       {
         title: "Retrieval across languages",
-        body: "Keyword search only matches chunks in the question's language, so each question is also translated by Claude Haiku (about $0.00005) and searched as a third list. This fixed both cross-language misses of the first eval run.",
+        body: "Keyword search only matches chunks in the question's language, so each question is also translated by Claude Haiku (about $0.000049) and searched as a third list. This fixed both cross-language misses of the first eval run.",
       },
       {
         title: "Citations or nothing",
@@ -362,7 +362,7 @@ export const projectPages: ProjectPage[] = [
         ["In-scope questions wrongly refused", "2/27", "0/27"],
         ["Answer in the question's language", "32/32", "32/32"],
         ["Average latency per question", "2.9 s", "3.6 s"],
-        ["Average cost per question", "$0.0060", "$0.0064"],
+        ["Average cost per question", "$0.0060", "$0.0063"],
       ],
     },
     scope: [

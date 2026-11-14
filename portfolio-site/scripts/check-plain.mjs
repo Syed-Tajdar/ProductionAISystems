@@ -74,7 +74,7 @@ const pages = walk(root).filter((f) => f.endsWith(".html"));
 
 // Every plain part this check is meant to cover must exist, so a renamed marker cannot make it pass.
 const expected = {
-  "index.html": ["hero", "results", "services", "card", "approach", "recruiters"],
+  "index.html": ["hero", "results", "services", "card", "approach", "running-cost", "recruiters"],
   "projects/call-qa-agent.html": ["plain-words", "calculator"],
   "projects/n8n-leads.html": ["plain-words", "faq"],
   "projects/rag-mcp.html": ["plain-words"],

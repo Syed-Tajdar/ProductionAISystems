@@ -38,13 +38,19 @@ services:
       N8N_LISTEN_ADDRESS: ${N8N_LISTEN_ADDRESS:-::}
       N8N_HOST: ${N8N_HOST:-localhost}
       N8N_PROTOCOL: ${N8N_PROTOCOL:-http}
-      WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
+      N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://localhost:5678/}
       N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE:-true}
       N8N_PROXY_HOPS: ${N8N_PROXY_HOPS:-0}
       GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-Asia/Dubai}
       TZ: ${GENERIC_TIMEZONE:-Asia/Dubai}
       N8N_DIAGNOSTICS_ENABLED: "false"
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      # Settings whose defaults change in n8n 3.0, fixed so an upgrade changes nothing (DEPLOY.md, "Pinned n8n settings").
+      N8N_UNVERIFIED_PACKAGES_ENABLED: "false"
+      N8N_RUNNERS_MODE: internal
+      N8N_RUNNERS_TASK_TIMEOUT: "300"
+      N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "268435456"
+      N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "1000"
       EXECUTIONS_DATA_PRUNE: "true"
       EXECUTIONS_DATA_MAX_AGE: ${EXECUTIONS_DATA_MAX_AGE:-336}
       # The lead workflows read their deployment settings from LEADS_* variables (see .env.example).

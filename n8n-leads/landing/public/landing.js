@@ -7,7 +7,7 @@
   "use strict";
   const COLD_HINT_MS = 6000;    // after this, say the server is starting
   const LONG_HINT_MS = 100000;  // after this, say it is nearly there
-  const TIMEOUT_MS = 300000;    // give up: a cold start takes 2 to 3 minutes on the free plan
+  const TIMEOUT_MS = 360000;    // give up: a cold start takes 2 to 3 minutes on the free plan, a restart during a deploy more
   const RETRY_MS = 4000;
 
   const $ = (id) => document.getElementById(id);
@@ -195,7 +195,15 @@
       let res, out;
       for (;;) {
         // Form encoding keeps this a simple cross-origin request, with no preflight.
-        res = await fetch(url, { method: "POST", body, signal: abort.signal });
+        try {
+          res = await fetch(url, { method: "POST", body, signal: abort.signal });
+        } catch (err) {
+          // While n8n starts, its port is open before its routes are: it answers 404 without the CORS header,
+          // which the browser reports as a failed request. Retried like a 404, unless the visitor is offline.
+          if (err.name === "AbortError" || navigator.onLine === false || Date.now() + RETRY_MS > deadline) throw err;
+          await new Promise((r) => setTimeout(r, RETRY_MS));
+          continue;
+        }
         out = await res.json().catch(() => null);
         const starting = res.status === 404 || ([502, 503, 504].includes(res.status) && !(out && "ok" in out));
         if (!starting || Date.now() + RETRY_MS > deadline) break;
@@ -218,7 +226,7 @@
       }
     } catch (err) {
       setState("error", err && err.name === "AbortError"
-        ? "The server took longer than five minutes to start. Please try again: it is usually awake by now."
+        ? "The server took longer than six minutes to start. Please try again: it is usually awake by now."
         : "The request did not get through. Check the connection and try again.");
     } finally {
       clearTimeout(timer);

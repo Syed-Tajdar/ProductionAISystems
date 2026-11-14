@@ -9,7 +9,7 @@ export type OgCard = { id: string; path: string; kicker: string; title: string; 
 // The headline number for each image, picked from the page's own numbers so the two never drift apart.
 const headline: Record<string, string> = {
   "call-qa-agent": "67/67",
-  "n8n-leads": "1.8 to 3.0 s",
+  "n8n-leads": "1.1 to 3.0 s",
   "rag-mcp": "67/67",
   calyx: "2,000+",
 };

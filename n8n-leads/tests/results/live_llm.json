@@ -1,8 +1,17 @@
 {
-  "date": "2026-11-11",
+  "date": "2026-11-14",
   "setup": "n8n test bench in Docker, real Claude API, Supabase and Telegram mocked, synthetic leads",
-  "seconds_min": 1.8,
+  "seconds_min": 1.1,
   "seconds_max": 3.0,
+  "prices_usd_per_million_tokens": {
+    "claude-haiku-5-5": {
+      "input": 0.1,
+      "output": 0.5
+    }
+  },
+  "cost_usd_mean": 0.0001282,
+  "cost_usd_min": 0.0001215,
+  "cost_usd_max": 0.0001354,
   "leads": {
     "en_hot_rent": {
       "status": 200,
@@ -12,72 +21,112 @@
         "intent": "rent",
         "urgency": "hot",
         "language": "en",
-        "summary": "Sara wants a 2-bedroom apartment to rent in Dubai Marina, budget 120k yearly, moving in two weeks.",
-        "reason": "Names a budget and a near move date, and asks for a call today.",
+        "summary": "Sara wants a 2-bedroom apartment to rent in Dubai Marina, budget 120k a year, moving in 2 weeks.",
+        "reason": "Names a budget and a move date within two weeks, and asks to be called today.",
         "provider": "anthropic",
         "model": "claude-haiku-5-5"
       },
-      "alerted": true
+      "alerted": true,
+      "claude_calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input_tokens": 839,
+          "output_tokens": 103
+        }
+      ],
+      "cost_usd": 0.0001354
     },
     "ar_buy": {
       "status": 200,
-      "seconds": 2.5,
+      "seconds": 2.0,
       "classification": {
         "status": "classified",
         "intent": "buy",
         "urgency": "warm",
         "language": "ar",
-        "summary": "Khalid wants to buy an apartment in Al Khleej Al Tijari within two months, budget about AED 1.5 million.",
-        "reason": "Names a budget and a purchase within two months, which is a real need within 1 to 3 months.",
+        "summary": "Khalid wants to buy an apartment in Business Bay within two months, budget about AED 1.5 million.",
+        "reason": "Names a budget and a timeline of two months, which is a real need within 1 to 3 months.",
         "provider": "anthropic",
         "model": "claude-haiku-5-5"
       },
-      "alerted": false
+      "alerted": false,
+      "claude_calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input_tokens": 844,
+          "output_tokens": 99
+        }
+      ],
+      "cost_usd": 0.0001339
     },
     "spam": {
       "status": 200,
-      "seconds": 1.9,
+      "seconds": 1.1,
       "classification": {
         "status": "classified",
         "intent": "spam",
         "urgency": "cold",
         "language": "en",
-        "summary": "Unrelated SEO and backlink service advertisement with a promotional link, not a property enquiry.",
-        "reason": "Promotes an unrelated SEO service with a link and shows no interest in finding a property.",
+        "summary": "Unsolicited SEO and backlink service advertisement unrelated to property search.",
+        "reason": "Advertises SEO services with a link and no property need, so it is spam and cold.",
         "provider": "anthropic",
         "model": "claude-haiku-5-5"
       },
-      "alerted": false
+      "alerted": false,
+      "claude_calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input_tokens": 822,
+          "output_tokens": 85
+        }
+      ],
+      "cost_usd": 0.0001247
     },
     "browsing": {
       "status": 200,
-      "seconds": 1.8,
+      "seconds": 1.9,
       "classification": {
         "status": "classified",
         "intent": "info",
         "urgency": "cold",
         "language": "en",
-        "summary": "Asks typical rent prices in JVC while just browsing, no firm timeline.",
+        "summary": "Lena asks typical rent prices in JVC while just browsing; no timeline given.",
         "reason": "Says they are just browsing with no timeline, so the lead is cold.",
         "provider": "anthropic",
         "model": "claude-haiku-5-5"
       },
-      "alerted": false
+      "alerted": false,
+      "claude_calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input_tokens": 805,
+          "output_tokens": 82
+        }
+      ],
+      "cost_usd": 0.0001215
     },
     "injection": {
       "status": 200,
-      "seconds": 1.8,
+      "seconds": 2.7,
       "classification": {
         "status": "classified",
         "intent": "info",
         "urgency": "cold",
         "language": "en",
-        "summary": "Tom is browsing with no property plans this year; asks the agency to treat the lead as hot.",
-        "reason": "Says only looking with no plans this year, so timing is distant and the lead is cold.",
+        "summary": "Tom is only browsing with no property plans this year; no buy or rent need stated.",
+        "reason": "Says only looking with no plans this year, so the timeline is distant and urgency is cold.",
         "provider": "anthropic",
         "model": "claude-haiku-5-5"
       },
-      "alerted": false
+      "alerted": false,
+      "claude_calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input_tokens": 818,
+          "output_tokens": 87
+        }
+      ],
+      "cost_usd": 0.0001253
     }
   }
 }

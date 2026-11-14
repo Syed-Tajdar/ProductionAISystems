@@ -133,7 +133,7 @@ Answer latency 1.5 to 4.1 s for the model call. Cost at list price ($2 / $10 per
 - **Answer language:** detected from the question (share of Arabic letters) or set with `language` on `/ask`. The answer and `not_covered` are written in that language; "not in the documents" has a fixed text per language (`لا تحتوي المستندات على إجابة لهذا السؤال.`). Quotes stay in the source's language, so an Arabic answer can cite an English clause and the reverse.
 - **Right to left:** `/ask` returns `language` and `direction` (`rtl` for Arabic). The text itself stays plain: no bidi control characters, citation markers like `[1]` as they are; the client sets the direction.
 - **Quote check in Arabic:** before matching, both quote and source drop diacritics and tatweel and fold alef forms (أ إ آ ٱ to ا), taa marbuta (ة to ه), alef maqsura (ى to ي), hamza seats (ؤ ئ) and Arabic-Indic digits, so `السنويّة ٢٥` matches `السنويه 25`.
-- **Cross-language retrieval:** the vector side is multilingual, but keyword search only matches chunks in the question's language, so in the first eval run an Arabic question about pool hours got five Arabic chunks and never the English-only clause. Each question is now also translated into the other language by `claude-haiku-5-5` (cached per question, about $0.00005 a call) and searched as a second keyword list; RRF sums three lists. If the translation fails, search goes on without it. `QUERY_TRANSLATION=false` turns it off.
+- **Cross-language retrieval:** the vector side is multilingual, but keyword search only matches chunks in the question's language, so in the first eval run an Arabic question about pool hours got five Arabic chunks and never the English-only clause. Each question is now also translated into the other language by `claude-haiku-5-5` (cached per question, about $0.000049 a call) and searched as a second keyword list; RRF sums three lists. If the translation fails, search goes on without it. `QUERY_TRANSLATION=false` turns it off.
 
 ## Evals (Phase 4)
 
@@ -166,7 +166,7 @@ Results, 6 November 2026, answers by `claude-sonnet-5-5`, judge `claude-opus-5-5
 | In-scope questions wrongly refused | 2/27 (7%) | 0/27 (0%) |
 | Answer in the question's language | 32/32 (100%) | 32/32 (100%) |
 | Avg latency per question (max) | 2.9 s (5.7 s) | 3.6 s (7.6 s) |
-| Avg cost per question (translation + answer) | $0.0060 | $0.0064 |
+| Avg cost per question (translation + answer) | $0.0060 | $0.0063 |
 | Judge cost for the run | $0.20 | $0.21 |
 
 | Category | Questions | Retrieval hit, first run | Retrieval hit, current |
@@ -318,7 +318,7 @@ Checked with Inspector 2.12.0 here: `tools/list` and `list_documents` over stdio
 - The same question (ignoring case and spacing) is answered from a cache for a day, without counting against either limit, so clicking the examples costs nothing after the first time.
 - **Warm examples:** `python -m rag.cli warm` answers the five example questions straight into that cache (`rag/warm.py`), so the example chips answer at once instead of in 10-12 s. It never goes through the limiter, so no visitor's limit and nothing of the daily cap is used. The `warm-rag-cache` workflow runs it after each successful production deploy of the RAG app on Vercel (with `--force`, since a deploy may change how answers are made), every day at 05:17 UTC (refreshing answers older than 20 hours, before the 24 h expiry) and by hand. Secrets: `SUPABASE_DB_URL`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, as for setup-supabase. About $0.03 a run, so roughly $1 a month.
 - **Shared by every instance:** with a database configured, the limits and the cache are in Postgres (`demo_requests`, `demo_answers`; migration `20261110000000_demo_limits.sql`). `demo_take` checks both limits and counts the question in one call, under a transaction-scoped advisory lock, so concurrent serverless instances never exceed the daily cap (tested with 20 concurrent questions from 4 separate pools against a cap of 7). If the limits cannot be checked, the question is refused rather than answered uncounted; a cache failure is only a miss. Without a database (`DEMO_STORE=memory`) they are in memory, per process.
-- The client address comes from `CLIENT_IP_HEADER` (Vercel: `x-real-ip`, which Vercel sets itself), otherwise the socket address. The daily cap is what bounds spending: about $1 a day at $0.0064 a question.
+- The client address comes from `CLIENT_IP_HEADER` (Vercel: `x-real-ip`, which Vercel sets itself), otherwise the socket address. The daily cap is what bounds spending: 150 questions a day is $0.95 at the average $0.0063 a question, and $1.70 at the most expensive question in the eval ($0.0113).
 - Under the question box: "Questions are processed by third-party AI services (Anthropic and Google). Don't enter personal information."
 
 Checked in Chromium with real answers: English (light), Arabic citing the English amenities guide (dark), Arabic on a 390 px phone, and the refusal. That check also showed the model summarising what the documents do cover in `not_covered`, which is shown without citations, so the prompt now limits `not_covered` to naming what is missing.

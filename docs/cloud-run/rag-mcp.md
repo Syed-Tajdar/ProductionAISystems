@@ -62,7 +62,7 @@ Open `$URL/` and click an example question; the second click of the same example
 ## Cost and limits
 
 - **Cloud Run:** inside the free tier at demo traffic (one answer takes 2 to 8 s of one vCPU).
-- **Anthropic:** a question costs about $0.0064 (Sonnet answer plus Haiku translation, at list price). The daily cap of 150 questions bounds it at about $1 a day; repeated questions come from the cache. Also set a monthly spend limit in the Claude Console as the hard stop.
+- **Anthropic:** a question costs about $0.0063 (Sonnet answer plus Haiku translation, at list price). With the daily cap of 150 questions, a full day costs about $0.95 at the average and $1.70 at the most expensive question in the eval; repeated questions come from the cache. Also set a monthly spend limit in the Claude Console as the hard stop.
 - **Gemini:** one cached query embedding per new question, within the free tier.
 - The per-address limit uses `X-Forwarded-For`, which a client can fake; the daily cap is what bounds spending.
 

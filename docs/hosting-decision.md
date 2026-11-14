@@ -44,7 +44,7 @@ Trade-offs we accept:
 - An inline upload holds its request until scoring finishes; a call that needs more than 300 s would fail (unlikely below 50 MB of audio).
 - Supabase free projects pause after a week without activity and must be resumed from the dashboard.
 - Per-visitor limits rely on Vercel's `x-real-ip`; hosted MCP clients share their servers' addresses. The daily cap is what bounds spending.
-- Deepgram and Anthropic stay usage-billed. The RAG daily cap (about $1 a day) and a monthly spend limit in the Claude Console bound the LLM cost; Call QA uploads need the passcode.
+- Deepgram and Anthropic stay usage-billed. The RAG daily cap (about $0.95 a day at the average cost per question, $1.70 at the most expensive) and a monthly spend limit in the Claude Console bound the LLM cost; Call QA uploads need the passcode.
 
 ## LLM provider
 
@@ -75,7 +75,7 @@ Measured in a container with the free plan's limits (512 MB, hard 0.1 CPU) on Po
 
 Trade-offs we accept:
 
-- **Cold start.** A visitor who arrives after a quiet spell waits 2 to 3 minutes for the first answer. The page wakes n8n on load, retries while n8n registers its webhooks, waits up to 5 minutes and says plainly what is happening. Every answer after that takes seconds.
+- **Cold start.** A visitor who arrives after a quiet spell waits 2 to 3 minutes for the first answer. The page wakes n8n on load, retries while n8n registers its webhooks, waits up to 6 minutes and says plainly what is happening. Every answer after that takes seconds.
 - **750 free hours a month.** One service running all month needs 744, so the hours never run out; a sleeping service uses fewer. A second free service in the same Render workspace would share them.
 - **Schedules wake it.** Each scheduled call usually finds n8n asleep and waits for it, about 3 Actions minutes per call on a private repository. Hourly that would be roughly 2,200 minutes a month, more than the 2,000 free. In demo mode the follow-up never emails anyone (demo leads are excluded), so the follow-up runs every 6 hours (`7 */6 * * *`): with the daily summary about 450 minutes a month. A paying client on an always-on host would go back to hourly.
 - **Uptime.** The uptime check loads the static page only. A sleeping n8n is expected and must not raise an alert.

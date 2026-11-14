@@ -8,12 +8,22 @@ on:
       - "portfolio-site/**"
       - "demo-ui/profile.json"
       - "n8n-leads/landing/public/**"
+      - "n8n-leads/landing/build.py"
+      - "call-qa-agent/evals/results/latest.json"
+      - "rag-mcp/evals/results/latest.json"
+      - "rag-mcp/rag/config.py"
+      - "n8n-leads/tests/results/live_llm.json"
       - ".github/workflows/portfolio-site.yml"
   pull_request:
     paths:
       - "portfolio-site/**"
       - "demo-ui/profile.json"
       - "n8n-leads/landing/public/**"
+      - "n8n-leads/landing/build.py"
+      - "call-qa-agent/evals/results/latest.json"
+      - "rag-mcp/evals/results/latest.json"
+      - "rag-mcp/rag/config.py"
+      - "n8n-leads/tests/results/live_llm.json"
       - ".github/workflows/portfolio-site.yml"
   workflow_dispatch:
 
@@ -54,5 +64,6 @@ jobs:
       - run: npm run check-links
       - run: npm run check-og
       - run: npm run check-plain  # plain-language blocks use no unexplained technical terms
+      - run: npm run check-costs  # the running cost section matches the committed result files
       - run: npm run check-csp  # every page's policy covers exactly its inline scripts
       - run: npm run check-profile  # the demos' footer data matches the site

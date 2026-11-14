@@ -12,6 +12,7 @@
     "check-profile": "node scripts/check-profile.mjs",
     "check-plain": "node scripts/check-plain.mjs",
     "check-csp": "node scripts/csp.mjs --check",
+    "check-costs": "node scripts/check-costs.mjs",
     "export-calyx": "node scripts/export-calyx.mjs"
   },
   "dependencies": {

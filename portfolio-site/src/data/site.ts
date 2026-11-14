@@ -119,7 +119,7 @@ export const projects: Project[] = [
     stack: ["Python", "FastAPI", "Deepgram", "Claude", "Supabase"],
     metrics: [
       { plain: "67 of 67 checks right in tests", technical: "Item accuracy 67/67 on 10 scripted test calls" },
-      { plain: "about 1 cent per call", technical: "Average LLM cost per scored call: $0.0102 at list price" },
+      { plain: "about 1 cent per call", technical: "Average LLM cost per scored call: $0.0101 at list price" },
       { plain: "91% of speech matched to the right speaker", technical: "Diarization accuracy 91% on 8 audio calls" },
     ],
     page: "/projects/call-qa-agent",
@@ -134,7 +134,7 @@ export const projects: Project[] = [
       "Leads from forms go cold when nobody replies fast. These workflows classify each lead with an LLM, deduplicate it, alert sales on hot leads and follow up on their own.",
     stack: ["n8n", "Claude", "Supabase", "Telegram", "GitHub Actions"],
     metrics: [
-      { plain: "each enquiry handled in 2 to 3 seconds", technical: "1.8 to 3.0 s per submission end to end, with the real Claude API" },
+      { plain: "each enquiry handled in 1 to 3 seconds", technical: "1.1 to 3.0 s per submission end to end, with the real Claude API" },
       { plain: "5 of 5 test enquiries sorted correctly", technical: "5/5 synthetic test leads classified as expected, including Arabic and spam" },
       { plain: "replies in English or Arabic", technical: "Auto-reply email in the lead's language (en or ar)" },
     ],
@@ -177,7 +177,7 @@ export const proof: { value: string; label: string; technical: string; source: s
   { value: "100%", label: "of quality checks judged right on 10 test calls (67 of 67)", technical: "Item accuracy 67/67 on 10 scripted test calls (eval run, 11 November 2026; an earlier run that day scored 66/67)", source: "Call QA Agent", href: "/projects/call-qa-agent#results" },
   { value: "96%", label: "finds the right passage for 26 of 27 answerable test questions", technical: "Retrieval hit rate in a 32-question English and Arabic eval: every expected section in the top 5 for 26 of 27 answerable questions", source: "Document Assistant", href: "/projects/rag-mcp#results" },
   { value: "2,000+", label: "calls a day handled by a system I built and run", technical: "Calls a day processed in production by Calyx AI, across two live accounts", source: "Calyx AI", href: "/calyx#results" },
-  { value: "~$0.01", label: "about 1 cent to review one call", technical: "Average LLM cost per scored call, $0.0102 at list price ($2 / $10 per million tokens)", source: "Call QA Agent", href: "/projects/call-qa-agent#results" },
+  { value: "~$0.01", label: "about 1 cent to review one call", technical: "Average LLM cost per scored call, $0.0101 at list price ($2 / $10 per million tokens)", source: "Call QA Agent", href: "/projects/call-qa-agent#results" },
 ];
 
 // Each card: a plain title and first sentence for any reader, then the technical detail.

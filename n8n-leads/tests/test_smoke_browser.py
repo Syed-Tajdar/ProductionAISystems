@@ -42,6 +42,7 @@ ANSWER = {"ok": True, "demo": {
 class Webhook(http.server.BaseHTTPRequestHandler):
     """Answers the form post like the workflow in demo mode, and /healthz for the page's wake-up request."""
     received: list = []
+    starting = 0  # this many posts get the answer of an n8n that is still starting
 
     def log_message(self, *args):
         pass
@@ -60,6 +61,16 @@ class Webhook(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         form = urllib.parse.parse_qs(self.rfile.read(int(self.headers["content-length"])).decode())
         self.received.append({k: v[0] for k, v in form.items()})
+        if Webhook.starting:
+            # n8n 2.45 opens its port before its routes exist; Express then answers 404 without a CORS header.
+            Webhook.starting -= 1
+            body = b"<!DOCTYPE html><html><head><title>Error</title></head><body><pre>Cannot POST /webhook/lead-intake</pre></body></html>"
+            self.send_response(404)
+            self.send_header("content-type", "text/html")
+            self.send_header("content-length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         self.reply(200, json.dumps(ANSWER).encode())
 
 
@@ -94,6 +105,9 @@ class DemoPage(unittest.TestCase):
         headers["Content-Security-Policy"] = headers["Content-Security-Policy"].replace("https://*.onrender.com", hook_url)
         Site.headers_for_all = headers
         cls.site, cls.url = serve(functools.partial(Site, directory=str(cls.folder / "site")))
+
+    def setUp(self):
+        Webhook.starting = 0
 
     @classmethod
     def tearDownClass(cls):
@@ -145,6 +159,30 @@ class DemoPage(unittest.TestCase):
             self.assertEqual(page.input_value("[name=name]"), "")
             browser.close()
         self.assertEqual(problems, [])
+
+    def test_a_server_that_is_still_starting_is_waited_for(self):
+        """The browser cannot read n8n's start-up 404 (no CORS header) and rejects the request: the page must
+        retry it, not show the error state."""
+        errors = []
+        with sync_playwright() as p:
+            try:
+                browser = p.chromium.launch()
+            except Exception as e:  # noqa: BLE001
+                if os.environ.get("CI") or "playwright install" not in str(e):
+                    raise
+                self.skipTest("Chromium is not installed: run `playwright install chromium`")
+            page = browser.new_page(viewport={"width": 390, "height": 844})
+            page.on("pageerror", lambda e: errors.append(f"script error: {e}"))
+            page.goto(self.url)
+            before = len(Webhook.received)
+            Webhook.starting = 2
+            page.locator("[data-example]").first.click()
+            page.click("button[type=submit]")
+            page.wait_for_selector("#result:not([hidden])", timeout=30000)
+            self.assertEqual(len(Webhook.received) - before, 3)  # two refused while starting, then answered
+            self.assertEqual(page.inner_text("#r-category"), "Hot")
+            browser.close()
+        self.assertEqual(errors, [])
 
 
 if __name__ == "__main__":

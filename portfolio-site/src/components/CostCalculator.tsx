@@ -5,7 +5,7 @@ import { useState } from "react";
 // Call QA cost calculator. Uses only the visitor's three inputs and the measured scoring cost per call; the defaults
 // are examples. The page is rendered with the example values, so it reads correctly before (or without) JavaScript.
 
-const COST_PER_CALL = 0.0102; // measured: average AI scoring cost per call in the eval, at list price
+const COST_PER_CALL = 0.0101; // measured: average AI scoring cost per call in the eval, at list price
 const DAYS = 30;
 const EXAMPLE = { calls: 300, share: 5, minutes: 8 };
 
@@ -81,7 +81,7 @@ export function CostCalculator() {
         <p className="font-medium text-fg">How it is worked out</p>
         <ul className="mt-1.5 grid gap-1">
           <li>Calls a month = calls per day &times; {DAYS}</li>
-          <li>AI scoring cost = calls a month &times; $0.0102, the measured average scoring cost per call in the tests at list price. Speech-to-text is charged separately by the transcription provider per minute of audio and is not included.</li>
+          <li>AI scoring cost = calls a month &times; $0.0101, the measured average scoring cost per call in the tests at list price. Speech-to-text is charged separately by the transcription provider per minute of audio and is not included.</li>
           <li>Hours to check every call by hand = calls a month &times; minutes per review &divide; 60</li>
           <li>Hours today = that &times; the share you review by hand now</li>
         </ul>

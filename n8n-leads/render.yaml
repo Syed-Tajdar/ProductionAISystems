@@ -56,7 +56,8 @@ services:
         value: https
       - key: N8N_HOST
         sync: false   # the exact host on the service page, <your-service>.onrender.com (Render may add a suffix)
-      - key: WEBHOOK_URL
+      # Base URL of production and test webhooks. Replaces WEBHOOK_URL, deprecated in n8n 2.35.
+      - key: N8N_WEBHOOK_URL
         sync: false   # https://<your-service>.onrender.com/
       - key: N8N_SECURE_COOKIE
         value: "true"
@@ -88,6 +89,19 @@ services:
         value: "false"
       - key: N8N_COMMUNITY_PACKAGES_ENABLED
         value: "false"
+      # Settings whose defaults change in n8n 3.0, fixed here so an upgrade changes nothing (DEPLOY.md,
+      # "Pinned n8n settings"). Internal runner mode is kept: external mode needs a second, private
+      # service for the runner launcher, which the free plan has no room for.
+      - key: N8N_UNVERIFIED_PACKAGES_ENABLED
+        value: "false"
+      - key: N8N_RUNNERS_MODE
+        value: internal
+      - key: N8N_RUNNERS_TASK_TIMEOUT
+        value: "300"
+      - key: N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES
+        value: "268435456"
+      - key: N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES
+        value: "1000"
       # Keep the n8n schema small: one week of executions.
       - key: EXECUTIONS_DATA_PRUNE
         value: "true"

@@ -87,5 +87,60 @@ class Masking(unittest.TestCase):
         self.assertIn("401 for key ***", lines[1])
 
 
+class Answer:
+    def __init__(self, body: bytes):
+        self.body = body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def read(self):
+        return self.body
+
+
+class WaitsForAStartingN8n(unittest.TestCase):
+    """While n8n starts, /api/v1 answers 404 (measured: about 80 s after /healthz on 0.1 CPU)."""
+
+    def run_fetch(self, answers, wait_seconds=60):
+        now = [0.0]
+        calls, lines = [], []
+
+        def opener(request, timeout):
+            calls.append(request)
+            answer = answers.pop(0)
+            if isinstance(answer, Exception):
+                raise answer
+            return Answer(answer)
+
+        def sleep(seconds):
+            now[0] += seconds
+
+        body = n8n_errors.fetch("req", wait_seconds=wait_seconds, pause=10, opener=opener, sleep=sleep,
+                                clock=lambda: now[0], log=lines.append)
+        return body, calls, lines
+
+    @staticmethod
+    def http(code):
+        return n8n_errors.urllib.error.HTTPError("https://x/api/v1/executions", code, "x", {}, None)
+
+    def test_404_and_gateway_errors_are_retried_until_n8n_answers(self):
+        body, calls, lines = self.run_fetch([self.http(404), self.http(502), ConnectionResetError(), b'{"data": []}'])
+        self.assertEqual(body, b'{"data": []}')
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(lines[0], "n8n is starting (HTTP 404), retrying in 10 s")
+
+    def test_a_rejected_key_is_not_retried(self):
+        with self.assertRaises(n8n_errors.urllib.error.HTTPError) as caught:
+            self.run_fetch([self.http(401)])
+        self.assertEqual(caught.exception.code, 401)
+
+    def test_it_gives_up_at_the_deadline(self):
+        with self.assertRaises(n8n_errors.urllib.error.HTTPError):
+            self.run_fetch([self.http(404)] * 10, wait_seconds=30)
+
+
 if __name__ == "__main__":
     unittest.main()

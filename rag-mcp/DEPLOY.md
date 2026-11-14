@@ -126,7 +126,7 @@ For a deployment only you use, set `MCP_BEARER_TOKEN` (at least 24 characters, f
 | Vercel | Hobby, $0 | One function, 2 to 8 s per new question |
 | Supabase | Free, $0 | A few MB of chunks and vectors, plus the demo tables (rows older than two days are deleted). Free projects pause after a week without activity; resume them from the dashboard |
 | Gemini | Free tier | One embedding per new question, cached |
-| Anthropic | Pay per use | About $0.0064 per new question (Sonnet answer plus Haiku translation, list price); the daily cap of 150 bounds it at about $1 a day. Also set a monthly spend limit in the Claude Console as the hard stop |
+| Anthropic | Pay per use | About $0.0063 per new question (Sonnet answer plus Haiku translation, list price); with the daily cap of 150, a full day costs about $0.95 at the average and $1.70 at the most expensive question in the eval. Also set a monthly spend limit in the Claude Console as the hard stop |
 
 The client address comes from Vercel's `x-real-ip`. Behind another proxy, set `CLIENT_IP_HEADER` to the header that proxy overwrites, or leave it empty; the daily cap still bounds spending.
 
