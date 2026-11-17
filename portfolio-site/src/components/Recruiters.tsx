@@ -2,6 +2,7 @@ import { region } from "@/data/regions";
 import { demos, emailHref, linkedinHref, site } from "@/data/site";
 import { Section } from "./Section";
 import { TextLink } from "./TextLink";
+import { demoVideo } from "@/data/demo-video";
 
 export function Recruiters() {
   const rows: [string, React.ReactNode][] = [
@@ -29,6 +30,7 @@ export function Recruiters() {
           </a>
           <TextLink href={emailHref}>{site.email}</TextLink>
           <TextLink href={linkedinHref}>LinkedIn</TextLink>
+          <TextLink href={demoVideo.mp4}>1-minute demo video</TextLink>
           <TextLink href={demos["call-qa-agent"]} rel="noopener">Call review demo</TextLink>
           <TextLink href={demos["rag-mcp"]} rel="noopener">Document answers demo</TextLink>
           {demos["n8n-leads"] && (

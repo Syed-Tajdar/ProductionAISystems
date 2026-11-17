@@ -48,6 +48,7 @@ function policy(hashes) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
     "font-src 'self'",
+    "media-src 'self'",
     "connect-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",

@@ -1,14 +1,19 @@
 import { Fragment } from "react";
 import { region } from "@/data/regions";
 import { coreStack, emailHref, isSet, linkedinHref, proof, site } from "@/data/site";
+import { WatchDemo } from "./WatchDemo";
 
 const base =
   "inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-medium transition-[background-color,border-color,color,transform] duration-150 sm:px-5";
 
-function Action({ href, label, primary = false, download }: { href?: string; label: string; primary?: boolean; download?: string }) {
+const secondary = `${base} border border-line bg-surface hover:-translate-y-px hover:border-accent`;
+
+function Action({ href, label, primary = false, download, className = "" }: {
+  href?: string; label: string; primary?: boolean; download?: string; className?: string;
+}) {
   if (!isSet(href)) {
     return (
-      <span className={`${base} cursor-default border border-dashed border-line text-muted`} title="Link not added yet">
+      <span className={`${base} cursor-default border border-dashed border-line text-muted ${className}`} title="Link not added yet">
         {label}
       </span>
     );
@@ -19,11 +24,7 @@ function Action({ href, label, primary = false, download }: { href?: string; lab
       href={href}
       {...(download ? { download } : {})}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={
-        primary
-          ? `${base} bg-accent text-accent-fg hover:-translate-y-px hover:brightness-110`
-          : `${base} border border-line bg-surface hover:-translate-y-px hover:border-accent`
-      }
+      className={`${primary ? `${base} bg-accent text-accent-fg hover:-translate-y-px hover:brightness-110` : secondary} ${className}`}
     >
       {label}
     </a>
@@ -94,11 +95,22 @@ export function Hero() {
               </a>
             </p>
 
+            {/* Phones: two rows, as before the video button. CV and the video share the first, the other three the
+                second, each as wide as its label. */}
             <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:flex-wrap sm:gap-3">
               <Action href={site.cv} label="Download CV" primary download={site.cvFileName} />
-              <Action href="#projects" label="Try a live demo" />
-              <Action href={linkedinHref} label="LinkedIn" />
-              <Action href={emailHref} label="Email" />
+              <WatchDemo className={`${secondary} gap-2 max-sm:gap-1.5 max-sm:px-3`}>
+                {/* The icon gives way on phones narrower than 390px, so the label stays on one line. */}
+                <svg viewBox="0 0 24 24" className="size-3.5 shrink-0 text-accent max-[389px]:hidden" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z" />
+                </svg>
+                <span className="whitespace-nowrap">Watch 1-min demo</span>
+              </WatchDemo>
+              <div className="col-span-2 flex flex-wrap gap-2.5 sm:contents">
+                <Action href="#projects" label="Try a live demo" className="max-sm:flex-auto max-sm:px-3" />
+                <Action href={linkedinHref} label="LinkedIn" className="max-sm:flex-auto max-sm:px-3" />
+                <Action href={emailHref} label="Email" className="max-sm:flex-auto max-sm:px-3" />
+              </div>
             </div>
 
             {region.secondLine && (

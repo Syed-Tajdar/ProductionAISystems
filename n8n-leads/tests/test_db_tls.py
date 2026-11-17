@@ -67,8 +67,10 @@ class DatabaseCertificate(unittest.TestCase):
             "--entrypoint", "sh", PG_IMAGE, "-c", start)
         run("docker", "cp", f"{cls.tmp}/.", f"{DB}:/certs")
         run("docker", "start", DB)
+        # Over TCP: on its first start the image runs a temporary server for initdb that listens on the socket
+        # only, so a socket check can pass before the real server (the one with TLS) is up.
         for _ in range(60):
-            if run("docker", "exec", DB, "pg_isready", "-U", "postgres", check=False).returncode == 0:
+            if run("docker", "exec", DB, "pg_isready", "-h", "127.0.0.1", "-U", "postgres", check=False).returncode == 0:
                 break
             time.sleep(1)
         else:
